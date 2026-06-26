@@ -10,9 +10,8 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 
 ## Allod Directory Conventions
 
-- **Archive location**: Archived files go in `allod/strategy/archive/<type>/` (e.g., `archive/dev-plans/`).
-- **Repo structure**: Each subdirectory under `allod/` (strategy, memory, profiles, inventory, nexus, secrets, tools, vm) is its own git repo.
-- The strategy repo has a pre-commit hook that rejects Claude attribution in commit messages.
+- Archive files under `allod/strategy/archive/<type>/`.
+- Each `allod/*` directory is its own git repo.
 
 ## Repo Inventory
 
