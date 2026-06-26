@@ -19,7 +19,7 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 | `nexus` | `allod/nexus` | Host machine NixOS config and provisioning scripts |
 | `inventory` | `allod/inventory` | Machine platform, type, hardware, and VM specs |
 | `secrets` | `allod/secrets` | Encrypted secrets and recipient metadata |
-| `strategy` | `allod/strategy` | Development plans and design notes |
+| `strategy` | `allod/strategy` | Development plans and design notes. Archive: `strategy/archive/<type>/` |
 
 Audit rule before migrating a repo to the public org: no plaintext secrets, no personal identifiers, and no host-specific private addressing.
 Age-encrypted blobs are fine in public repos by design.
