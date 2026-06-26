@@ -30,6 +30,8 @@ Iterative review template: `templates/plan-review-prompt.md`.
 
 Review prompts live in `allod/strategy/review-plans/`, not alongside dev plans.
 
+Archived dev plans live in `allod/strategy/archive/dev-plans/`, NOT in `allod/strategy/dev-plans/archive/`. The archive directory is at the `strategy/archive` level with subdirectories by content type.
+
 ### Standing Focus Areas
 
 These four lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
