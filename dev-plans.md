@@ -26,7 +26,7 @@ Every dev plan must include these sections:
 
 ## Plan Review
 
-Iterative review template: `templates/plan-review-prompt.md`.
+Iterative review template: `allod/memory/templates/plan-review-prompt.md`.
 
 Review prompts live in `allod/strategy/review-plans/`, not alongside dev plans.
 
