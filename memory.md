@@ -12,6 +12,10 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - `nix.md` - NixOS gotchas
 - `age.md` - age and agenix workflows
 
+## Memory File Hygiene
+- The memory entrypoint is lowercase `memory.md`; do not create `MEMORY.md` or other ad hoc root memory files.
+- Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
+
 ## PR Workflow
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
