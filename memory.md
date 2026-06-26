@@ -13,7 +13,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - `age.md` - age and agenix workflows
 
 ## Memory File Hygiene
-- The memory entrypoint is lowercase `memory.md`; do not create `MEMORY.md` or other ad hoc root memory files.
+- `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
 
 ## PR Workflow
