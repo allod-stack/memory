@@ -15,6 +15,7 @@
 - If the issue was missing when implementation starts, create it before opening PRs and add the issue URL or number back to the dev plan.
 - When closing a PR without merging, delete its remote branch unless there is a concrete reason to keep it: `forge pr close <number-or-url-or-branch> -d`.
 - Commit messages use plain text. Put longer human-facing tracking or discussion in Forge issues or PRs.
+- Never add AI attribution to commits or generated files. The strategy repo has a pre-commit hook that rejects Claude attribution in commit messages; treat that as project-wide policy.
 
 ## Forge CLI
 

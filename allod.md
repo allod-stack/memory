@@ -7,6 +7,8 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - Org: `forge.anarch.diy/allod` - public repos
 - Private or identity-bearing repos stay outside the public org.
 - Local path convention: `<workspace>/allod/<repo>`
+- Each immediate child under `<workspace>/allod/` is its own Git repo; do not treat `allod/` as a monorepo.
+- Archived strategy docs live under `allod/strategy/archive/<type>/`, for example `archive/dev-plans/`.
 
 ## Repo Inventory
 
