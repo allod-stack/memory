@@ -30,7 +30,7 @@ Iterative review template: `templates/plan-review-prompt.md`.
 
 Review prompts live in `allod/strategy/review-plans/`, not alongside dev plans.
 
-Archived dev plans live in `allod/strategy/archive/dev-plans/`, NOT in `allod/strategy/dev-plans/archive/`. The archive directory is at the `strategy/archive` level with subdirectories by content type.
+Archived dev plans live in `allod/strategy/archive/dev-plans/`.
 
 ### Standing Focus Areas
 
