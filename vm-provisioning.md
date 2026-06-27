@@ -13,7 +13,7 @@ Repos: `profiles` for per-VM NixOS configs, `vm` for shared NixOS modules, `nexu
 - Forge key secrets: the encrypted secrets repo, not `profiles/secrets/`
 - VM SSH match blocks: the encrypted home configuration, not nexus
 
-Nix system strings such as VM architecture belong in inventory data and `inventory.lib.supportedPlatforms`. Consumers must derive the target system from inventory or from the target NixOS configuration, for example `nixosConfigurations.<vm>.pkgs.stdenv.hostPlatform.system`; do not hardcode architecture strings in profiles, checks, scripts, or review plans.
+Architecture strings belong in inventory. Consumers must derive them; do not hardcode them in profiles, checks, scripts, or plans.
 
 ## Provisioning Gotchas
 
