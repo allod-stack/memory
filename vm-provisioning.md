@@ -21,7 +21,7 @@ Repos: `profiles` for per-VM NixOS configs, `vm` for shared NixOS modules, `nexu
 - **netrc is not git credentials** - see `nix.md` for the three-file netrc layout; `profiles/modules/netrc.nix` handles conversion.
 - **NIX_CONFIG for bootstrap** - `nix.conf` is a read-only store symlink; use `systemctl set-environment NIX_CONFIG="netrc-file = /etc/nix/netrc"` during bootstrap.
 - **SSH host key** - age-encrypted, injected by `nixos-anywhere`; pipe directly, never use command substitution because it strips the trailing newline.
-- **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets can be unavailable; guard with early exit before `mktemp` or secret access.
+- **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets or optional credentials can be unavailable. In NixOS activation snippets, use a conditional no-op for missing optional resources; do not `exit 0`, because snippets are concatenated into one activation script and that exits the whole activation before `/run/current-system` is linked.
 
 ## Privacy VMs
 

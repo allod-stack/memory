@@ -12,7 +12,7 @@ Every dev plan must include these sections:
 
 5. **Agent Gates** - Actions the agent cannot perform, such as creating repos, deploying, granting permissions, running host-only commands, or changing secrets. State what the human must do and what it blocks. Omit only if none apply.
 
-6. **Acceptance Tests** - Tests the agent can run locally before declaring the task complete. Must be concrete and executable.
+6. **Acceptance Tests** - Tests the agent can run locally before declaring the task complete. Must be concrete and executable. For NixOS, Home Manager, provisioning, systemd, or wrapper-script changes, include checks against generated lifecycle artifacts and expected absent-resource paths, not only source evaluation or happy-path builds.
 
 7. **Rollback Plan** - How to revert the change if verification fails.
 
@@ -32,7 +32,7 @@ Review prompts live in `allod/strategy/review-plans/`, not alongside dev plans.
 
 ### Standing Focus Areas
 
-These four lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
+These five lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
 
 Verify prereqs; replace resolved ones with implemented contracts.
 
@@ -40,6 +40,7 @@ Verify prereqs; replace resolved ones with implemented contracts.
 2. **Operational sequencing** - Can someone execute the plan cold without getting stuck?
 3. **Acceptance test coverage** - Do tests exercise every contract rule? Do all tests trace to a requirement?
 4. **Rollback fidelity** - Does the rollback plan undo what the implementation does, including partial states?
+5. **Generated lifecycle behavior** - Do generated activation scripts, systemd units, wrappers, provisioning phases, rebuild paths, and missing optional resources behave correctly?
 
 ### Agent Rotation
 
