@@ -13,6 +13,8 @@ Repos: `profiles` for per-VM NixOS configs, `vm` for shared NixOS modules, `nexu
 - Forge key secrets: the encrypted secrets repo, not `profiles/secrets/`
 - VM SSH match blocks: the encrypted home configuration, not nexus
 
+Nix system strings such as VM architecture belong in inventory data and `inventory.lib.supportedPlatforms`. Consumers must derive the target system from inventory or from the target NixOS configuration, for example `nixosConfigurations.<vm>.pkgs.stdenv.hostPlatform.system`; do not hardcode architecture strings in profiles, checks, scripts, or review plans.
+
 ## Provisioning Gotchas
 
 - **Host-side only** - provisioning is Nexus-only; dev VMs should not expose provisioning commands.

@@ -47,13 +47,15 @@ Add to flake.nix modules: `disko.nixosModules.disko` plus `./disk.nix`.
 configuration.nix must absorb what `hardware-configuration.nix` used to provide:
 
 ```nix
-{ config, lib, pkgs, modulesPath, ... }: {
+{ config, lib, pkgs, modulesPath, platform, ... }: {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
   boot.kernelModules = [ "kvm-intel" ];
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault platform;
 }
 ```
+
+For Allod VM configs, thread `platform` from inventory rather than hardcoding a Nix system string in profiles or checks.
 
 ## OpenSSH private key: never use `$()`
 
