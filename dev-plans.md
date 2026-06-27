@@ -23,6 +23,7 @@ Every dev plan must include these sections:
 - Reference the issue from every implementation PR.
 - For multi-repo or multi-PR work, use `Refs owner/repo#N` on earlier PRs and `Closes owner/repo#N` only on the final integration PR.
 - If the final PR changes during implementation, update the dev plan and PR bodies.
+- Leave archived strategy dev plans alone unless asked.
 
 ## Plan Review
 
