@@ -10,7 +10,7 @@
 - Unprotected repo plus PR requested: create or switch to `agent/<short-description>` from `master`, then use `allod change record` and `allod change submit`.
 - No external remote pushes unless the remote is explicitly allowed locally.
 - PR branches: add commits, do not force-push.
-- PR descriptions for code or generated-behavior changes must include `## Validation` with exact reviewer commands. Docs-only PRs do not need validation sections unless a command checks a real failure mode.
+- PR descriptions for code or generated-behavior changes should expose residual risk and validation signal for human triage. Prefer concise `## Risk` and `## Validation` sections when they add useful review signal; do not block PR creation solely over missing headings.
 - Do not post no-findings update-check comments. Comment on a PR only when there are findings, decisions, user-request context, or useful review signal.
 - Link every implementation PR to the tracking issue. For multi-repo or multi-PR work, use `Refs owner/repo#N` on earlier PRs and put `Closes owner/repo#N` only on the final integration PR so the issue closes after the whole chain lands.
 - If the issue was missing when implementation starts, create it before opening PRs and add the issue URL or number back to the dev plan.

@@ -23,7 +23,7 @@ Current state:
 
 ## Structural Conformance
 
-Before diving into focus areas, verify the plan includes all required sections from `dev-plans.md`: Tracking Issue, Goal, Scope, Interface Contracts, Agent Gates, Acceptance Tests, and Rollback Plan. Agent Gates may be omitted only if no actions require a human. If the work spans multiple PRs, verify the plan states which PR should carry the closing issue reference.
+Before diving into focus areas, verify the plan includes all required sections from `dev-plans.md`: Tracking Issue, Goal, Scope, Risk Assessment, Interface Contracts, Agent Gates, Acceptance Tests, and Rollback Plan. Agent Gates may be omitted only if no actions require a human. If the work spans multiple PRs, verify the plan states which PR should carry the closing issue reference and assigns residual risk per PR or milestone.
 
 ## Focus Areas
 
@@ -44,6 +44,7 @@ Do not re-open focus areas addressed in previous passes unless the current plan 
 - **Security matters, ceremony does not.** The privacy and security boundaries must be airtight. Everything else can be pragmatic.
 - **Solve problems as they come.** If the plan front-loads work for hypothetical future needs, flag it.
 - **Think operationally.** Consider what happens when someone executes this plan with incomplete context or in the wrong order.
+- **Calibrate residual risk.** The risk score is for human triage after validation passes. Challenge understated or overstated risk using blast radius, rollback fidelity, and validation evidence.
 - **Inspect generated lifecycle artifacts.** For NixOS, Home Manager, provisioning, systemd, or wrapper-script changes, do not stop at source evaluation. Inspect the generated activation scripts, units, wrappers, install/boot phases, and negative paths for missing optional secrets, credentials, files, or host state.
 
 The person implementing this is technically sharp. They do not need hand-holding; they need the sharp edges they missed.
@@ -60,6 +61,8 @@ Use `[BLOCKER]` only when following the plan literally is likely to:
 - require missing human input that cannot be inferred from the repo or memory.
 
 Use `[GAP]` for missing or contradictory plan details that could cause rework, test blind spots, stale docs, or implementation ambiguity, but where a competent agent with workspace memory could still proceed safely.
+
+Use `[GAP]` when the Risk Assessment is missing, materially understated, materially overstated, or unsupported by the acceptance tests and rollback plan. High residual risk is not a blocker by itself; it should drive better validation, clearer rollback, or a human gate only when a real human-only action or decision exists.
 
 Use `[SIMPLIFY]` for unnecessary scope, ceremony, or abstraction. Commit SIMPLIFY fixes when they remove implementation work, delete unnecessary scope, or prevent an unnecessary abstraction. Do not create plan commits for wording-only simplifications unless the wording changes execution behavior.
 

@@ -21,7 +21,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
 - When manually closing a PR, delete its remote branch with `forge pr close ... -d`.
 - After opening a PR, run or request a read-only review pass, comment findings on the PR, then implement fixes in a follow-up commit.
-- Docs-only PRs do not need validation sections unless a command checks a real failure mode. Do not post no-findings update-check comments.
+- PR bodies should expose residual risk and validation signal when useful for human triage. Do not block PR creation solely over missing headings. Do not post no-findings update-check comments.
 
 ## Git Workflow
 - Before starting work, run `work-diff` and then `pull-all`.

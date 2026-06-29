@@ -58,6 +58,6 @@ Session: `work-diff` -> `pull-all` -> `allod change begin` -> work -> `allod cha
 - `work-diff` - show uncommitted changes across all repos
 - `allod change begin -d <desc> <repo>` - create a protected-repo worktree and branch when required
 - `allod change record -m <msg> [-f <file>...]` - stage, commit, and push additively
-- `allod change submit -t <title> -F <body-file>` - create a PR; include `## Validation` for code or generated-behavior changes, not routine docs-only PRs
+- `allod change submit -t <title> -F <body-file>` - create a PR; prefer concise `## Risk` and `## Validation` sections for code or generated-behavior changes when they add useful review signal
 - `allod change cleanup <worktree>` - remove a clean merged worktree and local `agent/*` branch
 - `flake-status [input] [--check-upstream]` - inspect flake lock staleness before updates
