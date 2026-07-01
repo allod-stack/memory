@@ -47,7 +47,8 @@ For multi-PR plans, assign risk per PR or milestone. The score can change during
 
 Iterative review template: `allod/memory/templates/plan-review-prompt.md`.
 
-Review prompts live in `allod/strategy/review-plans/`, not alongside dev plans.
+Review prompts live in the same repository as the dev plan they review.
+See `allod.md` for `allod/strategy` subdirs.
 
 ### Standing Focus Areas
 

@@ -10,8 +10,8 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 
 ## Allod Directory Conventions
 
-- Archive files under `allod/strategy/archive/<type>/`.
 - Each `allod/*` directory is its own git repo.
+- `allod/strategy`: `dev-plans/` active plans; `review-prompts/` active review prompts; `brainstorm/` rough notes; `archive/{dev-plans,review-prompts,user-stories}/` old material.
 
 ## Repo Inventory
 
@@ -24,7 +24,7 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 | `nexus` | `allod/nexus` | Host machine NixOS config and provisioning scripts |
 | `inventory` | `allod/inventory` | Machine platform, type, hardware, and VM specs |
 | `secrets` | `allod/secrets` | Encrypted secrets and recipient metadata |
-| `strategy` | `allod/strategy` | Development plans and design notes. Archive: `strategy/archive/<type>/` |
+| `strategy` | `allod/strategy` | Development plans, review prompts, brainstorms, and archived strategy notes |
 
 Audit rule before migrating a repo to the public org: no plaintext secrets, no personal identifiers, and no host-specific private addressing.
 Age-encrypted blobs are fine in public repos by design.
