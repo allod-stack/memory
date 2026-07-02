@@ -92,7 +92,7 @@ As a final commit, update this prompt's Focus Areas section:
 
 The focus areas should always reflect the most productive targets for the next review pass, not a historical record of past ones.
 
-Include a plain-text findings summary in this commit's message. Include the count for each tag and a numbered entry for each finding with its tag, short title, one-sentence explanation, fixing commit hash, and issue link if one exists. Put a final `Model: <model>` footer at the bottom of the commit message. This is review-pass metadata, not authorship attribution.
+Include a plain-text findings summary in this commit's message. Include the count for each tag and a numbered entry for each finding with its tag, short title, one-sentence explanation, fixing commit hash, and issue link if one exists. Put a final `Model: <exact model>` footer at the bottom of the commit message (e.g., `Model: claude-opus-4-6`, `Model: gpt-5.5`). Use the exact model identifier, not the agent framework or product name. "Codex", "Claude Code", etc. are agent software, not models. This is review-pass metadata, not authorship attribution.
 
 Stop reviewing when a pass produces zero BLOCKERs, zero GAPs, and zero QUESTIONs. Remaining SIMPLIFYs can be resolved during implementation.
 
