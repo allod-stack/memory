@@ -66,3 +66,8 @@ Verify prereqs; replace resolved ones with implemented contracts.
 ### Agent Rotation
 
 Rotate agents between review passes to get different perspectives. Each agent has different blind spots; rotating broadens coverage. The focus areas section and commit history provide continuity so a fresh agent can pick up context without duplicating prior work.
+
+Track fix stability per model. In the review prompt's focus-area updates, record how each model's fixes held up: a fix that survived N later passes is stable; a fix that needed immediate re-fixing in the next pass is not. Use that record to steer the rotation:
+
+- Prefer the model with the best fix-stability record for verification passes (the scoped diff review of a structural fix).
+- Drop a model from the rotation after repeated same-feature regressions.

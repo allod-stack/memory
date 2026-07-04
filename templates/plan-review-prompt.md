@@ -39,7 +39,7 @@ Do not re-open focus areas addressed in previous passes unless the current plan 
 
 - **Forward momentum is king.** Do not nitpick style or suggest nice-to-haves. Only flag things that will actually cause problems.
 - **No backwards compatibility required.** This is pre-alpha. We can break any interface.
-- **Do not overengineer.** If the plan introduces abstraction that is not needed yet, call it out. Three similar lines beat a premature helper function.
+- **Do not overengineer.** If the plan introduces abstraction that is not needed yet, call it out. Three similar lines beat a premature helper function. Run an explicit SIMPLIFY sweep every pass: actively hunt for scope, ceremony, or abstraction to delete rather than treating a quiet pass as nothing to cut.
 - **Solo project, one human.** No team coordination overhead. No release process. No migration guides for other consumers.
 - **Security matters, ceremony does not.** The privacy and security boundaries must be airtight. Everything else can be pragmatic.
 - **Solve problems as they come.** If the plan front-loads work for hypothetical future needs, flag it.
@@ -92,8 +92,21 @@ As a final commit, update this prompt's Focus Areas section:
 
 The focus areas should always reflect the most productive targets for the next review pass, not a historical record of past ones.
 
-Include a plain-text findings summary in this commit's message. Include the count for each tag and a numbered entry for each finding with its tag, short title, one-sentence explanation, fixing commit hash, and issue link if one exists. Put a final `Model: <exact model>` footer at the bottom of the commit message (e.g., `Model: claude-opus-4-6`, `Model: gpt-5.5`). Use the exact model identifier, not the agent framework or product name. "Codex", "Claude Code", etc. are agent software, not models. This is review-pass metadata, not authorship attribution.
+Include a plain-text findings summary in this commit's message:
 
-Stop reviewing when a pass produces zero BLOCKERs, zero GAPs, and zero QUESTIONs. Remaining SIMPLIFYs can be resolved during implementation.
+- Count only findings new to this pass, by tag. Carried-over unresolved items are not findings; move them to Focus Areas rather than re-counting them, so the per-pass counts track a real severity trend instead of inflating it.
+- Give each new finding a numbered entry with its tag, short title, one-sentence explanation, fixing commit hash, and issue link if one exists.
+- Classify each finding's origin: an original-plan defect, or introduced by an earlier review pass (name the commit that introduced it). Origin is what makes the convergence heuristic below and any trend read possible.
+- State what the SIMPLIFY sweep considered for deletion this pass, even when nothing was cut. Two or more consecutive passes with zero SIMPLIFY on a growing plan is a smell to call out, not a clean bill: pure accretion is what breeds internal contradictions.
+- Put a final `Model: <exact model>` footer at the bottom (e.g., `Model: claude-opus-4-6`, `Model: gpt-5.5`). Use the exact model identifier, not the agent framework or product name. "Codex", "Claude Code", etc. are agent software, not models. This is review-pass metadata, not authorship attribution.
+
+After any pass that commits a structural or design change (a blocker-level fix), the next pass is a scoped diff review of that change by a different model than the one that wrote it, not a full re-review. Structural fixes are where new blockers enter, and the author model tends not to catch its own gaps. Record how the fix held up in the Focus Areas update so its stability is traceable (see the fix-stability note under Agent Rotation in `dev-plans.md`).
+
+Stop the plan-text review when either condition holds:
+
+- Review-introduced findings outnumber original-plan findings for two consecutive passes.
+- Two consecutive passes produce no BLOCKER and no original-plan GAP.
+
+At that point the plan text has converged; hand any remaining focus areas to implementation review, and resolve remaining SIMPLIFYs during implementation. The old zero-BLOCKER/zero-GAP/zero-QUESTION rule could grind a token budget to nothing without terminating, because each accretive fix tended to seed the next finding.
 
 After the final commit, push to the remote.
