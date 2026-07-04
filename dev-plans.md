@@ -54,7 +54,7 @@ See `allod.md` for `allod/strategy` subdirs.
 
 These six lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
 
-Verify prereqs; replace resolved ones with implemented contracts.
+Verify prereqs, and delete each one once met: replace an interface prereq with the contract it now provides, and drop a satisfied sequencing gate (e.g. "lands after branch X merges") outright. Do not keep met preconditions as historical notes — a plan or review prompt is not a log of legacy implementations.
 
 1. **Internal consistency** - Do Interface Contracts, PR descriptions, and Acceptance Tests agree?
 2. **Operational sequencing** - Can someone execute the plan cold without getting stuck?
