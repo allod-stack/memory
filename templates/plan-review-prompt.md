@@ -74,7 +74,13 @@ Do not classify duplicated workspace policy, phrasing improvements, or reminders
 
 ## Deliverable
 
-The deliverable is commits to the plan file, not a report. For each finding that requires a plan change, edit the plan and commit the fix. Group changes into logical, self-contained commits.
+The deliverable is not a report. Every review pass ends with:
+
+1. Plan-file commits for findings that require plan changes, or an explicit no-findings result.
+2. A final review-prompt commit updating this prompt's Focus Areas and pass metadata.
+3. A push to the remote.
+
+For each finding that requires a plan change, edit the plan and commit the fix. Group changes into logical, self-contained commits.
 
 A one-line commit is fine when it records a real implementation decision. Fold or skip commits that only rephrase already-correct guidance.
 
@@ -111,4 +117,10 @@ Stop the plan-text review when either condition holds:
 
 At that point the plan text has converged; hand any remaining focus areas to implementation review, and resolve remaining SIMPLIFYs during implementation. The old zero-BLOCKER/zero-GAP/zero-QUESTION rule could grind a token budget to nothing without terminating, because each accretive fix tended to seed the next finding.
 
-After the final commit, push to the remote.
+## Before Final Response
+
+- Plan fixes are committed, or the pass explicitly found no plan changes.
+- This review prompt's Focus Areas are updated and committed.
+- The final review-prompt commit message includes the findings summary and `Model:` footer.
+- The repo is pushed to the remote.
+- `git status` is clean.
