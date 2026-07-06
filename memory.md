@@ -35,9 +35,3 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - Host-side commands require a human at the terminal.
 - Host change workflow: agent edits, commits, and pushes; human pulls and runs host commands manually.
 - Host-only commands include agenix re-encryption, SSH key generation, bootstrap scripts, VM rebuilds, and host-side VM repair.
-
-## Subagent Usage
-- Subagents are allowed when the user explicitly authorizes delegation or parallel agent work. Keep delegation within the requested scope.
-- Do not launch subagents and do the same work directly; pick one owner for each task.
-- Use direct reads when the important files are already known.
-- Use subagents for broad exploration of unknown areas or independent review passes.
