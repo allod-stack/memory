@@ -16,18 +16,20 @@ Key repos in play:
 - `repo-a` - [what it owns]
 - `repo-b` - [what it owns]
 
-Current state:
+Current state (verify against the tree before trusting it; line numbers and file layout drift):
 - [Relevant architectural facts the reviewer needs to orient]
 - [Recent changes that affect the plan]
 - [Execution constraints, e.g., "agents run in dev VMs only"]
 
 ## Structural Conformance
 
-Before diving into focus areas, verify the plan includes all required sections from `dev-plans.md`: Tracking Issue, Goal, Scope, Risk Assessment, Interface Contracts, Agent Gates, Acceptance Tests, and Rollback Plan. Agent Gates may be omitted only if no actions require a human. If the work spans multiple PRs, verify the plan states which PR should carry the closing issue reference and assigns residual risk per PR or milestone.
+Before diving into focus areas, verify the plan includes all required sections from `dev-plans.md`: Tracking Issue, Goal, Scope, Risk Assessment, Interface Contracts, Agent Gates, Acceptance Tests, and Rollback Plan. Agent Gates may be omitted only if no actions require a human. If the work spans multiple PRs, verify it assigns residual risk per PR or milestone. If the plan closes its tracking issue, verify which PR carries the closing keyword; a prerequisite plan whose PRs intentionally carry no closing keyword is conformant when it says so.
 
 ## Focus Areas
 
 Concentrate your review on these areas where the plan is most likely to have problems. These are lenses, not checklists - follow the thread wherever it leads.
+
+The six standing lenses in `dev-plans.md` (internal consistency, operational sequencing, risk calibration, acceptance-test coverage, rollback fidelity, generated lifecycle behavior) apply as defaults on top of the plan-specific areas below.
 
 1. **[Short name].** [Describe the concern. Explain why it is risky. Pose a direct question about what could go wrong or what is missing.]
 
@@ -56,7 +58,7 @@ Use `[BLOCKER]` only when following the plan literally is likely to:
 - perform a destructive or unsafe operation;
 - fail before implementation can complete;
 - leave the resulting system nonfunctional;
-- break first boot, activation, provisioning, rebuild, or rollback lifecycle behavior;
+- break first boot, activation, provisioning, rebuild, rotation, or rollback lifecycle behavior;
 - violate a security or privacy boundary; or
 - require missing human input that cannot be inferred from the repo or memory.
 
@@ -80,7 +82,7 @@ A one-line commit is fine when it records a real implementation decision. Fold o
 
 Give your review as a numbered list of findings, each tagged as one of: `[BLOCKER]`, `[GAP]`, `[SIMPLIFY]`, `[QUESTION]`. Start with blockers, end with questions. Be blunt.
 
-If a design decision is sound, say so briefly. QUESTIONs must be resolved in the plan, not left as open items. If the answer is clear from the codebase, update the plan and commit. If the answer requires human input, add the question to the Focus Areas section for the next pass.
+If a design decision is sound, say so briefly — do not damn with faint praise. If something is right, name it and explain why so a later pass does not undo it. QUESTIONs must be resolved in the plan, not left as open items. If the answer is clear from the codebase, update the plan and commit. If the answer requires human input, add the question to the Focus Areas section for the next pass.
 
 ## After Each Pass
 
