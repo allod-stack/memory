@@ -28,7 +28,7 @@ Risk levels:
 - **R1 Low** - Refactor-only or very localized behavior; caller-level tests or equivalent checks give high confidence; rollback is a straight revert; no secrets, host-only commands, provisioning, activation, persistent state, or cross-repo ordering.
 - **R2 Medium** - Localized behavior change or refactor with some integration uncertainty; main paths are tested; rollback is straightforward.
 - **R3 High** - Cross-repo interfaces or sequencing, generated lifecycle behavior, systemd units, wrappers, provisioning, auth, secrets, privacy/security boundaries, persistent state, dependency/toolchain changes, or broad refactors without caller-level coverage.
-- **R4 Critical** - Hard-to-rollback operations where the worst credible failure can affect unique, hard-to-reconstruct, deployed, security-sensitive, or infrastructure state; first-boot/provisioning paths that can strand a machine; security/privacy boundary changes where a mistake could expose private material; irreversible data/schema changes; or validation that depends on human-only infrastructure.
+- **R4 Critical** - Hard-to-rollback operations where the worst credible failure can broadly, implicitly, or opaquely affect unique, hard-to-reconstruct, deployed, security-sensitive, or infrastructure state; first-boot/provisioning paths that can strand a machine; security/privacy boundary changes where a mistake could expose private material; irreversible data/schema changes; or validation that depends on human-only infrastructure.
 
 Risk signals raise scrutiny; they do not automatically block implementation. Add an Agent Gate only when the agent cannot perform the action, lacks the needed environment, or the human must make a real decision. High residual risk should usually lead to clearer acceptance tests, rollback steps, generated-artifact inspection, or a review pass before it leads to ceremony.
 
@@ -38,9 +38,10 @@ Calibrate risk by walking through the worst credible failed run after planned va
 - **Blast radius** - Can the failure affect one file, one repo, many local repos, a host, a service, remote state, or other users?
 - **Recoverability** - Is recovery a straight revert, a rerun, a reclone, manual repair, backup restore, or impossible from available sources?
 - **Propagation** - Is the failure contained in a local workspace, or can it cross into remotes, provisioning, auth, secrets, service availability, or privacy boundaries?
+- **Intent and detectability** - Is the risky action explicit and clearly named, or implicit in a default path? Can the operator see what will be affected before or as it happens?
 - **Validation limits** - Can the agent exercise the risky path in fixtures or generated artifacts, or does confidence depend on human-only infrastructure?
 
-Choose the lowest level whose description still matches that residual worst case. Destructive commands, broad scope, or scary implementation details raise scrutiny, but the score comes from blast radius, recoverability, and validation limits rather than from command names alone.
+Choose the lowest level whose description still matches that residual worst case. Destructive commands, broad scope, or scary implementation details raise scrutiny, but the score comes from blast radius, recoverability, containment, operator intent, and validation limits rather than from command names alone. Unique local user-authored state is a real recoverability concern, but it is not automatically R4 when the risky operation is explicit, local-only, testable in fixtures, and cannot affect remotes, secrets, provisioning, deployed services, or shared infrastructure. Raise to R4 when loss of unique or hard-to-reconstruct state is broad, implicit, hard to detect, crosses a security/infrastructure/shared-state boundary, or lacks a practical rollback or reconstruction path.
 
 For multi-PR plans, assign risk per PR or milestone. The score can change during implementation if the diff, validation, or rollback story changes.
 
