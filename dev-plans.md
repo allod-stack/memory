@@ -26,13 +26,21 @@ Risk levels:
 
 - **R0 Docs/metadata** - No runtime behavior, generated behavior, operational behavior, secrets, or state changes.
 - **R1 Low** - Refactor-only or very localized behavior; caller-level tests or equivalent checks give high confidence; rollback is a straight revert; no secrets, host-only commands, provisioning, activation, persistent state, or cross-repo ordering.
-- **R2 Medium** - Localized behavior change or refactor with some integration uncertainty; main paths are tested; rollback is straightforward. Explicit destructive operations limited to remote-backed local Git checkouts are usually R2 after fixture coverage and clear warnings, because the worst practical recovery path is normally recloning or using manual Git repair.
+- **R2 Medium** - Localized behavior change or refactor with some integration uncertainty; main paths are tested; rollback is straightforward.
 - **R3 High** - Cross-repo interfaces or sequencing, generated lifecycle behavior, systemd units, wrappers, provisioning, auth, secrets, privacy/security boundaries, persistent state, dependency/toolchain changes, or broad refactors without caller-level coverage.
-- **R4 Critical** - Destructive or hard-to-rollback operations against unique, hard-to-reconstruct, deployed, security-sensitive, or infrastructure state; first-boot/provisioning paths that can strand a machine; security/privacy boundary changes where a mistake could expose private material; irreversible data/schema changes; or validation that depends on human-only infrastructure.
+- **R4 Critical** - Hard-to-rollback operations where the worst credible failure can affect unique, hard-to-reconstruct, deployed, security-sensitive, or infrastructure state; first-boot/provisioning paths that can strand a machine; security/privacy boundary changes where a mistake could expose private material; irreversible data/schema changes; or validation that depends on human-only infrastructure.
 
 Risk signals raise scrutiny; they do not automatically block implementation. Add an Agent Gate only when the agent cannot perform the action, lacks the needed environment, or the human must make a real decision. High residual risk should usually lead to clearer acceptance tests, rollback steps, generated-artifact inspection, or a review pass before it leads to ceremony.
 
-Destructive behavior is not automatically R4. Score by blast radius, recoverability, and whether the affected state is unique. A tool that can reset or clean disposable local checkouts is lower risk than a change that can destroy secrets, provisioning state, deployed services, databases, remote repositories, or other state that cannot be reconstructed by recloning or rerunning a command.
+Calibrate risk by walking through the worst credible failed run after planned validation passes:
+
+- **Affected state** - Is the state generated, disposable, remote-backed, user-authored, secret, deployed, shared, or unique?
+- **Blast radius** - Can the failure affect one file, one repo, many local repos, a host, a service, remote state, or other users?
+- **Recoverability** - Is recovery a straight revert, a rerun, a reclone, manual repair, backup restore, or impossible from available sources?
+- **Propagation** - Is the failure contained in a local workspace, or can it cross into remotes, provisioning, auth, secrets, service availability, or privacy boundaries?
+- **Validation limits** - Can the agent exercise the risky path in fixtures or generated artifacts, or does confidence depend on human-only infrastructure?
+
+Choose the lowest level whose description still matches that residual worst case. Destructive commands, broad scope, or scary implementation details raise scrutiny, but the score comes from blast radius, recoverability, and validation limits rather than from command names alone.
 
 For multi-PR plans, assign risk per PR or milestone. The score can change during implementation if the diff, validation, or rollback story changes.
 
