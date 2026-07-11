@@ -7,6 +7,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - `git-workflow.md` - branching strategy, Forge CLI usage, issue and PR body formatting
 - `dev-plans.md` - development plan requirements and review process
 - `security-practices.md` - token handling and authentication safety
+- `agent-behavior.md` - scope discipline and interruption handling
 - `vm-tooling.md` - VM package policy
 - `vm-provisioning.md` - provisioning stack, source-of-truth pointers, and gotchas
 - `nix.md` - NixOS gotchas
