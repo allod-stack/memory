@@ -1,6 +1,12 @@
 # Git Workflow
 
 - Before starting work: `work-diff` -> `pull-all`.
+- When a user asks to read or rely on a specific Allod file, verify that file's
+  repo is current before deciding the file is missing or stale. If `pull-all`
+  fails for that repo, inspect it directly: when the worktree is clean and the
+  current branch has a gone upstream, switch to the default branch and
+  fast-forward pull; otherwise read the requested file from `origin/HEAD` or
+  state the freshness problem explicitly.
 - Use `allod change` for change work instead of manual git and Forge mutation steps:
   - Start protected repo work with `path=$(allod change begin -d <short-description> <repo-path>)`, then work in `$path`.
   - Commit and push with `allod change record -m <message> [-f <file>...]`.
