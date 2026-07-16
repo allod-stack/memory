@@ -22,6 +22,7 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 | `profiles` | `allod/profiles` | NixOS VM configs |
 | `vm` | `allod/vm` | VM shared modules and bootstrap |
 | `nexus` | `allod/nexus` | Host machine NixOS config and provisioning scripts |
+| `deploy` | `allod/deploy` | Deploy-flake composition consumed by nexus provisioning via `DEPLOY_FLAKE` (pins `inventory`/`secrets`, names VM targets) |
 | `inventory` | `allod/inventory` | Machine platform, type, hardware, and VM specs |
 | `secrets` | `allod/secrets` | Encrypted secrets and recipient metadata |
 | `strategy` | `allod/strategy` | Development plans, review prompts, brainstorms, and archived strategy notes |
