@@ -1,26 +1,26 @@
 # VM Provisioning Stack
 
-Repos: `profiles` for per-VM NixOS configs, `vm` for shared NixOS modules, `nexus` for provisioning scripts, and `inventory` for machine inventory.
+Repos: `archetypes` for the VM framework (archetype merge, builders, shared modules), `profiles` for the example machine profile definitions it composes, `vm` for shared NixOS modules, `nexus` for provisioning scripts, and `inventory` for machine inventory.
 
 ## Source of Truth
 
 - Machine platform, type, and hardware: `inventory/flake.nix`
 - VM IPs, repos, and Forge keys: `inventory/scripts/vm-specs.json`, derived from the Nix attrset
 - Nexus hardware module: `inventory/hosts/nexus/hardware.nix`
-- VM NixOS configs: `profiles/hosts/<type>/<vm>/`
+- VM profile definitions (per-machine modules): `profiles/hosts/<archetype>/<name>/`; composed by the `archetypes` framework
 - Provisioning scripts: `nexus/scripts/`; deploy through the normal flake update and rebuild path
 - VM usernames: identity configuration, not `vm-specs.json`
 - Forge key secrets: the encrypted secrets repo, not `profiles/secrets/`
 - VM SSH match blocks: the encrypted home configuration, not nexus
 
-Architecture strings belong in inventory. Consumers must derive them; do not hardcode them in profiles, checks, scripts, or plans.
+Architecture strings belong in inventory. Consumers must derive them; do not hardcode them in `archetypes`, `profiles`, checks, scripts, or plans.
 
 ## Provisioning Gotchas
 
 - **Host-side only** - provisioning is Nexus-only; dev VMs should not expose provisioning commands.
 - **disko replaces hardware-configuration.nix** - disk layout is in `hosts/<vm>/disk.nix`; avoid per-machine UUIDs.
 - **agenix secrets in flake.nix inline modules, not configuration.nix** - `nixos-install` runs without `--flake` context.
-- **netrc is not git credentials** - see `nix.md` for the three-file netrc layout; `profiles/modules/netrc.nix` handles conversion.
+- **netrc is not git credentials** - see `nix.md` for the three-file netrc layout; `archetypes/modules/netrc.nix` handles conversion.
 - **NIX_CONFIG for bootstrap** - `nix.conf` is a read-only store symlink; use `systemctl set-environment NIX_CONFIG="netrc-file = /etc/nix/netrc"` during bootstrap.
 - **SSH host key** - age-encrypted, injected by `nixos-anywhere`; pipe directly, never use command substitution because it strips the trailing newline.
 - **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets or optional credentials can be unavailable. In NixOS activation snippets, use a conditional no-op for missing optional resources; do not `exit 0`, because snippets are concatenated into one activation script and that exits the whole activation before `/run/current-system` is linked.

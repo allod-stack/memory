@@ -71,7 +71,7 @@ plan and review-prompt scaffolds under `templates/` live here.
 
 - `strategy` — active dev plans, review prompts, brainstorms, and archives; consumes the `templates/` scaffolds here.
 - `tools` — the `allod`, `forge`, and workspace CLIs the workflows here invoke.
-- `vm`, `profiles`, `nexus`, `inventory`, `secrets` — the framework and consumer repos whose conventions the topic files document.
+- `vm`, `archetypes`, `profiles`, `nexus`, `inventory`, `secrets` — the framework and consumer repos whose conventions the topic files document.
 
 ## Cloning
 

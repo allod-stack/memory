@@ -19,10 +19,11 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 |------|------------|-------|
 | `allod/tools` | `allod/tools` | General-purpose CLI tools |
 | `allod/memory` | `allod/memory` | Public Allod workflow memory |
-| `profiles` | `allod/profiles` | NixOS VM configs |
+| `archetypes` | `allod/archetypes` | VM framework: archetype merge, builders, shared modules, `vmFacts`, checks; exports `composeProfileDefinitions`/`composedLayerCheck` (renamed from `allod/profiles`) |
+| `profiles` | `allod/profiles` | Example machine profile definitions consumed via the archetypes `profiles` input; fresh-history repo with no `secrets`/`inventory` inputs |
 | `vm` | `allod/vm` | VM shared modules and bootstrap |
 | `nexus` | `allod/nexus` | Host machine NixOS config and provisioning scripts |
-| `deploy` | `allod/deploy` | Deploy-flake composition consumed by nexus provisioning via `DEPLOY_FLAKE` (pins `inventory`/`secrets`, names VM targets) |
+| `deploy` | `allod/deploy` | Deploy-flake composition root consumed by nexus provisioning via `DEPLOY_FLAKE`; pins `archetypes` plus the `profiles`/`secrets`/`inventory` data repos and redirects the framework's data inputs via `follows`; carries the composed-layer canary |
 | `inventory` | `allod/inventory` | Machine platform, type, hardware, and VM specs |
 | `secrets` | `allod/secrets` | Encrypted secrets and recipient metadata |
 | `strategy` | `allod/strategy` | Development plans, review prompts, brainstorms, and archived strategy notes |
