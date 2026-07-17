@@ -37,6 +37,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 
 ## Execution Architecture
 - Agents run inside dev VMs.
+- An agent's VM name is its hostname (`hostname`); use it for self-references like the `allod patch` source host.
 - Host-side commands require a human at the terminal.
 - Host change workflow: agent edits, commits, and pushes; human pulls and runs host commands manually.
 - Host-only commands include agenix re-encryption, SSH key generation, bootstrap scripts, VM rebuilds, and host-side VM repair.
