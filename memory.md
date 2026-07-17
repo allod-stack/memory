@@ -18,6 +18,8 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 ## Memory File Hygiene
 - `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
+- Record state, not a changelog. Memory = current state of the world + decisions/gotchas that constrain future work. Git and the forge already log every merge/close — never mirror them. Drop "PR #N did X" narration; keep only its durable residue (a new convention, gotcha, or current fact) or nothing.
+- Retire landed work. In-flight pointers are fine while live; when the work an entry tracks goes terminal (merged/closed/done), the edit noting that outcome instead deletes the entry or compresses it to its one durable fact. On every memory edit, sweep the section you touch for already-landed entries.
 
 ## PR Workflow
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
