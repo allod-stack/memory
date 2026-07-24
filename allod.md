@@ -27,6 +27,7 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 | `inventory` | `allod/inventory` | Machine platform, type, hardware, and VM specs |
 | `secrets` | `allod/secrets` | Encrypted secrets and recipient metadata |
 | `strategy` | `allod/strategy` | Development plans, review prompts, brainstorms, and archived strategy notes |
+| `.profile` | `allod/.profile` | Forgejo org-profile repo; its `README.md` is the public "About Allod / Repos at a glance" page — refresh when repos are added or renamed |
 
 Audit rule before migrating a repo to the public org: no plaintext secrets, no personal identifiers, and no host-specific private addressing.
 Age-encrypted blobs are fine in public repos by design.
