@@ -24,6 +24,15 @@ Architecture strings belong in inventory. Consumers must derive them; do not har
 - **NIX_CONFIG for bootstrap** - `nix.conf` is a read-only store symlink; use `systemctl set-environment NIX_CONFIG="netrc-file = /etc/nix/netrc"` during bootstrap.
 - **SSH host key** - age-encrypted, injected by `nixos-anywhere`; pipe directly, never use command substitution because it strips the trailing newline.
 - **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets or optional credentials can be unavailable. In NixOS activation snippets, use a conditional no-op for missing optional resources; do not `exit 0`, because snippets are concatenated into one activation script and that exits the whole activation before `/run/current-system` is linked.
+- **Host-key rotation does not re-key the installer ISO** - rotating the host key re-keys agenix secrets, VM `authorized_keys`, and the forge, but the installer configuration bakes the host public keys into the installer root and provisioning SSHes the installer as root with the host key. Until the ISO is rebuilt into the ISO directory, provisioning fails at `nixos-anywhere` with `Permission denied (publickey)`. Tracked as `allod/nexus` issues #8 (re-key the ISO on rotation) and #9 (rotation blast-radius verification).
+
+## Framework Check Gotchas
+
+`archetypes` `checks.<system>.pi-integration` hard-codes public memory checkout aliases instead of deriving them from the composed `profile.memoryCheckouts`, so a fork that re-exports the framework checks may have to filter out that one check until `allod/archetypes` issue #11 lands.
+
+## Checkout Paths Are Load-Bearing
+
+The workspace guardrails resolve a repo by its `$HOME`-relative checkout path: `protected-refs-policy` and `allod change` look the repo up in `protected-branches` by that key, and a lookup miss is treated as "not protected". So a repo checked out anywhere other than its registry path silently loses its rails — commits and pushes to a protected branch draw no refusal and no hook block. Keep checkouts at the exact registry path, and treat a non-canonical layout as a break in the guardrail rather than a cosmetic difference. Making the near-miss fail loud instead of open is tracked as `allod/tools` issue #112.
 
 ## Privacy VMs
 

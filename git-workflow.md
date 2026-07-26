@@ -21,6 +21,14 @@
 - When closing a PR without merging, delete its remote branch unless there is a concrete reason to keep it: `forge pr close <number-or-url-or-branch> -d`.
 - Commit messages use plain text. Put longer human-facing tracking or discussion in Forge issues or PRs.
 
+## Commit Messages
+
+The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects three things, so write around them rather than discovering them at commit time:
+
+- A word-bounded `close[sd]?`, `fix(e[sd])?`, or `resolve[sd]?` anywhere before a `#<digit>` on the same line. Innocent prose trips this too, e.g. "the resolved target … owner/repo#56". Use `Refs`, `Repair commit: <hash>`, or `Amended in <hash>`, or keep the word and the issue reference on separate lines. Close issues through PR bodies or manually. `fixture` and `prefix` are fine — the match is word-bounded.
+- Agent attribution trailers (`Co-Authored-By: Claude` and friends).
+- An inexact model footer. Plan-review commits use the exact model slug, e.g. `Model: gpt-5.5`; check the agent's config or ask rather than guessing.
+
 ## Forge CLI
 
 - Prefer `allod change submit` for PR creation.
@@ -29,4 +37,5 @@
 - Close abandoned PRs with branch cleanup: `forge pr close <target> -d`
 - All `forge` content commands accept `-b` or `--body` and `-F` or `--body-file`; use `--body-file -` for stdin.
 - `--body` does not interpret `\n`; for multiline Markdown, pipe real lines to `--body-file -` or pass a file.
+- `forge pr find-by-head <branch>` is broken: it reports an open PR number regardless of the branch queried. So `allod change submit` dies with "PR #N already exists" for a second or stacked PR whenever any other PR is already open in that repo. Work around it with `forge pr create -t <title> -H <branch> -B <base> -F <body-file>` and add any `Depends on: #N` line to the body yourself.
 - Issue and PR bodies should use prose as single long lines; only break at paragraph boundaries, list items, and code blocks.
