@@ -16,6 +16,8 @@ Read user-provided paths and names literally. A leading dot (e.g. `allod/.profil
 
 Do not assume every machine in the fleet is running. VMs are disposable and started on demand, so a machine being unreachable is normal and not evidence that anything is broken.
 
+Several agents may run in one VM at once; that is a supported configuration, not an accident. Treat the workspace as shared: another agent may hold a checkout, be mid-change in a repo you are only reading, or be working the same issue you just picked. A dirty tree or an unexpected branch is not necessarily yours. When you find another agent's work in progress, leave it alone and pick different work rather than reconciling on its behalf.
+
 ## Crossing the Public/Private Boundary
 
 An agent holding private material cannot write public org repos: pushes are refused server-side, and that is the boundary working, not a misconfiguration to route around. Do not look for another transport, and do not open the change from a fork.

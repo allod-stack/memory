@@ -11,7 +11,7 @@
   - Open PRs with `allod change submit -t <title> -F <body-file>`.
   - Remove merged worktrees with `allod change cleanup <worktree-path>`.
 - `allod change begin` reads `~/.config/git/protected-branches`; protected repos get temporary worktrees and `agent/<description>` branches.
-- Unprotected repo plus PR requested: create or switch to `agent/<short-description>` from `master`, then use `allod change record` and `allod change submit`.
+- Branch work always happens in a worktree, never by switching branches in a shared checkout — see Worktrees and Concurrent Agents.
 - No external remote pushes unless the remote is explicitly allowed locally.
 - PR branches: add commits, do not force-push.
 - PR descriptions for code or generated-behavior changes should expose residual risk and validation signal for human triage. Prefer concise `## Risk` and `## Validation` sections when they add useful review signal; do not block PR creation solely over missing headings.
@@ -20,6 +20,15 @@
 - If the issue was missing when implementation starts, create it before opening PRs and add the issue URL or number back to the dev plan.
 - When closing a PR without merging, delete its remote branch unless there is a concrete reason to keep it: `forge pr close <number-or-url-or-branch> -d`.
 - Commit messages use plain text. Put longer human-facing tracking or discussion in Forge issues or PRs.
+
+## Worktrees and Concurrent Agents
+
+Several agents may share one workspace, so a shared checkout is not yours alone. Two agents branching off the same commit rewrite no files, so git raises no objection when the second one moves HEAD out from under the first — the collision is silent, and neither agent notices until a write lands somewhere it did not expect.
+
+- Never `git switch -c agent/<description>` in a shared checkout. `allod change begin` creates a worktree only for repos listed in `protected-branches`; for any other repo it hands the shared path straight back, so create the worktree yourself with `git -C <repo> worktree add ~/changes/<description> -b agent/<description> origin/<default-branch>` and run `allod change record` and `allod change submit` from inside it. Unconditional isolation is tracked as `allod/tools` issue #116.
+- Committing directly to a repo's default branch stays in place. That is the low-friction memory and planning-doc flow, and git cannot isolate it anyway: it refuses to check out one branch in two worktrees (`fatal: '<branch>' is already used by worktree at <path>`). Its collision safety is the push rejection — resolve with `git pull --rebase` and push again.
+- Name your files when recording in a shared checkout. `allod change record` stages `git add -u` by default, which picks up every tracked modification in the tree including another agent's. Untracked files are skipped, so new files cannot ride along. Tracked as `allod/tools` issue #118.
+- Do not rely on the git hooks inside a worktree. `protected-refs-policy` resolves the repo by its `$HOME`-relative path, which never matches from a linked worktree, so the branch-protection and signing guards are silent there. `allod change record` still performs its own check. Tracked as `allod/tools` issue #112.
 
 ## Commit Messages
 
