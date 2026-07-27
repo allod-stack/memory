@@ -1,6 +1,6 @@
 # Agent Behavior
 
-Check for a project tool before falling back to raw git, ssh, or shell. The stack ships tools for its recurring workflows — `allod change`, `allod patch`, `forge`, `pull-all`, `work-diff`, `flake-status` — and `allod --help` plus `allod/tools/docs/` list them. Handing the human a manual command sequence for something a tool already does is a defect, not a convenience.
+Check for a project tool before falling back to raw git, ssh, or shell: `allod change`, `allod patch`, `forge`, `pull-all`, `work-diff`, `flake-status`, with `allod --help` and `allod/tools/docs/` listing the rest. Handing the human a manual command sequence for something a tool already does is a defect.
 
 ## Scope Discipline
 
@@ -18,10 +18,10 @@ Read user-provided paths and names literally. A leading dot (e.g. `allod/.profil
 
 Do not assume every machine is running. VMs are disposable and started on demand; unreachable is normal.
 
-Several agents may run in one VM — supported, not accidental. The workspace is shared, so a dirty tree or an unexpected branch may be another agent's. Leave work in progress alone and pick something else.
+Several agents may run in one VM — supported, not accidental. A dirty tree or unexpected branch may be another agent's; leave work in progress alone and pick something else.
 
 ## Crossing the Public/Private Boundary
 
 An agent holding private material cannot write public org repos; pushes are refused server-side. That is the boundary working — do not look for another transport or open the change from a fork.
 
-Hand off a public code change as a real commit on an `agent/<description>` branch in the public repo's own checkout, left unpushed and with a clean worktree. The relay is `allod patch receive <vm>:<source-repo> <dest-repo> --push`, run by the human, where `<vm>` is your own hostname — hand over that one command, never a sequence of git commands. Never embed the change as a patch in a notes or plan document; only sanitized issue and plan prose belongs there. Prepare it in the public checkout — a fork drifts, and a change built against the fork may not apply.
+Hand off a public code change as a real commit on an `agent/<description>` branch in the public repo's own checkout, left unpushed with a clean worktree. Give the human one command — `allod patch receive <vm>:<source-repo> <dest-repo> --push`, where `<vm>` is your hostname — never a sequence of git commands. Never embed the change as a patch in a notes or plan document; only sanitized issue and plan prose belongs there. Prepare it in the public checkout: a fork drifts and the diff may not apply.

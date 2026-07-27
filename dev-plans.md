@@ -57,9 +57,9 @@ For multi-PR plans, assign risk per PR or milestone. The score can change during
 
 ## Plan Storage
 
-A plan lives in the repository whose work it describes, so push rights follow the code's public/private boundary (see `agent-behavior.md`): an agent pushes private plans directly and leaves public ones for the human to relay. Keep private text out of public history — reset drafts rather than accumulating them.
+A plan lives in the repository whose work it describes, so push rights follow the code's boundary (see `agent-behavior.md`): agents push private plans directly and leave public ones for relay. Keep private text out of public history — reset drafts rather than accumulating them.
 
-A cross-boundary plan splits in two. The private plan owns integration and full-build validation and links to the public one; the public plan is a self-contained leaf with no private references, executable by a public-only agent.
+A cross-boundary plan splits: the private plan owns integration and full-build validation and links to the public one; the public plan is a self-contained leaf with no private references, executable by a public-only agent.
 
 ## Plan Review
 

@@ -20,7 +20,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 ## Memory File Hygiene
 - `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
-- Keep entries maximally concise — maximum information, minimum tokens. State the current capability, limit, or fact plainly. Cut historical narration (dates, "verified on X", "the old note was wrong", issue and PR numbers that only recount events) and hedging prose. Keep a reference only when a future reader needs it to act.
+- Keep entries maximally concise. State the current capability, limit, or fact plainly; cut historical narration (dates, "verified on X", issue and PR numbers that only recount events) and hedging prose. Keep a reference only when a future reader needs it to act.
 - Record state, not a changelog. Memory = current state of the world + decisions/gotchas that constrain future work. Git and the forge already log every merge/close — never mirror them. Drop "PR #N did X" narration; keep only its durable residue (a new convention, gotcha, or current fact) or nothing.
 - Retire landed work. In-flight pointers are fine while live; when the work an entry tracks goes terminal (merged/closed/done), the edit noting that outcome instead deletes the entry or compresses it to its one durable fact. On every memory edit, sweep the section you touch for already-landed entries.
 
@@ -32,7 +32,7 @@ Public: conventions and process; public tool and hook behavior, including bugs a
 
 Private: absolute paths, hostnames, IPs, usernames, account and key names, secret locations; private-fork specifics and token capabilities; human preferences and private-project notes.
 
-Re-verify a fact before relocating it. An agent auditing only public memory cannot see the private repo, so a claim retired in one can survive in the other and be re-imported later.
+Re-verify a fact before relocating it: an audit of one repo cannot see the other, so a claim retired in one can survive in the other and be re-imported.
 
 A mixed fact splits — publish the mechanism, keep the specifics private, and have the private note lean on the public one. Component and repo names are fine in public, identity material never is (`architecture.md` principle 5). Publishing is irreversible (principle 10), so file the genuinely unclear case privately.
 

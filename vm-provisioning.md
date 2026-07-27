@@ -29,7 +29,7 @@ Architecture strings belong in inventory. Consumers must derive them; do not har
 
 ## Checkout Paths Are Load-Bearing
 
-`protected-refs-policy` and `allod change` resolve a repo by its `$HOME`-relative checkout path and treat a lookup miss as "not protected", so a repo checked out anywhere other than its registry path silently loses its rails — no refusal, no hook block. Keep checkouts at the exact registry path; a non-canonical layout is a broken guardrail, not a cosmetic difference. `allod/tools` issue #112.
+`protected-refs-policy` and `allod change` resolve a repo by its `$HOME`-relative checkout path and treat a lookup miss as "not protected", so a repo checked out anywhere other than its registry path silently loses its rails — no refusal, no hook block. Keep checkouts at the exact registry path; a non-canonical layout is a broken guardrail. `allod/tools` issue #112.
 
 ## Privacy VMs
 
