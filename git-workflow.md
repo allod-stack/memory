@@ -28,7 +28,15 @@ Several agents may share one workspace. Two agents branching off the same commit
 - Never `git switch -c agent/<desc>` in a shared checkout. `allod change begin` only creates a worktree for repos in `protected-branches`; for the rest create one yourself — `git -C <repo> worktree add ~/changes/<desc> -b agent/<desc> origin/<default>` — then `record` and `submit` from inside it. Unconditional isolation: `allod/tools` issue #116.
 - Default-branch commits stay in place. Git refuses one branch in two worktrees (`fatal: '<branch>' is already used by worktree at <path>`), so that flow cannot be isolated; its safety net is the push rejection — `git pull --rebase`, push again.
 - Name your files when recording in a shared checkout: `record` stages `git add -u`, which sweeps another agent's tracked edits. Untracked files are skipped. `allod/tools` issue #118.
-- Hooks are blind inside a worktree: `protected-refs-policy` keys off the `$HOME`-relative path, which never matches there, so branch-protection and signing guards are silent. `record` still checks. `allod/tools` issue #112.
+- Path-keyed hook policies are blind inside a worktree: `protected-refs-policy` keys `protected-branches` and `signing-required-branches` off the `$HOME`-relative path, which never matches there. Remote-keyed and branch-name-keyed rules still fire, `record` still checks, and the forge-side wall below is unaffected. Repo-local hooks also do not run in a worktree — `run_repo_hook` looks for `$repo/.git/hooks/`, and a worktree's `.git` is a file; tracked `.hooks` are unaffected. `allod/tools` issue #112.
+
+## Branch Protection
+
+The forge is the authoritative wall: framework repo default branches are protected server-side, so a direct push is rejected no matter what the local rails do. `protected-branches` and the `protected-refs-policy` hook are backstops that fail earlier and more legibly — a local rail falling open is a defence-in-depth gap, not a path to publication. `protected-branches` is a hand-maintained mirror of the forge rules and can drift from them silently.
+
+- Check effective status: `GET /api/v1/repos/{owner}/{repo}/branches/{branch}` returns `protected` and `user_can_push`.
+- Enumerating or changing the rules needs repo admin, which agents do not have; `/branch_protections` returns 403. Changing protection is a human act at the forge.
+- `forge` has no branch-protection command yet.
 
 ## Commit Messages
 
