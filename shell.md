@@ -14,4 +14,4 @@ A missing path yields the four characters `null` with exit 0, defeating `[ -n "$
 
 ## Double-escaped metacharacters in single quotes
 
-Single quotes do no backslash processing, so `'\\+'` reaches the regex engine as an escaped backslash plus `+` — matching literal backslashes, not one-or-more. Escape once: `'\+'`.
+Single quotes do no backslash processing, so a pattern meant to match a literal `+`, written `'\\+'`, reaches the engine as an escaped backslash followed by the `+` quantifier — one or more literal backslashes, which is not what you were looking for. Escape once: `'\+'`. Applies to `rg` and `grep -E`; in BRE a bare `+` is already literal.
