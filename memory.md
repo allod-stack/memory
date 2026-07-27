@@ -32,6 +32,8 @@ Public: conventions and process; public tool and hook behavior, including bugs a
 
 Private: absolute paths, hostnames, IPs, usernames, account and key names, secret locations; private-fork specifics and token capabilities; human preferences and private-project notes.
 
+Re-verify a fact before relocating it. An agent auditing only public memory cannot see the private repo, so a claim retired in one can survive in the other and be re-imported later.
+
 A mixed fact splits — publish the mechanism, keep the specifics private, and have the private note lean on the public one. Component and repo names are fine in public, identity material never is (`architecture.md` principle 5). Publishing is irreversible (principle 10), so file the genuinely unclear case privately.
 
 ## PR Workflow

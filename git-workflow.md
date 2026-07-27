@@ -46,5 +46,4 @@ The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects:
 - Close abandoned PRs with branch cleanup: `forge pr close <target> -d`
 - All `forge` content commands accept `-b` or `--body` and `-F` or `--body-file`; use `--body-file -` for stdin.
 - `--body` does not interpret `\n`; for multiline Markdown, pipe real lines to `--body-file -` or pass a file.
-- `forge pr find-by-head <branch>` is broken — it reports an open PR number regardless of the branch queried, so `allod change submit` dies with "PR #N already exists" whenever any other PR is open in that repo. Use `forge pr create -t <title> -H <branch> -B <base> -F <body-file>` and write any `Depends on: #N` line yourself.
 - Issue and PR bodies should use prose as single long lines; only break at paragraph boundaries, list items, and code blocks.
