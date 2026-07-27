@@ -12,7 +12,7 @@ Every issue body follows one shape. Lead with utility, then goals, then detail �
 Prose as single long lines; break only at paragraphs, list items, and code blocks. Reference other issues as `owner/repo#N` with the issue/PR word in prose.
 
 - Encode timing as a trigger plus a decision criterion, never a temporal imperative. "Not yet" and "after the current work" age badly — a cold reader cannot tell whether the moment has arrived. Write the condition that decides it.
-- Use real Markdown tables for tabular comparisons; ASCII-art layouts in code blocks do not render on the forge.
+- Use real Markdown tables for tabular comparisons in anything the forge displays in its web UI — issue and PR bodies, comments, and Markdown files in the repo browser — because ASCII-art layouts inside code blocks do not lay out correctly there. This is about rendered output only; text meant to be read in a terminal or a raw file is unaffected.
 
 Skeleton:
 
