@@ -14,14 +14,12 @@ Treat a user interruption as a hard scope signal: stop the current path, avoid a
 
 Read user-provided paths and names literally. A leading dot (e.g. `allod/.profile`) is a real repo — the Forgejo org-profile repo — not a typo for a similarly named one; verify the exact path before acting on a look-alike.
 
-Do not assume every machine in the fleet is running. VMs are disposable and started on demand, so a machine being unreachable is normal and not evidence that anything is broken.
+Do not assume every machine is running. VMs are disposable and started on demand; unreachable is normal.
 
-Several agents may run in one VM at once; that is a supported configuration, not an accident. Treat the workspace as shared: another agent may hold a checkout, be mid-change in a repo you are only reading, or be working the same issue you just picked. A dirty tree or an unexpected branch is not necessarily yours. When you find another agent's work in progress, leave it alone and pick different work rather than reconciling on its behalf.
+Several agents may run in one VM — supported, not accidental. The workspace is shared, so a dirty tree or an unexpected branch may be another agent's. Leave work in progress alone and pick something else.
 
 ## Crossing the Public/Private Boundary
 
-An agent holding private material cannot write public org repos: pushes are refused server-side, and that is the boundary working, not a misconfiguration to route around. Do not look for another transport, and do not open the change from a fork.
+An agent holding private material cannot write public org repos; pushes are refused server-side. That is the boundary working — do not look for another transport or open the change from a fork.
 
-Hand a public code change off as a real commit — on an `agent/<description>` branch in the public repo's own checkout, left unpushed for the human to relay. Never embed a public code change as a patch inside a notes or plan document: only sanitized issue and plan prose belongs in notes, and a doc-embedded diff is not reviewable or appliable as code.
-
-Diff against the right base. A public repo and a private fork of it drift, so a change prepared against the fork may not apply to the public repo at all; prepare it in the public checkout.
+Hand off a public code change as a real commit on an `agent/<description>` branch in the public repo's own checkout, left unpushed for the human to relay. Never embed it as a patch in a notes or plan document; only sanitized issue and plan prose belongs there. Prepare it in the public checkout — a fork drifts, and a change built against the fork may not apply.

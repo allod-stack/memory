@@ -23,20 +23,20 @@
 
 ## Worktrees and Concurrent Agents
 
-Several agents may share one workspace, so a shared checkout is not yours alone. Two agents branching off the same commit rewrite no files, so git raises no objection when the second one moves HEAD out from under the first — the collision is silent, and neither agent notices until a write lands somewhere it did not expect.
+Several agents may share one workspace. Two agents branching off the same commit rewrite no files, so git does not object when the second moves HEAD out from under the first — the collision is silent.
 
-- Never `git switch -c agent/<description>` in a shared checkout. `allod change begin` creates a worktree only for repos listed in `protected-branches`; for any other repo it hands the shared path straight back, so create the worktree yourself with `git -C <repo> worktree add ~/changes/<description> -b agent/<description> origin/<default-branch>` and run `allod change record` and `allod change submit` from inside it. Unconditional isolation is tracked as `allod/tools` issue #116.
-- Committing directly to a repo's default branch stays in place. That is the low-friction memory and planning-doc flow, and git cannot isolate it anyway: it refuses to check out one branch in two worktrees (`fatal: '<branch>' is already used by worktree at <path>`). Its collision safety is the push rejection — resolve with `git pull --rebase` and push again.
-- Name your files when recording in a shared checkout. `allod change record` stages `git add -u` by default, which picks up every tracked modification in the tree including another agent's. Untracked files are skipped, so new files cannot ride along. Tracked as `allod/tools` issue #118.
-- Do not rely on the git hooks inside a worktree. `protected-refs-policy` resolves the repo by its `$HOME`-relative path, which never matches from a linked worktree, so the branch-protection and signing guards are silent there. `allod change record` still performs its own check. Tracked as `allod/tools` issue #112.
+- Never `git switch -c agent/<desc>` in a shared checkout. `allod change begin` only creates a worktree for repos in `protected-branches`; for the rest create one yourself — `git -C <repo> worktree add ~/changes/<desc> -b agent/<desc> origin/<default>` — then `record` and `submit` from inside it. Unconditional isolation: `allod/tools` issue #116.
+- Default-branch commits stay in place. Git refuses one branch in two worktrees (`fatal: '<branch>' is already used by worktree at <path>`), so that flow cannot be isolated; its safety net is the push rejection — `git pull --rebase`, push again.
+- Name your files when recording in a shared checkout: `record` stages `git add -u`, which sweeps another agent's tracked edits. Untracked files are skipped. `allod/tools` issue #118.
+- Hooks are blind inside a worktree: `protected-refs-policy` keys off the `$HOME`-relative path, which never matches there, so branch-protection and signing guards are silent. `record` still checks. `allod/tools` issue #112.
 
 ## Commit Messages
 
-The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects three things, so write around them rather than discovering them at commit time:
+The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects:
 
-- A word-bounded `close[sd]?`, `fix(e[sd])?`, or `resolve[sd]?` anywhere before a `#<digit>` on the same line. Innocent prose trips this too, e.g. "the resolved target … owner/repo#56". Use `Refs`, `Repair commit: <hash>`, or `Amended in <hash>`, or keep the word and the issue reference on separate lines. Close issues through PR bodies or manually. `fixture` and `prefix` are fine — the match is word-bounded.
-- Agent attribution trailers (`Co-Authored-By: Claude` and friends).
-- An inexact model footer. Plan-review commits use the exact model slug, e.g. `Model: gpt-5.5`; check the agent's config or ask rather than guessing.
+- A word-bounded `close[sd]?`, `fix(e[sd])?`, or `resolve[sd]?` before a `#<digit>` on the same line — innocent prose trips it ("the resolved target … owner/repo#56"). Use `Refs`, `Repair commit: <hash>`, `Amended in <hash>`, or split the word and the reference across lines. `fixture` and `prefix` are fine.
+- Agent attribution trailers (`Co-Authored-By: Claude`).
+- An inexact model footer; use the exact slug, e.g. `Model: gpt-5.5`.
 
 ## Forge CLI
 
@@ -46,5 +46,5 @@ The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects three thin
 - Close abandoned PRs with branch cleanup: `forge pr close <target> -d`
 - All `forge` content commands accept `-b` or `--body` and `-F` or `--body-file`; use `--body-file -` for stdin.
 - `--body` does not interpret `\n`; for multiline Markdown, pipe real lines to `--body-file -` or pass a file.
-- `forge pr find-by-head <branch>` is broken: it reports an open PR number regardless of the branch queried. So `allod change submit` dies with "PR #N already exists" for a second or stacked PR whenever any other PR is already open in that repo. Work around it with `forge pr create -t <title> -H <branch> -B <base> -F <body-file>` and add any `Depends on: #N` line to the body yourself.
+- `forge pr find-by-head <branch>` is broken — it reports an open PR number regardless of the branch queried, so `allod change submit` dies with "PR #N already exists" whenever any other PR is open in that repo. Use `forge pr create -t <title> -H <branch> -B <base> -F <body-file>` and write any `Depends on: #N` line yourself.
 - Issue and PR bodies should use prose as single long lines; only break at paragraph boundaries, list items, and code blocks.

@@ -26,22 +26,13 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 
 ## Public vs Private Memory
 
-This repo is the public memory; a deployment keeps a separate private memory repo. Agents with private access read both, so anything filed publicly reaches every agent while anything filed privately reaches only the private ones. Write each fact to the repo that matches what it is about, not to whichever repo the current task lives in.
+This repo is the public memory; a deployment keeps a separate private one. Private-access agents read both, so a public fact reaches every agent and a private one reaches only some. File by what the fact is about, not by which repo the task is in.
 
-Public — a fact any fork would need, and that names nothing identity-bearing:
+Public: conventions and process; public tool and hook behavior, including bugs and workarounds; framework facts about public repos; Nix, shell, and NixOS gotchas not tied to one machine.
 
-- Conventions and process: how to write issues, plans, PRs, commits, and memory.
-- Behavior of public tools and hooks, including their bugs and workarounds.
-- Framework facts and gotchas about public repos, and the general shape of a boundary or guardrail.
-- Nix, shell, and NixOS gotchas that are not specific to one machine.
+Private: absolute paths, hostnames, IPs, usernames, account and key names, secret locations; private-fork specifics and token capabilities; human preferences and private-project notes.
 
-Private — everything whose usefulness depends on this deployment:
-
-- Absolute paths, hostnames, IPs, usernames, account names, key names, and secret locations.
-- Private-fork specifics: which repos exist, how they are checked out, which token can do what.
-- Human-specific preferences, and private-project notes.
-
-A mixed fact splits: publish the mechanism, keep the local specifics private, and let the private note lean on the public one instead of restating it. Real component and repo names are fine in public; identity material never is (`architecture.md` principle 5). Publishing is irreversible (principle 10), so when a fact's classification is genuinely unclear, file it privately — that ratchet turns one way only.
+A mixed fact splits — publish the mechanism, keep the specifics private, and have the private note lean on the public one. Component and repo names are fine in public, identity material never is (`architecture.md` principle 5). Publishing is irreversible (principle 10), so file the genuinely unclear case privately.
 
 ## PR Workflow
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.

@@ -11,10 +11,8 @@ Every issue body follows one shape. Lead with utility, then goals, then detail â
 
 Prose as single long lines; break only at paragraphs, list items, and code blocks. Reference other issues as `owner/repo#N` with the issue/PR word in prose.
 
-Two formatting rules that come from how these artifacts are read later:
-
-- Encode timing as a trigger plus a decision criterion, never as a temporal imperative. "Not yet", "don't do X now", and "after the current work" age badly: a cold reader months later cannot tell whether the moment has arrived. Write the condition that decides it instead.
-- Use real Markdown tables for tabular comparisons. ASCII-art layouts inside code blocks do not render correctly on the forge.
+- Encode timing as a trigger plus a decision criterion, never a temporal imperative. "Not yet" and "after the current work" age badly â€” a cold reader cannot tell whether the moment has arrived. Write the condition that decides it.
+- Use real Markdown tables for tabular comparisons; ASCII-art layouts in code blocks do not render on the forge.
 
 Skeleton:
 

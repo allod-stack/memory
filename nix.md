@@ -59,7 +59,7 @@ For Allod VM configs, thread `platform` from inventory rather than hardcoding a 
 
 ## Updating a transitive lock node
 
-`nix flake update <parent>/<node>` advances only that transitive node: from the deploy flake, `nix flake update archetypes/nexus` moves the `archetypes` → `nexus` node to `nexus` master without touching the `archetypes` pin. A downstream lock can therefore own a transitive node that runs ahead of the intermediate repo's own lock, which lets a consumer pick up a change without an intermediate bump. A bare `nix flake update <node>` naming a transitive node is a silent no-op with a warning — it matches only direct inputs (Nix 2.31.5).
+`nix flake update <parent>/<node>` advances only that transitive node: `nix flake update archetypes/nexus` in the deploy flake moves the `archetypes` → `nexus` node without touching the `archetypes` pin, so a downstream lock can own a node ahead of the intermediate repo's own lock. A bare `nix flake update <node>` naming a transitive node is a silent no-op with a warning — it matches only direct inputs (Nix 2.31.5).
 
 ## Validating an unmerged cross-repo change
 
@@ -74,19 +74,19 @@ Quote the whole URL — an unquoted `&` backgrounds the command. The override do
 
 ## Out-path pinning: `path:` overrides are not equivalent to git pins
 
-A `path:` override of a flake input yields a different toplevel out-path than the same content pinned via git, because the input's own store path enters the closure through file references such as `age.secrets`. Only committed-lock evaluations are authoritative when matching a baseline out-path.
+A `path:` override yields a different toplevel out-path than the same content pinned via git, because the input's own store path enters the closure through file references such as `age.secrets`. Only committed-lock evaluations are authoritative for baseline out-path matching.
 
-To pin an unmerged revision in a lock, `nix flake lock --override-input <name> "git+https://…?rev=<full-40-char-rev>"` writes a clean entry — it keeps the `original` url and `ref=master` — that is byte-identical to what a post-fast-forward-merge `nix flake update <name>` produces. The revision must become reachable from the locked ref (a fast-forward or merge commit, not a squash) or later cold fetches abort.
+To pin an unmerged revision, `nix flake lock --override-input <name> "git+https://…?rev=<full-40-char-rev>"` writes a clean entry (keeping `original` url and `ref=master`) byte-identical to a post-fast-forward-merge `nix flake update <name>`. The revision must become reachable from the locked ref — fast-forward or merge commit, not squash — or cold fetches abort.
 
 ## `nix flake check` memory on a multi-machine flake
 
-Checking a whole composition-root flake evaluates every `nixosConfiguration` in one process; eight configurations peak around 7 GiB and get OOM-killed on an 8 GiB VM if anything else Nix-heavy runs. Run it alone, or fall back to per-configuration `nix eval .#nixosConfigurations.<name>...toplevel.drvPath` plus `nix build .#checks...` for the same coverage with bounded memory.
+Checking a whole composition-root flake evaluates every `nixosConfiguration` in one process: eight peak around 7 GiB and get OOM-killed on an 8 GiB VM. Run it alone, or use per-configuration `nix eval .#nixosConfigurations.<name>...toplevel.drvPath` plus `nix build .#checks...` for the same coverage with bounded memory.
 
 ## Machine platform literals belong to inventory
 
-Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists such as `[ "x86_64-linux" "aarch64-linux" ]`; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed. A literal `checks.x86_64-linux...` in documentation is fine only as an example of the current inventory-derived key.
+Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed.
 
-Exception: a platform-independent check — pure shape or contract validation with no machine dependency — is not machine policy, so key it off `nixpkgs.lib.systems.flakeExposed` rather than an inventory input. Such a check only runs standalone, because `nix flake check` skips an input's own checks, so hoist its assertion onto the consumed surface (`lib.*`) as well; otherwise consumers never trip it.
+Exception: a platform-independent check (pure shape or contract validation) is not machine policy — key it off `nixpkgs.lib.systems.flakeExposed`. It only runs standalone, since `nix flake check` skips an input's own checks, so also hoist its assertion onto the consumed surface (`lib.*`) or consumers never trip it.
 
 ## OpenSSH private key: never use `$()`
 
