@@ -51,11 +51,11 @@ configuration.nix must absorb what `hardware-configuration.nix` used to provide:
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
   boot.kernelModules = [ "kvm-intel" ];
-  nixpkgs.hostPlatform = lib.mkDefault platform;
+  nixpkgs.hostPlatform = platform;
 }
 ```
 
-For Allod VM configs, thread `platform` from inventory rather than hardcoding a Nix system string in `archetypes`, `profiles`, or checks.
+For Allod VM configs, thread `platform` from inventory rather than hardcoding a Nix system string in `archetypes`, `profiles`, or checks. Assign `hostPlatform` without `lib.mkDefault` — see below.
 
 ## Updating a transitive lock node
 
@@ -87,6 +87,14 @@ Checking a whole composition-root flake evaluates every `nixosConfiguration` in 
 Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed.
 
 Exception: a platform-independent check (pure shape or contract validation) is not machine policy — key it off `nixpkgs.lib.systems.flakeExposed`. It only runs standalone, since `nix flake check` skips an input's own checks, so also hoist its assertion onto the consumed surface (`lib.*`) or consumers never trip it.
+
+## `nixpkgs.hostPlatform` at any priority silently beats `nixosSystem { system = ... }`
+
+`misc/nixpkgs.nix` branches on `hostPlatform.isDefined`, true for a definition at *any* priority including `lib.mkDefault`, and that branch ignores `nixpkgs.system` entirely. A `mkDefault` hostPlatform in a shared module therefore discards the platform its builder passed as `nixosSystem { system = platform; }` — `mkDefault` is an override here, not a fallback. Nothing warns: nixpkgs' platform-conflict assertion keys off `nixpkgs.localSystem`'s priority, and `eval-config.nix` defines only `nixpkgs.system`, so the assertion is vacuous.
+
+Assign `nixpkgs.hostPlatform = platform;` with no `mkDefault`, making a second definition a module-system conflict instead of a silent shadow.
+
+Read a built system's platform as `pkgs.stdenv.hostPlatform.system`. `config.nixpkgs.hostPlatform` throws when undefined and `config.nixpkgs.system` reports the discarded value, so both mislead when checking whether the fact survived.
 
 ## OpenSSH private key: never use `$()`
 
