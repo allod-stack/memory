@@ -46,8 +46,9 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 ## Git Workflow
 - Before starting work, run `work-diff` and then `pull-all`.
 - Use `allod change` for change work: `begin`, edit, `record`, `submit`.
-- Protected repos: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change record`; run `allod change submit`.
-- Unprotected repo plus PR requested: create or switch to `agent/<desc>` from `master`, then use `allod change record` and `allod change submit`.
+- Any branch change, in any repo: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change record`; run `allod change submit`.
+- Committing in place on a repo's default branch: `allod change begin <repo>` with no `-d` prints the shared checkout path and creates nothing. Protected repos refuse it.
+- `allod change list` finds worktrees to reclaim; `allod change cleanup <path>` removes one.
 - PRs and issues use the `forge` CLI for Forgejo.
 
 ## Execution Architecture

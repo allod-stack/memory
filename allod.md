@@ -59,9 +59,10 @@ Session: `work-diff` -> `pull-all` -> `allod change begin` -> work -> `allod cha
 
 - `pull-all` - sync all repos at session start; skips dirty or unpushed repos
 - `work-diff` - show uncommitted changes across all repos
-- `allod change begin -d <desc> <repo>` - create a protected-repo worktree and branch when required
+- `allod change begin -d <desc> <repo>` - create a worktree under `~/changes` and an `agent/<desc>` branch, for any repo; without `-d` it prints the shared checkout path and creates nothing
 - `allod change record -m <msg> [-f <file>...]` - stage, commit, and push additively
 - `allod change submit -t <title> -F <body-file>` - create a PR; prefer concise `## Risk` and `## Validation` sections for code or generated-behavior changes when they add useful review signal
+- `allod change list [<repo>]` - read-only; one row per linked worktree with the state blocking its removal
 - `allod change cleanup <worktree>` - remove a clean merged worktree and local `agent/*` branch
 - `allod patch receive <vm>:<source-repo> <dest-repo> [--push]` - the public/private relay: a human pulls an agent's committed patches over SSH and applies them where they can be pushed. `fetch` and `apply` are its halves; see `allod/tools` `docs/allod-patch.md`
 - `flake-status [input] [--check-upstream]` - inspect flake lock staleness before updates
