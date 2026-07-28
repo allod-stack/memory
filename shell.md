@@ -12,6 +12,10 @@ In `a && b && c` only the final command's failure aborts, so an assertion chain 
 
 A missing path yields the four characters `null` with exit 0, defeating `[ -n "$value" ]`. Append `// empty`.
 
+## `git worktree prune` exits 0 when it cannot delete
+
+A prune that fails to remove an admin entry — an unwritable `.git/worktrees/<name>`, say — prints `error: failed to delete ...` to stderr and still exits 0, leaving the worktree listed. Assert the post-condition (`git worktree list --porcelain` no longer names it), never the exit status.
+
 ## Double-escaped metacharacters in single quotes
 
 Single quotes do no backslash processing, so `'\\+'` — meant as a literal `+` — reaches the engine as an escaped backslash plus the `+` quantifier: one or more literal backslashes. Escape once: `'\+'`. Applies to `rg` and `grep -E`; in BRE a bare `+` is already literal.

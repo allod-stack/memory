@@ -14,7 +14,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - `vm-provisioning.md` - provisioning stack, source-of-truth pointers, and gotchas
 - `agent-cli-updates.md` - versioning and bumping the dev-VM coding-agent CLIs
 - `nix.md` - NixOS gotchas
-- `shell.md` - bash and jq gotchas that make assertions silently pass
+- `shell.md` - bash, jq, and command-exit gotchas that make assertions silently pass
 - `age.md` - age and agenix workflows
 
 ## Memory File Hygiene
