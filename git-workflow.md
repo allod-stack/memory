@@ -57,5 +57,5 @@ The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects:
 - Comments: `forge pr comment <number> [--body <text> | --body-file <file>]`
 - Close abandoned PRs with branch cleanup: `forge pr close <target> -d`
 - All `forge` content commands accept `-b` or `--body` and `-F` or `--body-file`; use `--body-file -` for stdin.
-- `--body` does not interpret `\n`; for multiline Markdown, pipe real lines to `--body-file -` or pass a file.
+- `--body` does not interpret `\n`, and backticks inside a double-quoted `--body` are command-substituted by the shell before `forge` ever sees them, silently deleting the code span's contents. Forge has no comment edit, so a mangled comment is permanent. Always pass Markdown through `--body-file` — a file, or real lines piped to `--body-file -`.
 - Issue and PR bodies should use prose as single long lines; only break at paragraph boundaries, list items, and code blocks.
