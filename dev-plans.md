@@ -92,12 +92,34 @@ Track fix stability per model. In the review prompt's focus-area updates, record
 
 ### Review Model Pool
 
-Re-check which models the current runner can actually instantiate before each pass. Recommended roles:
+Both coding-agent CLIs are in the rotation. A Codex/Claude Code swap is the strongest rotation available — different vendor, different blind spots — so prefer it over a same-family model change when the previous pass found little.
 
-- `gpt-5.6-sol` is the default for R3/R4 plans, cross-repo contracts, security boundaries, generated lifecycle behavior, and terminal verification.
-- `gpt-5.6-terra` is the cost-balanced choice for R0-R2 plans and an independent rotation partner for broader first passes. Do not select it when the current review prompt records repeated regressions in the feature under review.
-- `gpt-5.6-luna` is suitable for mechanical checklist preflight and low-risk, high-volume triage when available. It is not the sole terminal reviewer for an R3/R4 plan.
-- After one model authors a structural fix, use a different eligible model for the scoped stability pass. If the plan excludes every available model, report that no eligible verifier is callable instead of naming or silently substituting an unavailable model.
+Re-check which models the current runner can actually instantiate before each pass: a picker row appears or disappears with a CLI bump (`agent-cli-updates.md`), and an entitlement can drop one without warning. The rosters below are the current fleet, not a permanent list.
+
+Codex — `codex --model <id>`, effort via `-c model_reasoning_effort='"<level>"'`:
+
+| Model | Effort ceiling | Role |
+| --- | --- | --- |
+| `gpt-5.6-sol` | `ultra` | Default for R3/R4 plans, cross-repo contracts, security boundaries, generated lifecycle behavior, and terminal verification. |
+| `gpt-5.6-terra` | `ultra` | Cost-balanced choice for R0-R2 plans and an independent rotation partner for broader first passes. Do not select it when the current review prompt records repeated regressions in the feature under review. |
+| `gpt-5.6-luna` | `max` | Mechanical checklist preflight and low-risk, high-volume triage when available. Not the sole terminal reviewer for an R3/R4 plan. |
+| `gpt-5.5` | `xhigh` | Previous frontier model. Rotation partner once the 5.6 family has already reviewed the feature. |
+| `gpt-5.4` | `xhigh` | R0-R2 passes only. |
+| `gpt-5.4-mini` | `xhigh` | Cheapest. Checklist and metadata passes only, never a terminal reviewer. |
+
+Claude Code — `claude --model <alias-or-id>`, effort via `/effort`, `--effort`, or `effortLevel` in `settings.json`:
+
+| Model | Alias | Effort ceiling | Role |
+| --- | --- | --- | --- |
+| `claude-fable-5` | `fable` | `max` | Highest-capability option. R4 plans, cross-repo generated lifecycle behavior, and terminal verification. |
+| `claude-opus-5` | `opus` | `max` | Default for R2/R3 plans and the usual Claude-side rotation partner. |
+| `claude-opus-4-8` | - | `max` | Previous Opus. Scoped stability pass on a fix authored by Opus 5, without leaving the tool. |
+| `claude-sonnet-5` | `sonnet` | `max` | Cost-balanced R0-R2 passes and broad first passes. |
+| `claude-haiku-4-5` | `haiku` | none | Takes no effort setting. Checklist and metadata preflight only, never a terminal reviewer. |
+
+The Claude Code picker collapses superseded rows; a pinned version ID such as `claude-opus-4-8` still resolves, but confirm the runner accepts it before recording it as the next pass's model.
+
+After one model authors a structural fix, use a different eligible model for the scoped stability pass. If the plan excludes every available model, report that no eligible verifier is callable instead of naming or silently substituting an unavailable model.
 
 ### Review Effort
 
@@ -107,6 +129,8 @@ Choose the model and reasoning effort separately:
 - `high` is the default for R2/R3 plans and scoped verification of a structural fix.
 - `xhigh` is appropriate for R4 plans, security or privacy boundaries, cross-repo generated lifecycle behavior, or a feature where an earlier `high` pass missed a blocker.
 - `max` or `ultra` is exceptional: use it only when the runner exposes that level and the hardest quality-first review is likely to justify the added latency and cost. Compare it with `xhigh` on representative work instead of assuming more effort is better.
+
+The ladder is shared, but its top is model-specific — read the ceiling off the roster above before naming a level. `ultra` exists only on `gpt-5.6-sol` and `gpt-5.6-terra`. Claude Code adds `ultracode` beyond `max`: it pairs top effort with multi-agent workflow orchestration, is offered only on models that support `xhigh`, and is the same class of exception as `max` — justify it, do not default to it. A level the model does not support can fall back silently rather than erroring, so confirm the level that actually applied before recording it.
 
 Record the exact effort in every pass. Hold effort constant when comparing model stability, and do not count a second pass by the same model at a different effort as independent model rotation.
 
