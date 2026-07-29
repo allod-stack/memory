@@ -89,3 +89,18 @@ Track fix stability per model. In the review prompt's focus-area updates, record
 
 - Prefer the model with the best fix-stability record for verification passes (the scoped diff review of a structural fix).
 - Drop a model from the rotation after repeated same-feature regressions.
+
+### Review Model Pool
+
+Re-check which models the current runner can actually instantiate before each pass. Recommended roles:
+
+- `gpt-5.6-sol` is the default for R3/R4 plans, cross-repo contracts, security boundaries, generated lifecycle behavior, and terminal verification.
+- `gpt-5.6-terra` is the cost-balanced choice for R0-R2 plans and an independent rotation partner for broader first passes. Do not select it when the current review prompt records repeated regressions in the feature under review.
+- `gpt-5.6-luna` is suitable for mechanical checklist preflight and low-risk, high-volume triage when available. It is not the sole terminal reviewer for an R3/R4 plan.
+- After one model authors a structural fix, use a different eligible model for the scoped stability pass. If the plan excludes every available model, report that no eligible verifier is callable instead of naming or silently substituting an unavailable model.
+
+### Review Evidence
+
+Keep compact per-plan evidence in the review prompt, not a global model leaderboard. Record the exact model and reasoning effort, reviewed commit and scope, findings by severity and origin, fixing commit, and whether each fix survived later independent passes. Finding more defects is not a negative result; evaluate detection yield separately from the stability of fixes that model authored.
+
+Do not accumulate cross-plan win rates, cost guesses, or raw finding totals in shared memory. Those comparisons are meaningful only under a controlled eval with the same plan snapshots, prompts, tool access, budgets, and scoring rubric; keep that dataset and its versioned results as a separate artifact if it becomes useful.
