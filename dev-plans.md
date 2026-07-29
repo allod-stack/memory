@@ -92,30 +92,27 @@ Track fix stability per model. In the review prompt's focus-area updates, record
 
 ### Review Model Pool
 
-Both coding-agent CLIs are in the rotation. A Codex/Claude Code swap is the strongest rotation available — different vendor, different blind spots — so prefer it over a same-family model change when the previous pass found little.
+Every runner in the fleet is in the rotation. A cross-vendor swap is the strongest rotation available — different training, different blind spots — so prefer it over a same-family model change when the previous pass found little.
 
-Re-check which models the current runner can actually instantiate before each pass: a picker row appears or disappears with a CLI bump (`agent-cli-updates.md`), and an entitlement can drop one without warning. The rosters below are the current fleet, not a permanent list.
+Re-check which models the current runner can actually instantiate before each pass: a picker row appears or disappears with a CLI bump (`agent-cli-updates.md`), and an entitlement can drop one without warning. The roster below is the current fleet, not a permanent list.
 
-Codex — `codex --model <id>`, effort via `-c model_reasoning_effort='"<level>"'`:
+Invocation per runner. Codex: `codex --model <id>`, effort via `-c model_reasoning_effort='"<level>"'`. Claude Code: `claude --model <alias-or-id>`, effort via `/effort`, `--effort`, or `effortLevel` in `settings.json`.
 
-| Model | Effort ceiling | Role |
-| --- | --- | --- |
-| `gpt-5.6-sol` | `ultra` | Default for R3/R4 plans, cross-repo contracts, security boundaries, generated lifecycle behavior, and terminal verification. |
-| `gpt-5.6-terra` | `ultra` | Cost-balanced choice for R0-R2 plans and an independent rotation partner for broader first passes. Do not select it when the current review prompt records repeated regressions in the feature under review. |
-| `gpt-5.6-luna` | `max` | Mechanical checklist preflight and low-risk, high-volume triage when available. Not the sole terminal reviewer for an R3/R4 plan. |
-| `gpt-5.5` | `xhigh` | Previous frontier model. Rotation partner once the 5.6 family has already reviewed the feature. |
-| `gpt-5.4` | `xhigh` | R0-R2 passes only. |
-| `gpt-5.4-mini` | `xhigh` | Cheapest. Checklist and metadata passes only, never a terminal reviewer. |
-
-Claude Code — `claude --model <alias-or-id>`, effort via `/effort`, `--effort`, or `effortLevel` in `settings.json`:
-
-| Model | Alias | Effort ceiling | Role |
+| Model | Runner | Effort ceiling | Role |
 | --- | --- | --- | --- |
-| `claude-fable-5` | `fable` | `max` | Highest-capability option. R4 plans, cross-repo generated lifecycle behavior, and terminal verification. |
-| `claude-opus-5` | `opus` | `max` | Default for R2/R3 plans and the usual Claude-side rotation partner. |
-| `claude-opus-4-8` | - | `max` | Previous Opus. Scoped stability pass on a fix authored by Opus 5, without leaving the tool. |
-| `claude-sonnet-5` | `sonnet` | `max` | Cost-balanced R0-R2 passes and broad first passes. |
-| `claude-haiku-4-5` | `haiku` | none | Takes no effort setting. Checklist and metadata preflight only, never a terminal reviewer. |
+| `gpt-5.6-sol` | `codex` | `ultra` | Default for R3/R4 plans, cross-repo contracts, security boundaries, generated lifecycle behavior, and terminal verification. |
+| `claude-fable-5` / `fable` | `claude` | `max` | Highest-capability Claude option. R4 plans, cross-repo generated lifecycle behavior, and terminal verification. |
+| `claude-opus-5` / `opus` | `claude` | `max` | Default for R2/R3 plans and the usual Claude-side rotation partner. |
+| `gpt-5.6-terra` | `codex` | `ultra` | Cost-balanced choice for R0-R2 plans and an independent rotation partner for broader first passes. Do not select it when the current review prompt records repeated regressions in the feature under review. |
+| `claude-opus-4-8` | `claude` | `max` | Previous Opus. Scoped stability pass on a fix authored by Opus 5, without leaving the tool. |
+| `claude-sonnet-5` / `sonnet` | `claude` | `max` | Cost-balanced R0-R2 passes and broad first passes. |
+| `gpt-5.5` | `codex` | `xhigh` | Previous frontier model. Rotation partner once the 5.6 family has already reviewed the feature. |
+| `gpt-5.4` | `codex` | `xhigh` | R0-R2 passes only. |
+| `gpt-5.6-luna` | `codex` | `max` | Mechanical checklist preflight and low-risk, high-volume triage when available. Not the sole terminal reviewer for an R3/R4 plan. |
+| `gpt-5.4-mini` | `codex` | `xhigh` | Cheapest. Checklist and metadata passes only, never a terminal reviewer. |
+| `claude-haiku-4-5` / `haiku` | `claude` | none | Takes no effort setting. Checklist and metadata preflight only, never a terminal reviewer. |
+
+Rows run strongest role first, so the row order is the selection order once the R level is known. A new runner costs rows plus one invocation clause, never its own table — keying the roster on the tool would leave nothing to hold a model that two runners can both drive. `none` is a real effort ceiling for a model that exposes no reasoning-effort control, not a gap to fill in.
 
 The Claude Code picker collapses superseded rows; a pinned version ID such as `claude-opus-4-8` still resolves, but confirm the runner accepts it before recording it as the next pass's model.
 
