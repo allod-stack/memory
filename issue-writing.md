@@ -44,6 +44,8 @@ Name the default when several paths exist; leave alternatives as follow-ups unle
 
 A bug report is short: state the symptom, attach the raw evidence — logs, traces, reproduction conditions, affected versions and machines — and stop. No root-cause analysis, proposed fix, or scoped change plan; diagnosis belongs to whoever picks it up, and front-loading one agent's guess biases the next reader and is often wrong. The evidence is the deliverable; the fix, once diagnosed, is a separate implementation issue in the full shape above.
 
+Label it `bug` — `forge issue create -l bug`, or `forge issue labels <n> --add-label bug` on a report already filed — so `forge issue list -l bug` answers what is broken without reading every title. The label marks the report, not the repair: the implementation issue that fixes it carries no `bug` label, and neither does a change that improves something already working. A repository needs the label created once before any issue there can carry it.
+
 ## Cross-repo arcs
 
 When one effort spans multiple issues or repos, keep its canonical goal statement in a single home in `allod/strategy` — a `strategy/dev-plans/<slug>.md` Goal for a multi-PR arc, or one tracking issue for a smaller multi-repo arc — and link each child with `Part of allod/strategy#N` plus a cross-repo task list (`- [ ] allod/<repo>#N`). Each child still opens with its own plain utility sentence; the shared home only prevents the goal from drifting.
