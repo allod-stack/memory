@@ -2,7 +2,7 @@
 
 ## Shape
 
-Every issue body follows one shape. Lead with utility, then goals, then detail — never bury the point under preamble.
+Every implementation issue body follows one shape. Lead with utility, then goals, then detail — never bury the point under preamble. Bug reports are a different, shorter shape — see below.
 
 1. **One plain opening sentence** stating what the change achieves, understandable by someone who has not seen the code. State the utility directly. Do NOT open with a "User story" / "So that I can ..." preamble, and do NOT prepend PM-arc or board-plan metadata lines — that boilerplate is exactly what makes issues unreadable. When the change brings things up to an existing better standard, say so plainly: "Bring X, Y, Z up to the same standard as W."
 2. **A short `Primary goals:` bullet list** — 3-6 skimmable bullets, each a bolded lead-in plus one concrete outcome. Not paragraphs.
@@ -39,6 +39,10 @@ Within the detail sections keep facts and asks separate:
 - Validation: rebuilds, commands, interactive checks, product verification, or manual gates.
 
 Name the default when several paths exist; leave alternatives as follow-ups unless the default fails. For package/version issues, specify lock bump, override, downstream default change, or tracking issue. Mark exploratory work explicitly; do not call it implementation-ready until the artifact and stopping point are clear.
+
+## Bug reports
+
+A bug report is short: state the symptom, attach the raw evidence — logs, traces, reproduction conditions, affected versions and machines — and stop. No root-cause analysis, proposed fix, or scoped change plan; diagnosis belongs to whoever picks it up, and front-loading one agent's guess biases the next reader and is often wrong. The evidence is the deliverable; the fix, once diagnosed, is a separate implementation issue in the full shape above.
 
 ## Cross-repo arcs
 
