@@ -99,6 +99,17 @@ Re-check which models the current runner can actually instantiate before each pa
 - `gpt-5.6-luna` is suitable for mechanical checklist preflight and low-risk, high-volume triage when available. It is not the sole terminal reviewer for an R3/R4 plan.
 - After one model authors a structural fix, use a different eligible model for the scoped stability pass. If the plan excludes every available model, report that no eligible verifier is callable instead of naming or silently substituting an unavailable model.
 
+### Review Effort
+
+Choose the model and reasoning effort separately:
+
+- `medium` is the minimum for R0/R1 checklist, consistency, and metadata review.
+- `high` is the default for R2/R3 plans and scoped verification of a structural fix.
+- `xhigh` is appropriate for R4 plans, security or privacy boundaries, cross-repo generated lifecycle behavior, or a feature where an earlier `high` pass missed a blocker.
+- `max` or `ultra` is exceptional: use it only when the runner exposes that level and the hardest quality-first review is likely to justify the added latency and cost. Compare it with `xhigh` on representative work instead of assuming more effort is better.
+
+Record the exact effort in every pass. Hold effort constant when comparing model stability, and do not count a second pass by the same model at a different effort as independent model rotation.
+
 ### Review Evidence
 
 Keep compact per-plan evidence in the review prompt, not a global model leaderboard. Record the exact model and reasoning effort, reviewed commit and scope, findings by severity and origin, fixing commit, and whether each fix survived later independent passes. Finding more defects is not a negative result; evaluate detection yield separately from the stability of fixes that model authored.
