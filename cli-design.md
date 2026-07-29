@@ -6,10 +6,8 @@ Copy `gh` wherever it has an established shape for the case at hand — flag nam
 
 ## Multi-value flags
 
-Two shapes are in use and the rule above them is unsettled; `allod/tools#131` decides it.
-
-- `forge`'s label flags (`-l|--label`, `--add-label`, `--remove-label`, `--set`) take comma-separated values, and repeating the flag accumulates. This is `gh`'s shape, built on pflag's string-slice type.
-- `allod change record --files` is space-variadic: `--files a b`, `--files a --files b`, and `-f a b --files c` all name the same set. A comma is legal in a filename, which is why `gh` takes path lists as variadic positionals rather than comma-separated flags.
+- Value lists take comma-separated values, and repeating the flag accumulates: `forge --label a,b` and `forge --label a --label b` name the same set. This is `gh`'s shape, and `forge` already follows it — `-l|--label`, `--add-label`, `--remove-label`, `--set`. Space-separated values after such a flag are an error, not a second spelling.
+- Path lists are the exception, because a comma is legal in a filename. `gh` takes them as variadic positionals; `allod change record --files` takes them space-separated, where `--files a b`, `--files a --files b`, and `-f a b --files c` all name the same set.
 
 Either way:
 
