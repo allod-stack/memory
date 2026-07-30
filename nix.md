@@ -82,6 +82,20 @@ To pin an unmerged revision, `nix flake lock --override-input <name> "git+https:
 
 Checking a whole composition-root flake evaluates every `nixosConfiguration` in one process: eight peak around 7 GiB and get OOM-killed on an 8 GiB VM. Run it alone, or use per-configuration `nix eval .#nixosConfigurations.<name>...toplevel.drvPath` plus `nix build .#checks...` for the same coverage with bounded memory.
 
+Exposing a second system multiplies nothing by default: `nix flake check` skips outputs it cannot build and says so (`The check omitted these incompatible systems: aarch64-linux`). `--all-systems` is what evaluates them. The cost is per-configuration, not per-exposed-system.
+
+## Checks that inspect generated shell must escape their needles the same way
+
+`lib.escapeShellArg` returns a shell-safe string *unquoted* — the pattern is `[a-zA-Z0-9,._+:@%/-]+` — so a generator's `${escapeShellArg path}` renders bare for an ordinary path and quoted only for an awkward one. A check grepping for `'<path>'` then passes or fails on nixpkgs' quoting optimisation rather than on the generator. Build the needle with `lib.escapeShellArg` too.
+
+Once needles are unquoted, "this path must not appear" cannot be a substring check: every derived path has its root as a prefix. Extract the generated argument list and compare sets instead.
+
+NixOS renders `ExecStart=<script> ` with a trailing space when the command has no arguments, so `sed -n 's|^ExecStart=\(/nix/store/[^ ]*\)$|\1|p'` silently matches nothing. Anchor with `.*` instead of `$`. A unit whose NixOS definition uses `script` puts the payload in a separate `unit-script-*` derivation, so the path a check wants is in that script, not in the unit file.
+
+## `builtins.tryEval` does not catch `abort`
+
+It catches assertion and thrown errors only. nixpkgs `abort`s on a `users.groups` name longer than 31 characters, so a fixture that derives a group name from an over-long input takes the whole evaluating check down instead of recording an outcome — and an assertion written to give that input a better diagnostic can never be the reported one, because every consumer of `config.assertions` forces the group option first. An assertion that can never be the reported diagnostic is one no sabotage fixture can pair with; delete it and let the loud upstream failure stand.
+
 ## Machine platform literals belong to inventory
 
 Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed.
