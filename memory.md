@@ -42,7 +42,9 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
 - When manually closing a PR, delete its remote branch with `forge pr close ... -d`.
-- After opening a PR, run or request a read-only review pass, comment findings on the PR, then implement fixes in a follow-up commit.
+- After opening a PR, run or request a read-only review pass, comment findings on the PR, then implement fixes in a follow-up commit. The review is required, and the validation the issue asked for does not replace it: validation shows the new thing works, while the review asks what the change broke and whether the PR body is true.
+- Every claim in the PR body is in scope for that review. A validation claim that was not run, or was run more narrowly than the body states, is a defect in the change.
+- When a change touches shared data or a shared interface, the review measures every consumer, not only the ones the issue named.
 - PR bodies should expose residual risk and validation signal when useful for human triage. Do not block PR creation solely over missing headings. Do not post no-findings update-check comments.
 
 ## Git Workflow
