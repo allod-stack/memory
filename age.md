@@ -41,3 +41,7 @@ The host SSH key can double as the age identity for decryption when configured t
 ## Common Agent Mistake: Wrong Host Key Path
 
 Host identity key paths are deployment-specific. Prefer the configured identity path for the target machine instead of guessing from `/etc/ssh`.
+
+## The public secrets repo is a template
+
+Its `machine-host-keys.json` entries and `vm-host-keys/*.age` blobs are synthetic, not the live key store — the registered public key for a machine does not match that machine's real host key. Real key material goes in the private fork only; see `vm-provisioning.md`.

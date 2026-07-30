@@ -2,6 +2,16 @@
 
 Repos: `archetypes` for the VM framework (archetype merge, builders, shared modules), `profiles` for the example machine profile definitions it composes, `vm` for shared NixOS modules, `nexus` for provisioning scripts, and `inventory` for machine inventory.
 
+## The Public Data Repos Are Templates, Keys Included
+
+`inventory`, `secrets`, `profiles` and `deploy` in the public org are templates. A deployment forks them, redirects the three data inputs, and builds real machines from the fork. Nothing in the public copies describes a running machine.
+
+That holds for key material too, and it is the part that misleads. `secrets/machine-host-keys.json` and `secrets/vm-host-keys/<machine>-ssh.age` look like a live key store, but their keys are synthetic: the registered public key for a machine does not match that machine's real `/etc/ssh/<name>.pub`. Compare the two before believing either.
+
+So never write a real machine's key material into the public repos. Publishing is irreversible, and the only remedy is rotation. A new machine's identity goes in the private fork; what belongs in public is the mechanism that makes the identity optional or shaped, never the identity.
+
+Real-but-public component names — the forge host, the agent account — are correct in the public copies and are not evidence that the surrounding data is real (`architecture.md` principle 5).
+
 ## Source of Truth
 
 - Machine platform, type, and hardware: `inventory/flake.nix`
