@@ -12,6 +12,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 - `security-practices.md` - token handling and authentication safety
 - `agent-behavior.md` - scope discipline and interruption handling
 - `vm-tooling.md` - VM package policy
+- `writing.md` - plain-English lead, progressive disclosure, and jargon rules for anything a human reads
 - `vm-provisioning.md` - provisioning stack, source-of-truth pointers, and gotchas
 - `agent-cli-updates.md` - versioning and bumping the dev-VM coding-agent CLIs
 - `nix.md` - NixOS gotchas
