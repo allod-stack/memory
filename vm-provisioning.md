@@ -15,6 +15,14 @@ Repos: `archetypes` for the VM framework (archetype merge, builders, shared modu
 
 Architecture strings belong in inventory. Consumers must derive them; do not hardcode them in `archetypes`, `profiles`, checks, scripts, or plans.
 
+## A Runtime or Boot-Path Migration Starts on a Throwaway Machine
+
+The first machine to move onto a new guest runtime or boot path is a purpose-made one that nothing depends on — never the machine the operator develops from. A guest that fails to boot takes its own repair environment with it, and a first-boot or first-rebuild defect is exactly the class these migrations carry. The operator's own dev machine moves only after the throwaway has passed the acceptance tests on real hardware and been rolled back and forward at least once.
+
+Renaming a machine afterwards is not the escape hatch: per-machine encrypted secret filenames are keyed to the name, so re-keying them is a human-only host action. Pick the name before the migration, not after.
+
+The public example carrying the new runtime must therefore be an example and nothing else. A name in the public inventory can also be a real deployed machine whose key material lives in the private secrets repo, and consumers act on the machine fact by name.
+
 ## Provisioning Gotchas
 
 - **Host-side only** - provisioning is Nexus-only; dev VMs should not expose provisioning commands.
