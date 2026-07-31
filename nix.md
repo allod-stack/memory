@@ -96,6 +96,12 @@ NixOS renders `ExecStart=<script> ` with a trailing space when the command has n
 
 It catches assertion and thrown errors only. nixpkgs `abort`s on a `users.groups` name longer than 31 characters, so a fixture that derives a group name from an over-long input takes the whole evaluating check down instead of recording an outcome — and an assertion written to give that input a better diagnostic can never be the reported one, because every consumer of `config.assertions` forces the group option first. An assertion that can never be the reported diagnostic is one no sabotage fixture can pair with; delete it and let the loud upstream failure stand.
 
+## Reading a config option does not force NixOS assertions
+
+`config.assertions` is reached only through `system.build.toplevel` (`baseSystemAssertWarn`). A check that reads a marker option off a built system proves the module was composed but leaves every assertion inside it unevaluated, so a fixture violating that module's own contract still reads green. Force `config.system.build.toplevel.drvPath` in positive fixtures and `tryEval` a forced toplevel in negative ones.
+
+Order the two: compare the cheap marker first, force second. Forcing first reports a wrong-module composition as whatever that module's option surface breaks on — an unmatched definition for an option the wrongly composed module never declares is raised while building the option tree, ahead of any config read — instead of as the mismatch the check names. Some sabotage directions cannot be pinned past this and only fail loudly; say so beside the fixture rather than implying a pinned negative exists.
+
 ## Machine platform literals belong to inventory
 
 Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed.
