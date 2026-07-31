@@ -84,6 +84,8 @@ Checking a whole composition-root flake evaluates every `nixosConfiguration` in 
 
 Exposing a second system multiplies nothing by default: `nix flake check` skips outputs it cannot build and says so (`The check omitted these incompatible systems: aarch64-linux`). `--all-systems` is what evaluates them. The cost is per-configuration, not per-exposed-system.
 
+Checks that build NixOS fixtures cost the same as a machine, so a framework repo's own check run climbs with fixture count, not machine count: `allod/archetypes` peaks around 5.7 GiB against a 7 GiB box with no swap, and the margin has been measured at ~840 MiB. Hold sabotage fixtures as thunks consumed one at a time rather than a list forced together — keeping a dozen live is an OOM kill, and the difference is over a gigabyte. A fixture that only needs an option value costs far less than one whose `system.build.toplevel` is forced, so force deliberately: forcing is what runs the module assertions, and skipping it is what makes a check vacuous.
+
 ## Checks that inspect generated shell must escape their needles the same way
 
 `lib.escapeShellArg` returns a shell-safe string *unquoted* — the pattern is `[a-zA-Z0-9,._+:@%/-]+` — so a generator's `${escapeShellArg path}` renders bare for an ordinary path and quoted only for an awkward one. A check grepping for `'<path>'` then passes or fails on nixpkgs' quoting optimisation rather than on the generator. Build the needle with `lib.escapeShellArg` too.
