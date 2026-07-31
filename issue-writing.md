@@ -46,6 +46,10 @@ A bug report is short: state the symptom, attach the raw evidence — logs, trac
 
 Label it `bug` — `forge issue create -l bug`, or `forge issue labels <n> --add-label bug` on a report already filed — so `forge issue list -l bug` answers what is broken without reading every title. The label marks the report, not the repair: the implementation issue that fixes it carries no `bug` label, and neither does a change that improves something already working. A repository needs the label created once before any issue there can carry it.
 
+## Handoff issues
+
+An issue filed in a public framework repo whose implementation must land in a deployment's private forks is a handoff issue: the public agent's instruction channel to the deployment's private agent. Label it `handoff` and say so in the opening sentence, so a reader knows immediately that the work — and its receipts — live outside the public tracker. The label marks the channel, not the subject: a public framework change that merely mentions deployments carries no `handoff` label. A repository needs the label created once before any issue there can carry it.
+
 ## Cross-repo arcs
 
 When one effort spans multiple issues or repos, keep its canonical goal statement in a single home in `allod/strategy` — a `strategy/dev-plans/<slug>.md` Goal for a multi-PR arc, or one tracking issue for a smaller multi-repo arc — and link each child with `Part of allod/strategy#N` plus a cross-repo task list (`- [ ] allod/<repo>#N`). Each child still opens with its own plain utility sentence; the shared home only prevents the goal from drifting.
