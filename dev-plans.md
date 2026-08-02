@@ -18,6 +18,21 @@ Every dev plan must include these sections. Template: `allod/memory/templates/de
 
 8. **Rollback Plan** - How to revert the change if verification fails.
 
+## Plan Shape
+
+A plan holds decisions; knowledge lives elsewhere. Four things earn plan lines:
+
+1. **Unmeasurable decisions** - scope, ordering, ownership, irreversible-step choreography, rollback. No experiment settles these; prose is their native form.
+2. **Cross-boundary interfaces** - contracts another repo or slice consumes. A contract nothing external relies on is implementation detail.
+3. **Gates** - what the agent cannot do and what the human must.
+4. **Acceptance observations** - named witnesses and what each must show, not embedded test scripts.
+
+Evict everything else to where it is cheaper and truer: an empirical claim about upstream becomes a spike measurement recorded on the issue, or a module assertion the plan cites; behavior a boot can answer becomes an observation on a witness (`testing.md`); a failure-mode enumeration becomes the module's assertions, with the plan naming only the class they cover; rationale goes in the issue body.
+
+Soft cap: about 150 lines. Exceeding it requires naming the unmeasurable decision that forces the length, the same way a risk score is justified. Security boundaries and irreversible cutover choreography legitimately spend lines; the cap exists to make the plan spend them there. The first review question on a long plan: which lines are measurements pretending to be decisions?
+
+Complex work slices by witness; no plan grows to hold it. Each slice has its own landable PR set, its own witness that proves it worked, and a stated interface to the next slice. The parent plan is an arc map - ordered slices, about one line each: what it delivers, what witnesses it, what it unblocks. Contracts bind late: they are written in the slice that implements them, when that slice starts, informed by measurements from the slices before it. A parent that pre-binds every downstream contract is specifying what it should be scheduling.
+
 ## Risk Assessment
 
 Use one residual risk score for human triage. Residual risk means how much scrutiny is still useful after the plan's validation passes. Prefer this over inherent risk in normal plans; mention inherent risk only when a risky area is substantially reduced by tests, rollout order, or rollback.
