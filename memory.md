@@ -40,6 +40,7 @@ Re-verify a fact before relocating it: an audit of one repo cannot see the other
 A mixed fact splits — publish the mechanism, keep the specifics private, and have the private note lean on the public one. Component and repo names are fine in public, identity material never is (`architecture.md` principle 5). Publishing is irreversible (principle 10), so file the genuinely unclear case privately.
 
 ## PR Workflow
+- Every PR body opens with an owner summary: at most 10 plain-English lines stating what changes for a running machine, what stays identical, what proves it, and what to do if it is wrong. The merge gate is the human restating those four in their own words; a summary the owner cannot restate means the change is too big or mis-summarized, and it does not merge. Everything below the summary is for reviewers.
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
 - When manually closing a PR, delete its remote branch with `forge pr close ... -d`.

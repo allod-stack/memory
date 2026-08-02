@@ -68,6 +68,16 @@ Iterative review template: `allod/memory/templates/plan-review-prompt.md`.
 Review prompts live in the same repository as the dev plan they review.
 See `allod.md` for `allod/strategy` subdirs.
 
+### Pass Budget by Risk
+
+Passes are budgeted by the plan's residual risk, and they stop at reality:
+
+- **R0/R1**: one pass, checklist depth.
+- **R2/R3**: at most two passes, then land and measure. A finding beyond pass two that concerns executable behavior is settled by executing - a boot, a generated artifact, a fixture - not by a third reading.
+- **R4**: rotate to convergence per the sections below.
+
+A pass does not re-review a claim that an available witness can execute (`testing.md`): it demands the execution instead. Repeated passes over unexecuted specification do not converge - each pass finding new defects in never-run behavior is the signal to go run it, not to schedule another pass.
+
 ### Standing Focus Areas
 
 These six lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
