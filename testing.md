@@ -13,3 +13,12 @@ A check pins a property to a witness. Before writing or keeping a check, name th
 Never delete: public-boundary leak scans, module eval assertions, and checks whose property a healthy running system cannot witness because its failure is silent - cross-VM isolation is the standing example.
 
 Sabotage fixtures prove a validator can fail: one per validator, not one per failure mode it rejects.
+
+## Test Code Placement
+
+Production modules contain no test-only branches, fixtures, or hooks. Checks live in their own tree (`checks/`) and exercise the real production generators by injecting fixture *inputs* through the generator's existing parameters. Two failure modes bound the rule from opposite sides:
+
+- **Drift:** a check that reimplements the generated artifact in parallel witnesses its own reimplementation, not production. Consume the same generator; swap only its inputs.
+- **Contamination:** a production path that knows about tests (a fixture flag, an `isTest` branch, an embedded test key) puts unexercised or test-serving code on the critical path — worst on paths that handle secrets as root.
+
+When a generator cannot be exercised with fixture inputs, widen its parameters at the composition seam; do not fork it and do not teach it about tests. `modules/microvm-credential-hook.nix` (production generator, parameterized over ciphertext root, identity paths, and registry material) consumed by `checks/microvm-credential-hook.nix` (fixture inputs only) is the standing example, mirroring nexus `launcher.nix`'s sabotage-variant pattern.
