@@ -24,6 +24,10 @@ A prune that fails to remove an admin entry — an unwritable `.git/worktrees/<n
 
 Both matter most in isolation fixtures, where "the command failed" is the evidence: a probe that succeeds against nothing reads as a successful attack, and one that succeeds vacuously reads as a closed boundary.
 
+## `ssh-keyscan` writes its banner to stdout
+
+The `# <host>:<port> SSH-2.0-<version>` line lands on stdout beside the keys, so `2>/dev/null` does not remove it. A field-extracting comparison then holds two lines and never matches the registry, and a "the host offered exactly one key" count reads the banner as a key, so a host offering a second one passes. Drop comments first: `ssh-keyscan ... | grep -v '^#'`.
+
 ## Double-escaped metacharacters in single quotes
 
 Single quotes do no backslash processing, so `'\\+'` — meant as a literal `+` — reaches the engine as an escaped backslash plus the `+` quantifier: one or more literal backslashes. Escape once: `'\+'`. Applies to `rg` and `grep -E`; in BRE a bare `+` is already literal.
