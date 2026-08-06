@@ -104,6 +104,22 @@ It catches assertion and thrown errors only. nixpkgs `abort`s on a `users.groups
 
 Order the two: compare the cheap marker first, force second. Forcing first reports a wrong-module composition as whatever that module's option surface breaks on — an unmatched definition for an option the wrongly composed module never declares is raised while building the option tree, ahead of any config read — instead of as the mismatch the check names. Some sabotage directions cannot be pinned past this and only fail loudly; say so beside the fixture rather than implying a pinned negative exists.
 
+## A `readOnly` option must not also have a `default`
+
+`evalOptionValue` prepends the default to the definition list *before* enforcing `readOnly`, so an option with both always reports "is read-only, but it's set multiple times", listing the default as one of the definitions. Declare a `readOnly` option with no default and let its one module define it.
+
+## Placeholder substitution rewrites the placeholder in prose too
+
+`builtins.replaceStrings [ "@table@" ] [ ... ] (readFile ./script.sh)` replaces every occurrence, including the one in the script's own header comment explaining what the placeholder is. The substituted text lands mid-comment, and a multi-line value ends the comment and turns its remaining lines into commands. Name placeholders only where they are meant to be replaced.
+
+## An empty `LoadCredential` is not a no-op
+
+systemd sets `$CREDENTIALS_DIRECTORY` only for a unit that declares at least one credential. A unit generated with an empty credential list therefore runs with the variable unset, not with an empty directory — so a script that guards on `$CREDENTIALS_DIRECTORY` to detect "not running as a unit" fails on every boot instead of doing nothing. Generate no unit rather than an empty one.
+
+## `git-credential-store` needs a writable *directory*, not just the file
+
+Its `store` action runs on every successful authenticated HTTPS operation and takes a lock file beside the credential file, so the file's owner must be able to create entries in the containing directory. A store file owned by one principal inside a directory owned by another makes git print `fatal: unable to get credential storage lock` on every request while the parent command still exits 0. Its read path is forgiving by comparison — it skips both `ENOENT` and `EACCES` silently — so a shared store looks fine until the first push. Give each principal a directory it owns.
+
 ## Machine platform literals belong to inventory
 
 Only inventory machine facts carry platform strings. Non-inventory flakes must not declare local `checkSystem` / `checkSystems` lists; generate check platforms from `inventory.lib.supportedPlatforms`, adding an input or `follows` redirect as needed.
