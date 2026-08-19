@@ -121,7 +121,7 @@ Every runner in the fleet is in the rotation. A cross-vendor swap is the stronge
 
 Re-check which models the current runner can actually instantiate before each pass: a picker row appears or disappears with a CLI bump (`agent-cli-updates.md`), and an entitlement can drop one without warning. The roster below is the current fleet, not a permanent list.
 
-Invocation per runner. Codex: `codex --model <id>`, effort via `-c model_reasoning_effort='"<level>"'`. Claude Code: `claude --model <alias-or-id>`, effort via `/effort`, `--effort`, or `effortLevel` in `settings.json`.
+Invocation per runner. Codex: `codex --model <id>`, effort via `-c model_reasoning_effort='"<level>"'`. Claude Code: `claude --model <alias-or-id>`, effort via `/effort`, `--effort`, or `effortLevel` in `settings.json`. pi: `pi --provider <provider> --model <id> --thinking <level> --no-session -p '<prompt>'` runs headless and can drive the same model ids through a configured model-router provider; wrap long runs in `timeout` — pi never retries a stalled stream, and a stall hangs silently with zero output and zero open connections.
 
 | Model | Runner | Effort ceiling | Role |
 | --- | --- | --- | --- |
