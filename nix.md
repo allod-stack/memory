@@ -61,6 +61,10 @@ For Allod VM configs, thread `platform` from inventory rather than hardcoding a 
 
 `nix flake update <parent>/<node>` advances only that transitive node: `nix flake update archetypes/nexus` in the deploy flake moves the `archetypes` → `nexus` node without touching the `archetypes` pin, so a downstream lock can own a node ahead of the intermediate repo's own lock. A bare `nix flake update <node>` naming a transitive node is a silent no-op with a warning — it matches only direct inputs (Nix 2.31.5).
 
+## Re-locking a parent input reverts downstream-owned transitive pins
+
+`nix flake lock --override-input <parent> <ref>` recomputes every `<parent>/<node>` from the new parent's own lock, silently reverting any transitive node the downstream lock had advanced ahead of it. After re-pinning a parent, diff the lock against the base branch and explicitly re-pin each transitive node the diff shows moving backward.
+
 ## Validating an unmerged cross-repo change
 
 Evaluate against the branch before merging:
