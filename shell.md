@@ -2,6 +2,10 @@
 
 Each turns a check into one that always passes. A guard that cannot be shown to fail on sabotaged input does not count (`architecture.md` principle 11).
 
+## Human-run checks must not change the interactive shell's failure policy
+
+Never ask a human to paste a multi-command block that enables `set -e`, `set -u`, or `pipefail`, or that calls `exit`. A failed check can terminate their interactive shell and close the terminal tab. Give one command at a time with the expected result. If checks genuinely need shared state or automatic stopping, run them in an explicit child shell or script so failure exits only that child, never the caller's shell.
+
 ## `set -e` exempts inverted and non-final commands
 
 `! cmd` never aborts under `set -e`, so a `! rg <forbidden-token>` scrub assertion is a silent no-op. Use `if rg <forbidden-token> .; then exit 1; fi`.
