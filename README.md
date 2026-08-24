@@ -14,7 +14,7 @@ material (dev plans, review prompts, brainstorms) lives in `strategy`.
 
 ```
 memory.md              root index — agents read this first, then the topic files it lists
-<topic>.md             eleven topic files (see Topic files)
+<topic>.md             topic files — indexed with one-line descriptions in memory.md
 adapters/              tool-specific entry points that redirect to memory.md
   claude/CLAUDE.md
   codex/AGENTS.md
@@ -24,22 +24,6 @@ templates/             blank scaffolds referenced by dev-plans.md
   plan-review-prompt.md
 ```
 
-## Topic files
-
-| File | Contents |
-|---|---|
-| `allod.md` | Allod overview, Forgejo org, repo inventory, `allod/strategy` subdirs, and `forge` CLI / workspace session notes. |
-| `architecture.md` | The core architecture principles — the constitution to check every design decision of consequence against. |
-| `git-workflow.md` | Branching, the `allod change` begin/record/submit flow, `forge` CLI, and issue/PR linkage and body rules. |
-| `issue-writing.md` | Implementation-issue scope and structure; user-story-first bodies; cross-repo story tracking. |
-| `dev-plans.md` | Required dev-plan sections, the R0–R4 residual-risk rubric, and the iterative plan-review process. |
-| `security-practices.md` | Token handling — keep tokens out of argv, prefer stdin, build narrow credential helpers. |
-| `agent-behavior.md` | Scope discipline and handling user interruptions. |
-| `vm-tooling.md` | VM package policy (`jq` on all dev VMs; no `python3` on privacy VMs). |
-| `vm-provisioning.md` | Provisioning stack repos, source-of-truth pointers, and provisioning gotchas. |
-| `nix.md` | NixOS gotchas — read-only `nix.conf`, netrc/libgit2, disko, agenix, SSH-key handling. |
-| `age.md` | age / agenix workflows — safe secret input, running agenix, recipient keys. |
-
 ## Adapters
 
 Each coding agent tool has its own native memory filename. A tool's native
@@ -48,7 +32,7 @@ that tool's format (`CLAUDE.md` for Claude, `AGENTS.md` for Codex and Pi) whose
 only job is to redirect to `../../memory.md`. So each tool needs one small
 native-format file and the durable content lives once. Tool-specific policy
 that cannot live in the shared files stays in the adapter (e.g. the Claude
-adapter's "never add AI attribution").
+adapter's attribution ban).
 
 ## Memory hygiene
 
