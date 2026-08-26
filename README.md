@@ -31,7 +31,7 @@ Each coding agent tool has its own native memory filename. A tool's native
 memory config points at `adapters/<tool>/<file>` here — a small entry point in
 that tool's format (`CLAUDE.md` for Claude, `AGENTS.md` for Codex and Pi). Each
 entry point applies the shared `adapters/conversation-start.md` policy, which
-owns when agents load and reread `memory.md`. Tool-specific policy that cannot
+owns conversation-start loading of `memory.md`. Tool-specific policy that cannot
 live in the shared files stays in the adapter (e.g. the Claude adapter's
 attribution ban).
 
