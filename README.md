@@ -16,6 +16,7 @@ material (dev plans, review prompts, brainstorms) lives in `strategy`.
 memory.md              root index — agents read this first, then the topic files it lists
 <topic>.md             topic files — indexed with one-line descriptions in memory.md
 adapters/              tool-specific entry points that redirect to memory.md
+  conversation-start.md shared policy for when memory is loaded and reread
   claude/CLAUDE.md
   codex/AGENTS.md
   pi/AGENTS.md
@@ -28,11 +29,11 @@ templates/             blank scaffolds referenced by dev-plans.md
 
 Each coding agent tool has its own native memory filename. A tool's native
 memory config points at `adapters/<tool>/<file>` here — a small entry point in
-that tool's format (`CLAUDE.md` for Claude, `AGENTS.md` for Codex and Pi) whose
-only job is to redirect to `../../memory.md`. So each tool needs one small
-native-format file and the durable content lives once. Tool-specific policy
-that cannot live in the shared files stays in the adapter (e.g. the Claude
-adapter's attribution ban).
+that tool's format (`CLAUDE.md` for Claude, `AGENTS.md` for Codex and Pi). Each
+entry point applies the shared `adapters/conversation-start.md` policy, which
+owns when agents load and reread `memory.md`. Tool-specific policy that cannot
+live in the shared files stays in the adapter (e.g. the Claude adapter's
+attribution ban).
 
 ## Memory hygiene
 
