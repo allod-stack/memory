@@ -37,6 +37,8 @@ Age-encrypted blobs are fine in public repos by design.
 `forge` is the primary interface for working with Forgejo PRs and issues.
 Run `forge --help` for full usage.
 
+Reads: `forge issue view <n>` and `forge pr view <n>` print the body and every comment; `forge issue list` and `forge pr list` enumerate; `forge pr review-comments <n>` lists inline threads with the IDs `forge pr reply` takes. Read through `forge`, never the Forgejo REST API.
+
 Mutation commands follow the common content-flag shape:
 
 ```bash
