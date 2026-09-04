@@ -68,3 +68,4 @@ Session: `work-diff` -> `pull-all` -> `allod change begin` -> work -> `allod cha
 - `allod change cleanup <worktree>` - remove a clean merged worktree and local `agent/*` branch
 - `allod patch receive <vm>:<source-repo> <dest-repo> [--push]` - the public/private relay: a human pulls an agent's committed patches over SSH and applies them where they can be pushed. `fetch` and `apply` are its halves; see `allod/tools` `docs/allod-patch.md`
 - `flake-status [input] [--check-upstream]` - inspect flake lock staleness before updates
+- `fleet-diff [<checkout>] --override <input>=<rev> [--expect <machine>,... | --expect-none]` - evaluate every machine in a composition root against a substituted revision and report which ones change; with an expectation it fails in both directions, without one it is report-only and exits 0
