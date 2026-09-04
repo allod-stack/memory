@@ -22,7 +22,26 @@ adapters/              tool-specific entry points that redirect to memory.md
 templates/             blank scaffolds referenced by dev-plans.md
   dev-plan.md
   plan-review-prompt.md
+skills/                portable skills, one directory each, indexed in memory.md
+  fleet-diff/SKILL.md
 ```
+
+## Skills
+
+Memory tells an agent what the conventions are; a skill tells it how to drive
+one specific tool well, at the moment it reaches for that tool. Skills follow
+the [Agent Skills](https://agentskills.io/) directory format: each lives at
+`skills/<name>/SKILL.md` with a frontmatter `name` and `description`. Point a
+compatible harness at this repository's `skills/` directory, or link individual
+skill directories into the harness's own skill location.
+
+A skill earns a place here when its subject is a tool the workflows in this repo
+invoke and getting it wrong is expensive or silent. Anything narrower than that
+belongs with the tool, and anything broader is a topic file.
+
+Available skills:
+
+- `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 
 ## Adapters
 

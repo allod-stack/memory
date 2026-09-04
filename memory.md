@@ -21,6 +21,9 @@ Read the topic files relevant to the current task.
 - `shell.md` - bash, jq, and command-exit gotchas that make assertions silently pass
 - `age.md` - age and agenix workflows
 
+## Skills
+Discover skills from `skills/` relative to this file; when a task matches a skill's frontmatter description, read its `SKILL.md` and follow it. The user can invoke one by name, for example `fleet-diff`. A skill is how to drive one tool well and is read at the moment that tool is reached for; a topic file is a convention and is read up front. Add a skill only for a tool these workflows invoke where getting it wrong is expensive or silent, and index it in `README.md`.
+
 ## Memory File Hygiene
 - `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
