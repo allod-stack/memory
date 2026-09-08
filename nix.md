@@ -157,3 +157,15 @@ age --decrypt secrets/host-key.age | ssh host 'sudo tee /etc/ssh/key > /dev/null
 ## QEMU VMs need UEFI, not SeaBIOS
 
 systemd-boot requires UEFI. Set OVMF in virt-manager before first boot. It cannot be changed after VM creation.
+
+## `extendModules` evaluates the whole configuration again
+
+It does not reuse the base evaluation. Each call costs a second full machine evaluation, held in memory alongside the first. Dropping one such extension took a hypervisor from 2802 MiB peak to 1982 MiB.
+
+## Two ways to end up with a second nixpkgs per machine
+
+`home-manager.useGlobalPkgs = false` makes home-manager build its own package set instead of reusing the machine's. Separately, `import nixpkgs-unstable { ... }` written inside a per-machine `let` runs once per machine. Nix does not share the result across call sites, so six machines means six fixpoints. Move it to flake-output scope, keyed by platform.
+
+## `fileSystems.<name>.fsType` lost its default in nixos-26.05
+
+It was `"auto"` on 25.11. On 26.05, an entry that sets only `neededForBoot` and expects another module to supply `device` and `fsType` fails with "option ... was accessed but has no value defined" anywhere that other module is not loaded.

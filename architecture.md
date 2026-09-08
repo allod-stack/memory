@@ -65,6 +65,9 @@ A rule that must survive a long session moves out of prose and into tools and ho
 **15. Move in small, independently landable steps.**
 Decompose monoliths so each step has its own blast radius and rollback. Extract on second use — three similar lines beat a premature helper. Tooling priorities, in order: minimalism, security, usability, maintainability, simplicity; dependencies are liabilities before they are conveniences. Review plans adversarially with rotated models until convergence, then stop — pure accretion breeds contradictions. Archived plans are historical record; never retro-edit them.
 
+**16. Record what each machine costs to build.**
+Derivation count, closure size, evaluation time and peak evaluation memory, per machine, on every commit. A change that raises one accounts for it before it lands. Unmeasured build cost has been found by hitting a hard limit five times in three different resources; written warnings prevented none of them.
+
 ---
 
 Distilled 2026-07 from all public and private allod repositories. When a settled decision contradicts this document, update the document through the normal change process and state the contradiction — this file loses to reality, but only out loud.

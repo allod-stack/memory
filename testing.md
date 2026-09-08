@@ -22,3 +22,7 @@ Production modules contain no test-only branches, fixtures, or hooks. Checks liv
 - **Contamination:** a production path that knows about tests (a fixture flag, an `isTest` branch, an embedded test key) puts unexercised or test-serving code on the critical path — worst on paths that handle secrets as root.
 
 When a generator cannot be exercised with fixture inputs, widen its parameters at the composition seam; do not fork it and do not teach it about tests. `modules/microvm-credential-hook.nix` (production generator, parameterized over ciphertext root, identity paths, and registry material) consumed by `checks/microvm-credential-hook.nix` (fixture inputs only) is the standing example, mirroring nexus `launcher.nix`'s sabotage-variant pattern.
+
+**Do not name a real machine in a fixture.** A check that picks a production machine to supply a property, such as a runtime or a machine type, breaks when the fleet changes for unrelated reasons. Written as a negative it stops working altogether once the last machine with that property is removed. Build a fixture machine that carries the property instead.
+
+**Two checks with the same derivation name shadow each other.** Merged check sets keep the last one, so a fork's local check silently replaces the framework's if both use the same `runCommand` name. Nothing warns, and the replaced check never runs again. Assert names are unique after merging.
