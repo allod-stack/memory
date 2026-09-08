@@ -67,5 +67,5 @@ Session: `work-diff` -> `pull-all` -> `allod change begin` -> work -> `allod cha
 - `allod change list [<repo>]` - read-only; one row per linked worktree with the state blocking its removal
 - `allod change cleanup <worktree>` - remove a clean merged worktree and local `agent/*` branch
 - `allod patch receive <vm>:<source-repo> <dest-repo> [--push]` - the public/private relay: a human pulls an agent's committed patches over SSH and applies them where they can be pushed. `fetch` and `apply` are its halves; see `allod/tools` `docs/allod-patch.md`
-- `flake-status [input] [--check-upstream]` - inspect flake lock staleness before updates
+- `flake-status [input] [--upstream]` - inspect flake lock staleness before updates. `--upstream` compares each pin to its remote's default branch, not the branch the lock names, so channel and release-branch pins read as behind `master` and a pin at its branch tip reads as stale (allod/tools#170); confirm with `git ls-remote <url> refs/heads/<ref>` before acting on the arrow
 - `fleet-diff [<checkout>] --override <input>=<rev> [--expect <machine>,... | --expect-none]` - evaluate every machine in a composition root against a substituted revision and report which ones change; with an expectation it fails in both directions, without one it is report-only and exits 0
