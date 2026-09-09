@@ -24,6 +24,7 @@ templates/             blank scaffolds referenced by dev-plans.md
   plan-review-prompt.md
 skills/                portable skills, one directory each, indexed in memory.md
   fleet-diff/SKILL.md
+  forge-groom/SKILL.md
 ```
 
 ## Skills
@@ -42,6 +43,7 @@ belongs with the tool, and anything broader is a topic file.
 Available skills:
 
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
+- `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 
 ## Adapters
 
