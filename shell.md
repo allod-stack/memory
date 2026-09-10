@@ -19,6 +19,14 @@ The guard on that value must be an `if` block. `[ -n "$K" ] || { echo …; retur
 
 In `a && b && c` only the final command's failure aborts, so an assertion chain ending in `echo` can never fail. One assertion per line.
 
+## `set -e` is suspended inside an `if` condition, and inside every function called from one
+
+A test runner written `if run_the_test; then PASS; else FAIL; fi` enforces only the last command of the test function: bash turns `-e` off for the whole condition, including the function body, so a failed `[[ ... ]]` in the middle falls through. A suite of thirty tests with several assertions each can report all green while pinning almost nothing. Run the body in a subshell that sets `-e` itself and read the status as a plain statement: `set +e; ( set -e; "$@" ); status=$?; set -e`. The same suspension applies to the left side of `||` and `&&`, so `cmd || status=$?` has the same hole.
+
+## `read -p` prints no prompt when stdin is not a terminal
+
+Bash writes the prompt only when input comes from a terminal, so a test that pipes an answer into a script and asserts on the prompt text (`Paste new token:`) can neither pass nor fail for a reason. Assert on the prompt's effect instead: what the answer was used for, or that a second line fed on stdin never reached anything.
+
 ## `jq -r` prints `null` for a missing path
 
 A missing path yields the four characters `null` with exit 0, defeating `[ -n "$value" ]`. Append `// empty`.

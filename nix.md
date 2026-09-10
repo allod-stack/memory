@@ -150,6 +150,10 @@ age --decrypt secrets/host-key.age | ssh host 'sudo tee /etc/ssh/key > /dev/null
 
 `ssh-keygen -y`, `cat`, or anything that reads a private key file sends it into the assistant transcript. To inspect a public key, read the `.pub` file. Private key files usually have no extension.
 
+## agenix creates a custom path's missing parents root-owned, before users exist
+
+`installSecret` runs `mkdir -p` on the parent of a secret's custom `path` as root, and on the activation-script path (sysusers and userborn off) `agenixInstall` is ordered before the `users` step. Every parent that does not exist yet comes into being root-owned: `~/.config/git` on a host that has the account, and `/home/<user>` and `~/.config` themselves on a first activation before the account exists, after which the account cannot create anything under `~/.config` until it is chowned. It installs with `ln -sfT`, so a hand-written regular file at the path is replaced by the symlink, not refused. Cleanup removes only the previous generation directory and never a custom-path symlink: dropping one declaration leaves its link dangling on the next activation, and dropping the last secret disables agenix entirely (`mkIf (cfg.secrets != {})`), so the old generation stays mounted until a reboot.
+
 ## agenix: declare secrets in flake.nix, not configuration.nix
 
 `nixos-install` cannot activate secrets. `age.*` options in configuration.nix can fail at activation time. Put them in inline modules inside `nixosConfigurations` in flake.nix.
