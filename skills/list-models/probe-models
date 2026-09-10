@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# probe-models — what each installed agent CLI declares, and whether a named
+# model answers. A catalog is a declaration; only a probe shows what is served.
+set -euo pipefail
+
+PROMPT='Reply with exactly the word OK and nothing else.'
+TIMEOUT="${PROBE_TIMEOUT:-120}"
+REFUSED=0
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  probe-models                              What each installed CLI declares
+  probe-models pi <provider>/<model>...     Do these pi models answer?
+  probe-models codex <model>...             Do these codex models answer?
+  probe-models claude <model>...            Do these claude models answer?
+
+A catalog is a declaration. Only a probe shows whether a model answers today,
+and nothing is probed unless you name it: each probe is one short prompt.
+
+Prints one line per model: <cli> <model> served|refused <detail>.
+Exit 0 when every named model answered, 2 when any was refused, 1 on usage.
+PROBE_TIMEOUT (seconds, default 120) bounds each probe.
+USAGE
+}
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+list_pi() {
+  if ! have pi; then echo "pi: not installed"; return; fi
+  echo "## pi: the catalog (pi --list-models), then readiness per provider (pi auth check)"
+  pi --list-models
+  echo
+  pi --list-models | awk 'NR > 1 { print $1 }' | sort -u | while read -r provider; do
+    printf '%s\t%s\n' "$provider" "$(pi auth check --provider "$provider" 2>&1 | tail -n 1)"
+  done
+  echo "A listed model is declared, not served. Probe the ones you mean to use."
+}
+
+list_codex() {
+  if ! have codex; then echo "codex: not installed"; return; fi
+  local home="${CODEX_HOME:-$HOME/.codex}" cache config
+  cache="$home/models_cache.json"
+  config="$home/config.toml"
+  echo "## codex: the account's model list, cached by the client at $cache"
+  if [ ! -r "$cache" ]; then
+    echo "no cache yet; run any codex command once (codex doctor will do) and retry"
+    return
+  fi
+  if ! have jq; then echo "jq is needed to read the cache"; return; fi
+  jq -r '"fetched \(.fetched_at) by codex \(.client_version)"' "$cache"
+  jq -r '.models[] | select(.visibility == "list")
+         | [.slug, "reasoning: default \(.default_reasoning_level), levels \(.supported_reasoning_levels | map(.effort // .) | join("/"))"]
+         | @tsv' "$cache"
+  if [ -r "$config" ]; then
+    echo "configured default, which is all an unflagged run uses: $(grep -E '^model(_reasoning_effort)? *= ' "$config" | tr '\n' ' ')"
+  fi
+  echo "Pass -m explicitly; the default above changes with the config file."
+}
+
+list_claude() {
+  if ! have claude; then echo "claude: not installed"; return; fi
+  echo "## claude: no list command; --model takes an alias or a full name"
+  claude --help 2>&1 | grep -A 4 -- '--model <model>' || true
+}
+
+report() { # cli model verdict detail
+  printf '%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4"
+  [ "$3" = served ] || REFUSED=1
+}
+
+last_line() { sed -E 's/\x1b\[[0-9;]*m//g' | grep -v '^$' | tail -n 1 | cut -c1-160 || true; }
+
+probe_pi() {
+  local spec="$1" provider model raw ev stop text err
+  provider="${spec%%/*}"
+  model="${spec#*/}"
+  if [ "$provider" = "$spec" ] || [ -z "$model" ]; then
+    echo "pi models are named <provider>/<model>, not: $spec" >&2
+    exit 1
+  fi
+  # pi -p writes nothing without a terminal, so give it one.
+  raw=$(timeout "$TIMEOUT" script -qec \
+    "pi -p --mode json --provider $(printf '%q' "$provider") --model $(printf '%q' "$model") $(printf '%q' "$PROMPT")" \
+    /dev/null 2>&1 | tr -d '\r') || true
+  ev=$(printf '%s\n' "$raw" | grep '^{' \
+    | jq -c 'select(.type == "message_end" and .message.role == "assistant")
+             | { stop: .message.stopReason,
+                 text: ([.message.content[]? | select(.type == "text") | .text] | join("")),
+                 error: (.message.errorMessage // "") }' 2>/dev/null | tail -n 1) || true
+  if [ -z "$ev" ]; then
+    report pi "$spec" refused "$(printf '%s\n' "$raw" | last_line)"
+    return
+  fi
+  stop=$(printf '%s' "$ev" | jq -r .stop)
+  text=$(printf '%s' "$ev" | jq -r .text)
+  err=$(printf '%s' "$ev" | jq -r .error)
+  if [ "$stop" = stop ] && [ -n "$text" ]; then
+    report pi "$spec" served "$(printf '%s' "$text" | head -c 40)"
+  else
+    report pi "$spec" refused "$(printf '%s' "${err:-stopReason=$stop}" | cut -c1-160)"
+  fi
+}
+
+probe_codex() {
+  local model="$1" raw
+  raw=$(timeout "$TIMEOUT" codex exec -m "$model" --sandbox read-only "$PROMPT" < /dev/null 2>&1 | tr -d '\r') || true
+  if printf '%s\n' "$raw" | grep -q '^ERROR:'; then
+    report codex "$model" refused "$(printf '%s\n' "$raw" | grep '^ERROR:' | head -n 1 | sed -E 's/.*"message":"([^"]*)".*/\1/' | cut -c1-160)"
+  elif printf '%s\n' "$raw" | grep -qiE '^OK[.!]?$'; then
+    report codex "$model" served OK
+  else
+    report codex "$model" refused "$(printf '%s\n' "$raw" | last_line)"
+  fi
+}
+
+probe_claude() {
+  local model="$1" raw status=0
+  raw=$(timeout "$TIMEOUT" claude -p --model "$model" "$PROMPT" < /dev/null 2>&1 | tr -d '\r') || status=$?
+  if [ "$status" -eq 0 ] && printf '%s\n' "$raw" | grep -qiE '^OK[.!]?$'; then
+    report claude "$model" served OK
+  else
+    report claude "$model" refused "$(printf '%s\n' "$raw" | last_line)"
+  fi
+}
+
+main() {
+  if [ $# -eq 0 ]; then
+    list_pi; echo; list_codex; echo; list_claude
+    exit 0
+  fi
+  case "$1" in -h|--help) usage; exit 0 ;; esac
+  local cli="$1" model
+  shift
+  if [ $# -eq 0 ]; then usage >&2; exit 1; fi
+  case "$cli" in
+    pi|codex|claude) ;;
+    *) usage >&2; exit 1 ;;
+  esac
+  if ! have "$cli"; then echo "$cli: not installed" >&2; exit 1; fi
+  if [ "$cli" = pi ] && ! have jq; then echo "jq is needed to read pi's json events" >&2; exit 1; fi
+  for model in "$@"; do "probe_$cli" "$model"; done
+  [ "$REFUSED" -eq 0 ] || exit 2
+}
+
+main "$@"
