@@ -20,6 +20,19 @@ Do not assume every machine is running. VMs are disposable and started on demand
 
 Several agents may run in one VM — supported, not accidental. A dirty tree or unexpected branch may be another agent's; leave work in progress alone and pick something else.
 
+
+## Handing a Command to a Human
+
+Anything a human copies out of a terminal can be mangled in transit, and the mangling is silent.
+
+- Every relayed line is one complete command. A backslash continuation becomes two commands when the copy drops or relocates the backslash; the signature is a flag reported as a command (`bash: -R: command not found`) or an argument that simply vanished.
+- Never inline a long opaque token. A wrapping copy inserts whitespace mid-token and the resulting error names the value rather than the wrap. Derive it from a file or a registry so the relayed line stays short.
+- Never assume the working directory. Bake the `cd` into the command instead of describing it in prose above the block; the reader is not standing where you left them.
+- Interactive input is its own command on an idle terminal, never a line inside a pasted block (`shell.md`).
+- If a command is long, or the human is working in a captured session, write a readable script and use a hash-checked transfer: they inspect it, verify its hash after transfer, then execute the file. Never relay content the human cannot read, and never ask them to run an encoded blob.
+
+When a command fails, the error signature names the mechanism. Re-derive the line from its source rather than hand-repairing mangled text.
+
 ## Crossing the Public/Private Boundary
 
 An agent holding private material cannot write public org repos; pushes are refused server-side. That is the boundary working — do not look for another transport or open the change from a fork.

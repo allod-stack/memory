@@ -22,8 +22,7 @@ adapters/              tool-specific entry points that redirect to memory.md
 templates/             blank scaffolds referenced by dev-plans.md
   dev-plan.md
   plan-review-prompt.md
-skills/                portable skills, one directory each, indexed in memory.md
-  age-encrypt-secret/SKILL.md
+skills/                portable skills, one directory each, indexed in README.md
   delegate-implementation/SKILL.md
   fleet-diff/SKILL.md
   forge-groom/SKILL.md
@@ -46,7 +45,6 @@ belongs with the tool, and anything broader is a topic file.
 
 Available skills:
 
-- `age-encrypt-secret` — encrypts a secret into an `.age` ciphertext without the secret ever appearing on the terminal, in argv/history, or in a temp file, and prescribes the paste-safe command shape for anything a human runs by hand.
 - `delegate-implementation` — one integrator, one cheaper worker per issue, and reviewers from another model family through `pi`; how to scope a worker, run `pi` from a script without it silently producing nothing, and what the integrator runs itself before a PR body claims it.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.

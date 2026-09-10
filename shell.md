@@ -6,6 +6,13 @@ Each turns a check into one that always passes. A guard that cannot be shown to 
 
 Never ask a human to paste a multi-command block that enables `set -e`, `set -u`, or `pipefail`, or that calls `exit`. A failed check can terminate their interactive shell and close the terminal tab. Give one command at a time with the expected result. If checks genuinely need shared state or automatic stopping, run them in an explicit child shell or script so failure exits only that child, never the caller's shell.
 
+
+## An interactive `read` inside a pasted block eats the next line
+
+Script input and `read` input are the same stream, so a pasted block arrives line by line and `read` consumes the *following* pasted line as its value — silently under `-s`, where it looks like nothing happened at all. When the buffer ends before a newline it blocks instead, which the operator reads as a hang and kills. Give the `read` as its own command on an idle terminal, and have it report what it captured (`echo "captured ${#K} chars"`) so "did it read anything" is answered immediately.
+
+The guard on that value must be an `if` block. `[ -n "$K" ] || { echo …; return; }` stops nothing: outside a function `return` fails with `can only 'return' from a function or sourced script` and execution continues into the next command. `exit` in the same position does stop, by closing the human's shell.
+
 ## `set -e` exempts inverted and non-final commands
 
 `! cmd` never aborts under `set -e`, so a `! rg <forbidden-token>` scrub assertion is a silent no-op. Use `if rg <forbidden-token> .; then exit 1; fi`.
