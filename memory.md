@@ -10,6 +10,7 @@ Read the topic files relevant to the current task.
 - `git-workflow.md` - branching strategy, Forge CLI usage, issue and PR body formatting
 - `issue-writing.md` - issue scope and structure
 - `dev-plans.md` - development plan requirements and review process
+- `risk.md` - the residual risk score (R0–R4), the calibration walk, and the review pass budget it buys
 - `testing.md` - when checks are written, kept, and deleted: the witness ladder
 - `security-practices.md` - token handling and authentication safety
 - `agent-behavior.md` - scope discipline and interruption handling
@@ -48,7 +49,7 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
 - When manually closing a PR, delete its remote branch with `forge pr close ... -d`.
-- A PR gets an external review pass by its residual risk score (`dev-plans.md`, Risk Assessment), never by its size or by which repo it touches. Walk the worst credible failure after the repo's checks pass — authority of state, blast radius, recoverability, detectability — and take the lowest matching level. R0/R1: no reviewer; the integrator's read plus the checks. R2: one cross-family reviewer. R3/R4: the pass budget. A file's category is a reason to do the walk, not a score.
+- A PR gets an external review pass by its residual risk score (`risk.md`), never by its size or by which repo it touches. Walk the worst credible failure after the repo's checks pass and take the lowest matching level. R0/R1: no reviewer; the integrator's read plus the checks. R2: one cross-family reviewer. R3/R4: the pass budget. A file's category is a reason to do the walk, not a score.
 - When a review pass is run, every claim in the PR body is in scope for that review. A validation claim that was not run, or was run more narrowly than the body states, is a defect in the change.
 - When a change touches shared data or a shared interface, the review measures every consumer, not only the ones the issue named.
 - PR bodies should expose residual risk and validation signal when useful for human triage. Do not block PR creation solely over missing headings. Do not post no-findings update-check comments.
