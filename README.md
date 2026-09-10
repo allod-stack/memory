@@ -45,7 +45,7 @@ belongs with the tool, and anything broader is a topic file.
 
 Available skills:
 
-- `delegate-implementation` — one integrator, one cheaper worker per issue, and reviewers from another model family through `pi`; how to scope a worker, run `pi` from a script without it silently producing nothing, and what the integrator runs itself before a PR body claims it.
+- `delegate-implementation` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
