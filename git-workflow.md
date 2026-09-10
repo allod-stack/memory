@@ -36,7 +36,11 @@ Several agents may share one workspace. Two agents branching off the same commit
 
 ## Branch Protection
 
-The forge is the authoritative wall: framework repo default branches are protected server-side, so a direct push is rejected no matter what the local rails do. `protected-branches` and the `protected-refs-policy` hook are backstops that fail earlier and more legibly — a local rail falling open is a defence-in-depth gap, not a path to publication. `protected-branches` is a hand-maintained mirror of the forge rules and can drift from them silently.
+The forge is the authoritative wall for an account without push rights on the branch: framework repo default branches are protected server-side, so an agent's direct push is rejected no matter what the local rails do. For that account `protected-branches` and the `protected-refs-policy` hook are backstops that fail earlier and more legibly, and a local rail falling open is a defence-in-depth gap rather than a path to publication.
+
+Branch protection does not restrain a repo admin, who can push to a protected default branch directly and may do so routinely. Never offer the forge as the thing that will catch a maintainer's mistaken direct push, and do not reason about their workflow from the agent's constraint: for them the local rails are the only rails, and `modules/agent-hooks.nix` is imported by `mkDevVm` alone, so on a hypervisor there are none.
+
+`protected-branches` is a hand-maintained mirror of the forge rules and can drift from them silently.
 
 - Check effective status: `GET /api/v1/repos/{owner}/{repo}/branches/{branch}` returns `protected` and `user_can_push`.
 - Enumerating or changing the rules needs repo admin, which agents do not have; `/branch_protections` returns 403. Changing protection is a human act at the forge.
