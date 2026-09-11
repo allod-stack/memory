@@ -18,6 +18,8 @@ Optimize for the reader's attention, not the writer's completeness. Every senten
 
 Name a thing in ordinary words at first use; switch to the precise term afterward only when the document needs it repeatedly. Terms that exist only inside this project — worktree flows, R-levels, relay pushes, rail and gate names — are the worst offenders: the writer has just spent hours inside them and mistakes them for shared vocabulary, and the reader has not. If a term would appear only once, keep the ordinary words and drop the term.
 
+A question to the owner is the sharpest case. Ask it by what a person or a machine will observe ("on dev machines this command will not exist at all"), never by the mechanism's name ("behind a build tag"): the owner decides on outcomes, and a question they cannot parse blocks the work. Name the mechanism once, in parentheses, after the plain statement. If the choice makes no observable difference, decide it and say so instead of asking.
+
 ## Bad news goes first
 
 A failure, a blocker, an unmet assumption, or a refusal leads the opening paragraph in plain words: this does not work yet, I could not verify X, I did not do Y because Z. Uncertainty too — say what is known, unknown, and guessed before any detail. Burying the point under technical material costs the most attention exactly when the reader must act, and reads as hiding it.
