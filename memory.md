@@ -25,6 +25,8 @@ Read the topic files relevant to the current task.
 ## Skills
 Discover skills from `skills/` relative to this file; when a task matches a skill's frontmatter description, read its `SKILL.md` and follow it. The user can invoke one by name, for example `fleet-diff`. A skill is how to drive one tool well and is read at the moment that tool is reached for; a topic file is a convention and is read up front. Add a skill only for a tool these workflows invoke where getting it wrong is expensive or silent, and index it in `README.md`.
 
+One skill is read before implementation starts, not when a tool is reached for: `delegate-implementation`. Before the first edit on any issue that spans more than one repo or scores R2 or higher, read `skills/delegate-implementation/SKILL.md` and work as its overseer: workers in their own worktrees do the editing, and reviewers from another model family read each diff cold before the PR body claims validation. A session that implements such an issue single-handed and skips the cross-family pass has skipped the review the PR workflow budgets for it; this has happened, and the owner checks for it.
+
 ## Memory File Hygiene
 - `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
