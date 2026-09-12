@@ -38,7 +38,7 @@ These are titles of closed, unmerged private-memory pull requests whose title st
 ## Hard rules
 
 1. Make at most five edits. An edit is one change a human can accept or reject independently.
-2. Adding, rewriting, or removing an index line requires verbatim quotes from at least two distinct sessions.
+2. Adding, rewriting, or removing an index line requires verbatim quotes from at least two distinct sessions. As the only exception, a one-session add is allowed when the edit states the safety reason in its rationale and the PR body flags it as a one-session safety exception for the human.
 3. Removing an index line requires `harm` sightings from at least two distinct sessions. Non-compliance means the line failed to steer: reinforce it, move it nearer the top, or sharpen its trigger; never remove it for being ignored.
 4. Every edit carries at least one verbatim evidence quote and its `<harness> <session id>` source. Use only quotes supplied in the fold.
 5. The post-edit private index must fit the byte cap. Move detail to a topic file and leave a concise pointer; never raise the cap.

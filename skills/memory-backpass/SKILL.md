@@ -32,9 +32,9 @@ Accept `--report-only`. Keep an owner-controlled count of completed report-only 
 
 5. Fold the surviving evidence. For each instruction id, count positive, non-compliance, and harm sightings and the distinct sessions behind each. Its relevance is the share of all successfully analyzed sessions in which it drew at least one item. For each ledger rule, count distinct source sessions, treating entries judged to express the same rule as one corroboration group.
 
-6. Prepare both ledger prunes: remove a sighting when the date encoded in its trace filename is more than ninety days old, or when its proposed rule now appears in a topic file or either index. Use literal substring coverage when sufficient and the bulk-analysis model's judgment on the fold when meaning, rather than exact wording, establishes coverage. Public prunes remain relay proposals; apply private prunes only in the private change worktree.
+6. Prepare both ledger prunes. Only entries that existed before this run began are eligible for pruning; never prune a sighting added in this run. From those pre-run entries, remove a sighting when the date encoded in its trace filename is more than ninety days old, or when its proposed rule now appears in a topic file or either index. Use literal substring coverage when sufficient and the bulk-analysis model's judgment on the fold when meaning, rather than exact wording, establishes coverage. Public prunes remain relay proposals; apply private prunes only in the private change worktree.
 
-7. Unless `--report-only` is active, create a private-memory worktree with `allod change begin -d memory-backpass-<date> agent-memory`. Apply the prepared private ledger changes there. Make one call to the deployment's strongest model with [synthesis-prompt.md](synthesis-prompt.md), filling in the fold; both numbered indexes and their byte counts against the caps read from `.hooks/memory-budget`; topic filenames with their index descriptions; and titles of closed, unmerged private-memory PRs beginning `memory-backpass:`, read with `forge pr list -s closed`. Give the model the private worktree and require it to edit there. It may propose public edits only under `To relay`; it must never edit the public checkout.
+7. Unless `--report-only` is active, create a private-memory worktree with `allod change begin -d memory-backpass-<date> agent-memory`. Apply the prepared private ledger changes there. Make one call to the deployment's strongest model with [synthesis-prompt.md](synthesis-prompt.md), filling in the fold; both numbered indexes and their byte counts against the caps read from `.hooks/memory-budget`; topic filenames with their index descriptions; and titles of closed private-memory PRs beginning `memory-backpass:` that are not marked merged in the `forge pr list -s closed` listing. The listing carries a merged marker; a landed edit is never treated as a rejection. Give the model the private worktree and require it to edit there. It may propose public edits only under `To relay`; it must never edit the public checkout.
 
 8. Run `.hooks/memory-budget --worktree` in the private worktree. Give a failure back to the same synthesis model to fix within this run. If the corrected edit still fails, drop that edit. Do not raise a cap.
 
@@ -47,7 +47,7 @@ Accept `--report-only`. Keep an owner-controlled count of completed report-only 
 Enforce these rules in the synthesis prompt and when reviewing its result:
 
 - Propose at most five edits.
-- An add, rewrite, or removal of an index line needs supporting quotes from two distinct sessions.
+- An add, rewrite, or removal of an index line needs supporting quotes from two distinct sessions. As the only exception, a one-session add is allowed when the edit states the safety reason in its rationale and the PR body flags it as a one-session safety exception for the human.
 - A removal needs `harm` sightings from two distinct sessions. Several `non-compliance` sightings call for reinforcement, earlier placement, or a sharper trigger, never removal.
 - Every edit includes at least one verbatim quote and its source.
 - The post-edit index fits the cap in `.hooks/memory-budget`.

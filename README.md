@@ -74,7 +74,7 @@ Rules that keep this repo a statement of current state rather than a log
 - Add durable memory to the topic file that owns it; update the index only when adding a new topic file.
 - Record state, not a changelog. Memory is the current state of the world plus the decisions and gotchas that constrain future work — git and the forge already log every merge and close.
 - Retire landed work. When the work an entry tracks goes terminal, the edit compresses it to its one durable fact or deletes it.
-- Keep the always-loaded surface within the tracked hook's byte caps: 16KB for `memory.md`, 24KB per topic file, and no dated index lines; move detail rather than raising a cap.
+- Keep the always-loaded surface within the tracked hook's byte caps: 16KB for `memory.md`, 24KB per topic file, and no ISO date such as `2026-09-08` in `memory.md`; move detail rather than raising a cap.
 - Put one session's lesson in its topic file, or in `ledger.md` when no topic owns it; never put it straight into `memory.md`.
 - Add an index line only after two distinct-session sightings in `ledger.md`, unless the reason it is safety-critical is stated.
 - Remove an index line only when following it caused harm; reinforce or sharpen an ignored line instead.
