@@ -1,6 +1,8 @@
 # Dev Plan Guidelines
 
-Every dev plan must include these sections. Template: `allod/memory/templates/dev-plan.md`.
+A dev plan is written only for R4 work (`risk.md`), or when an arc needs irreversible cross-repo cutover choreography that the tracking issue cannot hold. Everything else — R0 through R3, single-repo or multi-repo — is specified by the tracking issue's body (`issue-writing.md`) and reviewed as code through the PR body (`memory.md`, PR Workflow). Writing a plan for R3 work restates the issue and buys a review of prose; the review budget is spent on the diff instead.
+
+When a plan exists it includes these sections. Template: `allod/memory/templates/dev-plan.md`.
 
 1. **Tracking Issue** - Forge issue URL or number for the work. If multiple PRs are expected, state which PR should carry the closing keyword.
 
@@ -54,20 +56,13 @@ A cross-boundary plan splits: the private plan owns integration and full-build v
 
 ## Plan Review
 
-Iterative review template: `allod/memory/templates/plan-review-prompt.md`.
-
-Review prompts live in the same repository as the dev plan they review.
-See `allod.md` for `allod/strategy` subdirs.
-
-### Pass Budget by Risk
-
-Passes are budgeted by the plan's residual risk per `risk.md`, "Pass Budget by Risk"; R4 rotates to convergence per the sections below.
+Only an R4 plan is reviewed as a document, with the pass budget in `risk.md`. The review request is a comment on the plan's PR naming the plan file, the lenses below, and the severity scale; there is no separate review-prompt file. Findings and their disposition are recorded as PR comments, and the plan is edited in place.
 
 ### Standing Focus Areas
 
-These six lenses apply to every review pass as defaults. Specific focus areas from previous passes replace or supplement them when the prompt is updated between passes.
+These six lenses apply to every plan review pass as defaults, and the same six are the reviewer's lenses on an R4 code diff.
 
-Verify prereqs, and delete each one once met: replace an interface prereq with the contract it now provides, and drop a satisfied sequencing gate (e.g. "lands after branch X merges") outright. Do not keep met preconditions as historical notes — a plan or review prompt is not a log of legacy implementations.
+Verify prereqs, and delete each one once met: replace an interface prereq with the contract it now provides, and drop a satisfied sequencing gate (e.g. "lands after branch X merges") outright. Do not keep met preconditions as historical notes — a plan is not a log of legacy implementations.
 
 1. **Internal consistency** - Do Interface Contracts, PR descriptions, and Acceptance Tests agree?
 2. **Operational sequencing** - Can someone execute the plan cold without getting stuck?
@@ -78,16 +73,11 @@ Verify prereqs, and delete each one once met: replace an interface prereq with t
 
 ### Agent Rotation
 
-Rotate agents between review passes to get different perspectives. Each agent has different blind spots; rotating broadens coverage. The focus areas section and commit history provide continuity so a fresh agent can pick up context without duplicating prior work.
-
-Track fix stability per model. In the review prompt's focus-area updates, record how each model's fixes held up: a fix that survived N later passes is stable; a fix that needed immediate re-fixing in the next pass is not. Review passes are launched manually, one model per pass, so the following are recommendations the finishing pass records for whoever starts the next pass — the agent cannot select the next model itself:
-
-- Prefer the model with the best fix-stability record for verification passes (the scoped diff review of a structural fix).
-- Drop a model from the rotation after repeated same-feature regressions.
+When an R4 review runs more than one pass, rotate models between passes: each has different blind spots. The PR's comments and commit history provide continuity so a fresh reviewer can pick up context without duplicating prior work. Record in the PR how each pass's fixes held up; drop a model from the rotation after repeated same-feature regressions.
 
 ### Review Model Pool
 
-Every runner in the fleet is in the rotation. A cross-vendor swap is the strongest rotation available — different training, different blind spots — so prefer it over a same-family model change when the previous pass found little.
+The pool serves code reviews as much as plan reviews; the roles below read "plan" as "change". A cross-vendor swap is the strongest rotation available — different training, different blind spots — so prefer it over a same-family model change when the previous pass found little.
 
 Re-check which models the current runner can actually instantiate before each pass: a picker row appears or disappears with a CLI bump (`agent-cli-updates.md`), and an entitlement can drop one without warning. The roster below is the current fleet, not a permanent list.
 
@@ -128,6 +118,6 @@ Record the exact effort in every pass. Hold effort constant when comparing model
 
 ### Review Evidence
 
-Keep compact per-plan evidence in the review prompt, not a global model leaderboard. Record the exact model and reasoning effort, reviewed commit and scope, findings by severity and origin, fixing commit, and whether each fix survived later independent passes. Finding more defects is not a negative result; evaluate detection yield separately from the stability of fixes that model authored.
+Review evidence lives in the PR body's Validation section, not in a separate file and not in a global model leaderboard: the exact model and reasoning effort, the reviewed commit, findings by severity, and what was fixed or discarded and why. Finding more defects is not a negative result; evaluate detection yield separately from the stability of fixes that model authored.
 
 Do not accumulate cross-plan win rates, cost guesses, or raw finding totals in shared memory. Those comparisons are meaningful only under a controlled eval with the same plan snapshots, prompts, tool access, budgets, and scoring rubric; keep that dataset and its versioned results as a separate artifact if it becomes useful.

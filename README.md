@@ -19,9 +19,8 @@ adapters/              tool-specific entry points that redirect to memory.md
   claude/CLAUDE.md
   codex/AGENTS.md
   pi/AGENTS.md
-templates/             blank scaffolds referenced by dev-plans.md
+templates/             the dev-plan scaffold referenced by dev-plans.md (R4 plans only)
   dev-plan.md
-  plan-review-prompt.md
 skills/                portable skills, one directory each, indexed in README.md
   delegate-implementation/SKILL.md
   fleet-diff/SKILL.md
@@ -78,11 +77,11 @@ Rules that keep this repo a statement of current state rather than a log
 This repo owns durable, cross-session conventions, workflows, and gotchas — the
 material agents need every session. It does not own active dev plans, review
 prompts, brainstorms, or user stories; those live in `strategy`. Only the blank
-plan and review-prompt scaffolds under `templates/` live here.
+dev-plan scaffold under `templates/` lives here.
 
 ## Related repos
 
-- `strategy` — active dev plans, review prompts, brainstorms, and archives; consumes the `templates/` scaffolds here.
+- `strategy` — active R4 dev plans, brainstorms, and archives; consumes the `templates/` scaffold here.
 - `tools` — the `allod`, `forge`, and workspace CLIs the workflows here invoke.
 - `vm`, `archetypes`, `profiles`, `nexus`, `inventory`, `secrets` — the framework and consumer repos whose conventions the topic files document.
 

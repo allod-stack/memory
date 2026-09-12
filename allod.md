@@ -11,7 +11,7 @@ Self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 ## Allod Directory Conventions
 
 - Each `allod/*` directory is its own git repo.
-- `allod/strategy`: `dev-plans/` active plans; `review-prompts/` active review prompts; `brainstorm/` rough notes; `archive/{dev-plans,review-prompts,user-stories}/` old material.
+- `allod/strategy`: `dev-plans/` active plans (R4 work only, `dev-plans.md`); `review-prompts/` retired plan-review prompts, none new; `brainstorm/` rough notes; `archive/{dev-plans,review-prompts,user-stories}/` old material.
 
 ## Repo Inventory
 

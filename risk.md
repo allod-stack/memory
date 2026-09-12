@@ -1,6 +1,6 @@
 # Residual Risk
 
-One residual risk score, R0–R4, decides how much scrutiny a change still deserves after its validation passes. A dev plan carries it per plan or per PR (`dev-plans.md`); a PR earns its review pass by it (`memory.md`, PR Workflow).
+One residual risk score, R0–R4, decides how much scrutiny a change still deserves after its validation passes. Every PR carries its own score in its body; a PR earns its review pass by it (`memory.md`, PR Workflow), and only an R4 score calls for a dev plan (`dev-plans.md`).
 
 Use one residual risk score for human triage. Residual risk means how much scrutiny is still useful after the plan's validation passes. Prefer this over inherent risk in normal plans; mention inherent risk only when a risky area is substantially reduced by tests, rollout order, or rollback.
 
@@ -28,10 +28,10 @@ Choose the lowest level whose description still matches that residual worst case
 
 ## Pass Budget by Risk
 
-Passes are budgeted by the residual risk score above, and they stop at reality:
+Passes are budgeted by the PR's own residual risk score above — never by the score of the arc it belongs to — and they stop at reality:
 
-- **R0/R1**: one pass, checklist depth.
-- **R2/R3**: at most two passes, then land and measure. A finding beyond pass two that concerns executable behavior is settled by executing - a boot, a generated artifact, a fixture - not by a third reading.
-- **R4**: rotate to convergence (`dev-plans.md`, Agent Rotation).
+- **R0/R1**: no external reviewer; the integrator's read plus the repo's checks.
+- **R2/R3**: one cold cross-family reviewer on the code diff, one fix round, then land and measure. A finding after that round that concerns executable behavior is settled by executing - a boot, a generated artifact, a fixture - not by a second reading.
+- **R4**: two cold cross-family reviewers on the diff; a plan (`dev-plans.md`) reviewed as a document first, rotating models to convergence.
 
 A pass does not re-review a claim that an available witness can execute (`testing.md`): it demands the execution instead. Repeated passes over unexecuted specification do not converge - each pass finding new defects in never-run behavior is the signal to go run it, not to schedule another pass.

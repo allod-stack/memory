@@ -87,8 +87,8 @@ it. Every brief carries:
   two workers never share a checkout;
 - what done means, as commands: the tests, the checks and the evaluation that
   must be green, with the instruction to report their actual output;
-- the boundaries: no push, no attribution trailers, nothing private in a
-  public repo, and the memory tree to read first;
+- the boundaries: commit locally but never push, no attribution trailers,
+  nothing private in a public repo, and the memory tree to read first;
 - what is out of scope, named, so the worker does not wander into the next
   issue.
 
@@ -103,9 +103,14 @@ that had already passed one review has found real defects the first missed,
 including a symlink escape that would have published a system file through a
 public web root. Use a model that did not write the change, from another
 family where the roster offers one, and run it after the final fix so it
-reads the code that will land. Two reviewers per artifact, each reading the
-diff cold, each asked for findings with a file and line, the claimed failure
-and the input that triggers it.
+reads the code that will land. The number of reviewers is the PR's own
+residual risk score (`risk.md`): one for R2 and R3, two for R4. Each reads
+the diff cold and is asked for findings with a file and line, the claimed
+failure and the input that triggers it. One fix round follows; a finding
+that appears after it is settled by a test or a run, not by another reading.
+Reviewers are not stacked on the same slice because the arc is large or
+because a previous worker did poor work — a bad slice gets a better brief,
+not more readers.
 
 Verify every finding against the source before acting on it. Reviewers
 confidently invent bugs in code they did not run; a finding the overseer
@@ -133,6 +138,12 @@ runs it again, or reads the worker's captured output line by line. A
 validation claim in a PR body that was not run, or was run more narrowly than
 the body states, is a defect in the change. The same goes for a reviewer's
 finding: the overseer, not the reviewer, decides it is real.
+
+That is the whole of what the overseer reads: the gate's output, the
+reviewer's findings, and the lines of the diff a finding or a PR-body claim
+points at. Reading every diff in full beside the reviewer, or spawning an
+audit to establish what the diffstat already shows, is the overseer doing
+the reviewer's job a second time at the most expensive tier.
 
 ## Precise limits
 
