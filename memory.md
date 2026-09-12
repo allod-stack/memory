@@ -33,6 +33,11 @@ One skill is read before implementation starts, not when a tool is reached for: 
 - Keep entries maximally concise. State the current capability, limit, or fact plainly; cut historical narration (dates, "verified on X", issue and PR numbers that only recount events) and hedging prose. Keep a reference only when a future reader needs it to act.
 - Record state, not a changelog. Memory = current state of the world + decisions/gotchas that constrain future work. Git and the forge already log every merge/close — never mirror them. Drop "PR #N did X" narration; keep only its durable residue (a new convention, gotcha, or current fact) or nothing.
 - Retire landed work. In-flight pointers are fine while live; when the work an entry tracks goes terminal (merged/closed/done), the edit noting that outcome instead deletes the entry or compresses it to its one durable fact. On every memory edit, sweep the section you touch for already-landed entries.
+- The always-loaded surface has a byte budget, enforced by the tracked pre-commit hook in `.hooks/`: `memory.md` at most 16KB, a topic file at most 24KB, no dated line in `memory.md`. `.hooks/memory-budget --worktree` runs the same check by hand. A commit over the cap moves a section to a topic file and leaves a one-line pointer; it never raises the cap.
+- One session's lesson goes to the topic file that owns it, or to `ledger.md` when no topic file fits yet; never straight into `memory.md`.
+- A line enters `memory.md` only with sightings from two distinct sessions in `ledger.md`, or with a stated reason it is safety-critical. The index is what every session pays for; a topic file is read when its one-line description matches the task.
+- Remove a line from `memory.md` only on evidence that following it caused harm. A line that was ignored is reinforced, moved nearer the top, or given a sharper trigger, never deleted for being ignored.
+- `ledger.md` is not read at session start; its format is at its head, and the `memory-backpass` skill promotes and prunes it.
 
 ## Public vs Private Memory
 

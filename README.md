@@ -14,7 +14,9 @@ material (dev plans, review prompts, brainstorms) lives in `strategy`.
 
 ```
 memory.md              root index — agents read this first, then the topic files it lists
+ledger.md              sightings waiting for corroboration; not read at session start
 <topic>.md             topic files — indexed with one-line descriptions in memory.md
+.hooks/                tracked repository hooks, including the memory byte-budget gate
 adapters/              tool-specific entry points that redirect to memory.md
   claude/CLAUDE.md
   codex/AGENTS.md
@@ -48,6 +50,7 @@ Available skills:
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
+- `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
 
 ## Adapters
 
@@ -71,6 +74,11 @@ Rules that keep this repo a statement of current state rather than a log
 - Add durable memory to the topic file that owns it; update the index only when adding a new topic file.
 - Record state, not a changelog. Memory is the current state of the world plus the decisions and gotchas that constrain future work — git and the forge already log every merge and close.
 - Retire landed work. When the work an entry tracks goes terminal, the edit compresses it to its one durable fact or deletes it.
+- Keep the always-loaded surface within the tracked hook's byte caps: 16KB for `memory.md`, 24KB per topic file, and no dated index lines; move detail rather than raising a cap.
+- Put one session's lesson in its topic file, or in `ledger.md` when no topic owns it; never put it straight into `memory.md`.
+- Add an index line only after two distinct-session sightings in `ledger.md`, unless the reason it is safety-critical is stated.
+- Remove an index line only when following it caused harm; reinforce or sharpen an ignored line instead.
+- Keep `ledger.md` out of session-start reads; `memory-backpass` promotes and prunes it.
 
 ## Memory vs strategy
 
