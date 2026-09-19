@@ -52,6 +52,17 @@ polls. A turn spent asking "done yet?" is tokens spent on no information.
   wake for the same event.
 - **Empty checks are not progress.** Elapsed time, an unchanged status and a
   no-change poll are not worth a turn, a message or a line in a report.
+- **One liveness check, then back to the callback.** A scripted model call is
+  checked once about a minute after launch, because a hung call looks
+  exactly like a working one until its timeout fires, and a callback-only
+  wait spends the whole timeout on a dead process. The check is one command
+  per runner: for codex, the process's stdin is `/dev/null` and its log shows
+  file reads rather than the stdin line; for pi, the output file grows and
+  the process holds an open connection, since a stall is zero output with
+  zero connections and pi never retries; for claude, the process has CPU
+  time or an open connection, and its output file is written only at the
+  end, so an empty file alone is not a stall. Gate on the output's content
+  once it lands, never on the exit status.
 - **Never end a turn blind.** With work under way, a wait is armed before the
   turn ends; a turn that ends with workers running and nothing to wake the
   overseer strands them. A scheduled wake-up is the fallback for external

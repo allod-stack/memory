@@ -56,6 +56,14 @@ unavailable model. Then check readiness: `pi auth check` reports `ready` or
 the credential problem, and `codex doctor` reports whether auth is
 configured. Only after both is a refusal evidence about the model.
 
+There is a third thing to check before spelling and readiness settle it:
+codex refuses every model with `Not inside a trusted directory and
+--skip-git-repo-check was not specified` when the probe runs from a directory
+that is not a git repository (a plain folder holding checkouts, say), and it
+prints that line as the refusal detail, so it reads like an unavailable
+model. Run the probe from inside a repo checkout, or pass
+`--skip-git-repo-check`.
+
 ## Precise limits
 
 - Served means the model answered one short prompt now. It says nothing about

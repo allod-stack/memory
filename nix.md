@@ -76,6 +76,10 @@ nix eval .#nixosConfigurations.<name>...drvPath \
 
 Quote the whole URL — an unquoted `&` backgrounds the command. The override does not persist to the lock; the "not writing modified lock file" warning is expected.
 
+## A flake build sees only tracked files
+
+In a git repository a flake's `self` is filtered to tracked files, so a newly created script or test that has not been `git add`ed is invisible to `nix build` and `nix flake check`: `patchShebangs` skips it, a `test -x` on it fails, and a test listed in `flake.nix` reads as missing. Stage new files — staging is enough, a commit is not required — before building, and read a "no such file" or missing-executable failure on a brand-new file as this before debugging the file itself.
+
 ## Out-path pinning: `path:` overrides are not equivalent to git pins
 
 A `path:` override yields a different toplevel out-path than the same content pinned via git, because the input's own store path enters the closure through file references such as `age.secrets`. Only committed-lock evaluations are authoritative for baseline out-path matching.
