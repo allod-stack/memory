@@ -27,4 +27,11 @@ When a generator cannot be exercised with fixture inputs, widen its parameters a
 
 **Do not name a real machine in a fixture.** A check that picks a production machine to supply a property, such as a runtime or a machine type, breaks when the fleet changes for unrelated reasons. Written as a negative it stops working altogether once the last machine with that property is removed. Build a fixture machine that carries the property instead.
 
+
+**A framework check reads the composed machines or its own fixtures — never a data input's contents by name.** A machine name, a credential name, a ciphertext filename, or a check the input is supposed to export are all data a deployment fork replaces, so naming one passes on the template and fails on every fork, whose only recourse is to exclude the check and lose its coverage. Read `machineConfigurations` iterated dynamically, or build the fixture entirely inside the framework repo. The distinction that keeps this usable: a data repo's *file layout* is contract, because production itself reads `${secrets}/git/protected-branches`, while its *names* are not.
+
+Widening a builder's parameters to make that possible opens a second hole. In archetypes `machineConfigurations` merges `profileData` and inventory's `profile` settings into builder arguments, so every new parameter is also a key the profiles layer can now set: `platform`, `secrets` and `hardware` are pinned back after that merge, and `runtime` is deliberately left overridable. A parameter added for a fixture is a production seam too.
+
+The standing witness is `archetypes/checks/fork-fixture/`, a second synthetic data trio sharing no name with the template's, run by `./fork-safety.sh` with `--override-input` on all three, one `nix` process per check. It is a pin witness for the lock-bump path, not a per-commit gate: evaluating the suite twice on every commit doubles a run that already peaks near the memory ceiling. Keep the fixture a plausible fork — tuning fixture data until a check passes is how the witness stops witnessing.
+
 **Two checks with the same derivation name shadow each other.** Merged check sets keep the last one, so a fork's local check silently replaces the framework's if both use the same `runCommand` name. Nothing warns, and the replaced check never runs again. Assert names are unique after merging.
