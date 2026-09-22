@@ -50,3 +50,7 @@ The `# <host>:<port> SSH-2.0-<version>` line lands on stdout beside the keys, so
 ## Double-escaped metacharacters in single quotes
 
 Single quotes do no backslash processing, so `'\\+'` — meant as a literal `+` — reaches the engine as an escaped backslash plus the `+` quantifier: one or more literal backslashes. Escape once: `'\+'`. Applies to `rg` and `grep -E`; in BRE a bare `+` is already literal.
+
+## `| head` kills the producer after its lines are taken
+
+A script piped into `head -N` gets `SIGPIPE` on its next write after `head` exits and dies there, so a multi-step script whose progress lines are trimmed with `head` runs only its first steps, and every output file a later step would have written is missing without any error. Write to a file and `head` the file, or trim after the script has finished.

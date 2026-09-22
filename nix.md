@@ -181,3 +181,11 @@ It was `"auto"` on 25.11. On 26.05, an entry that sets only `neededForBoot` and 
 ## `path:` on a linked worktree ships a dangling `.git`
 
 `nix build path:<worktree>#checks.…` copies the directory verbatim, `.git` included. In a linked worktree `.git` is a one-line file naming the main checkout's `.git/worktrees/<name>`, a path that does not exist inside the build sandbox, so every `git` invocation a check makes from the copied source dies with `fatal: not a git repository` — including `git check-ref-format`, which needs no repository at all — and the check fails on a test unrelated to the change. Evaluate a worktree by its plain path (`<worktree>#…`): that goes through the git fetcher, which exports tracked files only and still includes uncommitted edits. `path:` is for directories that are not git checkouts.
+
+## A derivation-path witness must normalize the flake's own source hash
+
+`toString ./x`, `self + "/x"` and `"${self}/x"` embed the flake's source store path, whose hash covers the whole tracked tree, so any value built that way, and any derivation that reads a file through it, changes on every commit, including one that touches nothing it reads. A before-and-after derivation-path comparison for a pure move is exact for everything else and reports exactly those values as different. Compare them with `/nix/store/<hash>-source` normalized, or `nix derivation show` both and diff with store hashes normalized, before reading the difference as a change; a `${./x}` path literal copies only that file and is stable. The standing examples: `lib.vmHostKeySecretFiles` and the `credential-inventory` check in allod/secrets, and archetypes' `credential-store-url-parity`, which reads `${secrets}/credential-store-url.json`.
+
+## Free variables of an extracted expression are known at parse time
+
+`nix-instantiate --parse <file>` reports `undefined variable 'x'` without evaluating anything, so a body cut out of a larger file into its own function can have its argument list discovered by looping on that error rather than read off by hand. The dedent is the other hazard of such a move: a line at column zero inside an indented string pins that string's absolute indentation, so a uniform dedent changes its text; check with `awk` before dedenting and keep the original indentation where one exists.
