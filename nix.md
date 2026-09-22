@@ -189,3 +189,7 @@ It was `"auto"` on 25.11. On 26.05, an entry that sets only `neededForBoot` and 
 ## Free variables of an extracted expression are known at parse time
 
 `nix-instantiate --parse <file>` reports `undefined variable 'x'` without evaluating anything, so a body cut out of a larger file into its own function can have its argument list discovered by looping on that error rather than read off by hand. The dedent is the other hazard of such a move: a line at column zero inside an indented string pins that string's absolute indentation, so a uniform dedent changes its text; check with `awk` before dedenting and keep the original indentation where one exists.
+
+## An agenix ciphertext argument is a path, never a string
+
+A Nix path value for a secret file puts exactly that one `.age` file in the closure. A string's effect depends on its spelling: `"${./secrets}/x.age"` copies the whole directory into the store and so into the closure, `"${./secrets/x.age}"` only the file, and nothing downstream tells the two apart, so the leaking spelling is one keystroke from the safe one. `mkDevVm` refuses a string for `tokenFile` and `httpsTokenFile` (`nonPathTokenArguments` in `nix/builders/dev.nix`); a module's own `age.secrets.<name>.file` or `home.file` is a different shape, carved by the `consumed-file-carve-out` check instead (allod/archetypes#21).
