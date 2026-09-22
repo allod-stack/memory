@@ -28,6 +28,16 @@ A failure, a blocker, an unmet assumption, or a refusal leads the opening paragr
 
 Lead plainly; never blur a technical fact into a wrong one. Where exactness is load-bearing — a command, an interface contract, a security boundary, a version, an error message — give the exact form verbatim next to its plain statement, and let precision win. A friendly paraphrase that changes the meaning is a defect, not a simplification.
 
+## Code comments
+
+A comment in code is for one of three things: a contract a caller relies on that the code cannot express, the trap the obvious alternative falls into, or a pointer to where the long version lives. Everything else moves out or goes. What the code does is the job of the code and its names; how it used to be and which issue changed it are git's and the forge's; a paragraph of reasoning belongs in the README, in a memory topic file, or in the issue it cites, and the comment becomes the pointer.
+
+- Name the thing, never its position. "Above", "below", "the caller", "in flake.nix" go false the moment code moves and nothing warns; the name of the function, argument, file or check survives the move.
+- One paragraph per binding. Reasoning that needs more is a README section, a topic file entry or an issue, and the comment names it.
+- A "don't" a check can enforce becomes the check (`architecture.md` principle 14), and the comment shrinks to one line naming the check.
+- The test for a block is not its length. Without it, would a good reader plausibly change the code to something wrong? Then it stays, as the trap plus a pointer. If it explains what, or history, or something a name could say, it goes.
+- Cutting comments never loses a trap. Every block that was preventing a plausible wrong edit is kept in compressed form or replaced by something that prevents the edit.
+
 ## Where this applies
 
 Everything a human reads: chat replies, reports, docs, review comments, PR and issue bodies, plan sections, commit messages. Artifact shapes stay with their owners — `issue-writing.md` for issue bodies (its plain opening sentence is this rule applied), `dev-plans.md` for plan sections, `git-workflow.md` for PR bodies and commit messages, `memory.md` hygiene for memory files. This file adds no headings, sections, or steps anywhere; it governs the order and the words of what is already being written.
