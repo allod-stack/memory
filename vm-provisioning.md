@@ -45,7 +45,6 @@ The public example carrying the new runtime must therefore be an example and not
 - **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets or optional credentials can be unavailable. In NixOS activation snippets, use a conditional no-op for missing optional resources; do not `exit 0`, because snippets are concatenated into one activation script and that exits the whole activation before `/run/current-system` is linked.
 - **Host-key rotation does not re-key the installer image** - `provision-vm` passes the host key to `nixos-anywhere` as both the age identity and the SSH identity for `root@<target>`, so the installer image must already trust that key. Until the image is rebuilt with the rotated key, provisioning fails with `Permission denied (publickey)`. Tracked as `allod/nexus` issues #8 and #9.
 - **VMs get virtio-gpu without 3D** - `new-vm` passes no `--video`, so guests boot with `-virgl` and zero cap sets. A GPU PCI ID and a world-readable render node exist anyway, so read `dmesg | grep 'features:'` before claiming a VM has 3D. EGL needs `hardware.graphics.enable`, which is off fleet-wide and buys llvmpipe software rendering for about 229 MiB.
-- **`archetypes` `checks.<system>.pi-integration` hard-codes memory checkout aliases** instead of deriving them from the composed `profile.memoryCheckouts`, so a fork re-exporting framework checks may need to filter that one out until `allod/archetypes` issue #11 lands.
 
 ## Checkout Paths Are Load-Bearing
 
