@@ -13,18 +13,18 @@ This procedure names no provider or model. Read the deployment's `agent-roster` 
 
 Read these inputs in order:
 
-1. The traces checkout: a git repository of distilled session traces produced by `allod trace distill`, with one Markdown file per session at `<machine>/<harness>/<date>-<session-id>.md`.
+1. One or more traces checkouts, each a git repository of distilled session traces produced by `allod trace distill`, with one Markdown file per session at `<machine>/<harness>/<date>-<session-id>.md`.
 2. The public memory checkout.
 3. The private memory checkout, `agent-memory`.
-4. `<traces>/.memory-backpass/analyzed.txt`, one session-file path per line. Create it if absent. Commit it to the traces repository at the end of a successful run.
+4. `<traces>/.memory-backpass/analyzed.txt` in each checkout, one session-file path per line, tracking that checkout's own trace paths. Create it if absent. Commit it to its traces repository at the end of a successful run.
 
 Accept `--report-only`. Keep an owner-controlled count of completed report-only runs and do not schedule this skill until the owner has compared the first two reports.
 
 ## Procedure
 
-1. Pull the traces checkout and both memory repositories. Number every bullet in each `memory.md` by current position: `PUB-001`, `PUB-002`, ... for public memory and `PRV-001`, `PRV-002`, ... for private memory. Render each as `[id] text`; the ids are run-local references, not text written back to memory. Render every open line from both `ledger.md` files with the stable id `L-<first 8 hex characters of the line's SHA-256>`.
+1. Pull every traces checkout and both memory repositories. Number every bullet in each `memory.md` by current position: `PUB-001`, `PUB-002`, ... for public memory and `PRV-001`, `PRV-002`, ... for private memory. Render each as `[id] text`; the ids are run-local references, not text written back to memory. Render every open line from both `ledger.md` files with the stable id `L-<first 8 hex characters of the line's SHA-256>`.
 
-2. For each trace path absent from `analyzed.txt`, make one call to the deployment's bulk-analysis model with [analysis-prompt.md](analysis-prompt.md), filling every `{{NAME}}` placeholder with the instruction index, open ledger entries, trace path, and trace. Gate success on the returned content, never the process exit status. The answer must parse as one JSON object containing `positive`, `negative`, and `gaps` arrays in the prompt's schema. Retry an empty or unparseable answer once with the same model. After a second failure, record that trace as failed in the run report; do not silently change models and do not mark it analyzed.
+2. For each traces checkout, for each trace path absent from that checkout's `analyzed.txt`, make one call to the deployment's bulk-analysis model with [analysis-prompt.md](analysis-prompt.md), filling every `{{NAME}}` placeholder with the instruction index, open ledger entries, trace path, and trace. Gate success on the returned content, never the process exit status. The answer must parse as one JSON object containing `positive`, `negative`, and `gaps` arrays in the prompt's schema. Retry an empty or unparseable answer once with the same model. After a second failure, record that trace as failed in the run report; do not silently change models and do not mark it analyzed.
 
 3. Mechanically whitespace-fold each returned `quote` and the trace, then discard every item whose folded quote is not a substring of the folded trace. This check is mandatory even when the model reports high confidence. Count discarded items for the funnel.
 
@@ -40,7 +40,7 @@ Accept `--report-only`. Keep an owner-controlled count of completed report-only 
 
 9. Run `allod change record` and `allod change submit` from the private worktree. Use title `memory-backpass: <date>`. The body starts with one plain paragraph giving sessions read, findings kept and quote-dropped, and edits proposed. Follow it with one section per edit containing its title, diff, rationale, and verbatim quotes with `<harness> <session id>` sources; then `To relay`; then a funnel counting traces analyzed, items returned, items dropped for a missing quote, ledger entries corroborated, and edits proposed. Every memory write remains behind this pull-request review; never push a memory repository's default branch and never merge.
 
-10. With `--report-only`, do everything except steps 7 through 9. Print the fold and every would-be ledger addition or prune, and write nothing to either memory repository. Still commit the successful trace-path additions to `analyzed.txt` in the traces repository at the end.
+10. With `--report-only`, do everything except steps 7 through 9. Print the fold and every would-be ledger addition or prune, and write nothing to either memory repository. Still commit the successful trace-path additions to `analyzed.txt` in each checkout it touched.
 
 ## Synthesis gates
 
