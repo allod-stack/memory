@@ -76,6 +76,8 @@ nix eval .#nixosConfigurations.<name>...drvPath \
 
 Quote the whole URL — an unquoted `&` backgrounds the command. The override does not persist to the lock; the "not writing modified lock file" warning is expected.
 
+`--override-input` binds to the flake named as an installable, so it reaches `.#nixosConfigurations.<name>...` but not an `--expr` that reads the same flake through `builtins.getFlake`: there the overrides are silently dropped and the eval reports the committed pins. The failure is invisible — the run succeeds and prints plausible drvPaths — so read an override run that reproduces the base branch's output byte for byte as an override that never applied, not as a change with no effect.
+
 ## A flake build sees only tracked files
 
 In a git repository a flake's `self` is filtered to tracked files, so a newly created script or test that has not been `git add`ed is invisible to `nix build` and `nix flake check`: `patchShebangs` skips it, a `test -x` on it fails, and a test listed in `flake.nix` reads as missing. Stage new files — staging is enough, a commit is not required — before building, and read a "no such file" or missing-executable failure on a brand-new file as this before debugging the file itself.

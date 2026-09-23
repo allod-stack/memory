@@ -39,6 +39,8 @@ Run `forge --help` for full usage.
 
 Reads: `forge issue view <n>` and `forge pr view <n>` print the body and every comment; `forge issue list` and `forge pr list` enumerate; `forge pr review-comments <n>` lists inline threads with the IDs `forge pr reply` takes. Read through `forge`, never the Forgejo REST API.
 
+Forgejo gives issues and pull requests one number space, and `forge issue view <n>` renders a pull request under an `Issue #N` heading rather than refusing it, while `forge issue list` correctly omits pull requests. So a number that `issue view` shows as open but the issue list never mentions is a PR, not a listing bug: confirm with `forge pr view <n>`, which names the head and base branches. Reading the mismatch the other way — trusting the list and calling the item closed — is the error this costs.
+
 Mutation commands follow the common content-flag shape:
 
 ```bash
