@@ -59,4 +59,4 @@ Every prompt sent by this skill must begin with `<!-- memory-backpass:self -->`,
 
 ## Failures
 
-Stop with a one-line report when the traces checkout is missing, a required model is unreachable, or a credential is refused. Never fall back to another model silently. A run never pushes to a memory repository's default branch and never merges.
+Stop with a one-line report when a traces checkout is missing, a required model is unreachable, or a credential is refused. Never fall back to another model silently. A run never pushes to a memory repository's default branch and never merges.
