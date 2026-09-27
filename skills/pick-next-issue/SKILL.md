@@ -1,6 +1,6 @@
 ---
 name: pick-next-issue
-description: Sweep every open issue across the allod repos on the forge, verify the candidates against master, pick the one worth implementing next, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got", or when a session has landed its assigned work and has capacity left.
+description: Sweep every open issue in the repos this agent can push to, verify the candidates against master, pick the one worth implementing next, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got", or when a session has landed its assigned work and has capacity left.
 ---
 
 # pick-next-issue
@@ -13,9 +13,10 @@ implemented until the owner answers.
 
 ## Sweep
 
-- List every open issue in every registry repo: `forge -R allod/<repo> issue
-  list` for each `allod/*` checkout under the workspace root. Skip nothing on
-  the first pass; a repo with one issue may hold the pick.
+- List every open issue in every registry repo this agent can push to:
+  `forge -R <owner>/<repo> issue list` for each such checkout under the
+  workspace root. A repo it can only read is another agent's to pick from.
+  Skip nothing on the first pass; a repo with one issue may hold the pick.
 - List open PRs the same way. An issue with an open PR is implemented and
   waiting on review, not available; the tracker cannot show that link
   (`allod/memory` issue #60), so read PR bodies for `Closes`/`Refs` lines.
@@ -84,8 +85,8 @@ last, no project jargon at first use.
 Then stop. Do not cut a worktree, do not start reading code for the fix, do
 not draft a plan. A "no" or "what else" restarts at the shortlist with the
 rejected pick and its reason recorded; the reason is a ranking signal ("I
-never use that tool" demotes everything in that tool). A "yes" for one issue
-is ordinary issue work; a "yes" for more than one goes through
+never use that tool" demotes everything in that tool). A "yes" is issue work
+like any other, and `memory.md` says when that goes through
 `delegate-implementation`.
 
 ## What this skill is not
