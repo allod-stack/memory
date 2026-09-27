@@ -48,7 +48,9 @@ The public example carrying the new runtime must therefore be an example and not
 
 ## Checkout Paths Are Load-Bearing
 
-`protected-refs-policy` and `allod change` resolve a repo by its `$HOME`-relative checkout path and treat a lookup miss as "not protected", so a repo checked out anywhere other than its registry path silently loses its local rails — no refusal, no hook block. The commit lands locally; the push is still refused forge-side (see `git-workflow.md`), so this costs a manual reset rather than an unwanted publication. Keep checkouts at the exact registry path; a non-canonical layout is a broken guardrail. `allod/tools` issue #112.
+`protected-refs-policy` and `allod change` look a repo up by its `$HOME`-relative checkout path first, then by the `owner/repo` its `origin` names. A protected repo checked out anywhere other than its listed path is refused, not unprotected: `allod change begin` and `record` exit 8 on any branch, the hook blocks the protected branch, and both name the expected and the actual path. Keep checkouts at the exact registry path. A repo whose origin matches no entry, or that has no origin, is unprotected silently. A machine whose hook predates this (`git-workflow.md`, Worktrees and Concurrent Agents) still falls open on a misplaced checkout; the push is refused forge-side either way.
+
+`flake-update-cascade` reads the same list by the literal line `work/<repo> <branch>` and never looks at the checkout, so it follows neither rule: `allod/tools` issue #237.
 
 ## Privacy VMs
 
