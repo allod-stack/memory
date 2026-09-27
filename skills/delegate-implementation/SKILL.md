@@ -152,27 +152,11 @@ the body states, is a defect in the change. The same goes for a reviewer's
 finding: the overseer, not the reviewer, decides it is real.
 
 That is the whole of what the overseer reads: the gate's output, the
-reviewer's findings, the lines of the diff a finding or a PR-body claim
-points at, and the comments the diff adds. Reading every diff in full beside
-the reviewer, or spawning an audit to establish what the diffstat already
-shows, is the overseer doing the reviewer's job a second time at the most
-expensive tier.
-
-The comment pass is the one read every PR gets, because R0 and R1 have no
-reviewer and the integrator is the only fresh context. List what the branch
-added and read each block against `writing.md`, Code comments:
-
-```
-git diff origin/master | grep -n '^+\s*\(//\|#\)'
-```
-
-A block stays when a reader who lacks it would plausibly change the code to
-something wrong, or when it states a contract the code cannot; what the code
-does, why it changed, and which issue changed it go to the README or the PR
-body, and the block shrinks to the trap or a pointer. Length is not the test,
-so a three-line trap survives and a one-line paraphrase of the next statement
-does not. Send the trim to the worker as part of the fix round; the fix round
-is one round whether it carries a defect, a comment, or both.
+reviewer's findings, and the lines of the diff a finding or a PR-body claim
+points at. Reading every diff in full beside the reviewer, or spawning an
+audit to establish what the diffstat already shows, is the overseer doing
+the reviewer's job a second time at the most expensive tier. A comment
+finding from the reviewer rides the same single fix round as a defect.
 
 ## Precise limits
 
