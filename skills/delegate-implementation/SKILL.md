@@ -113,8 +113,13 @@ family where the roster offers one, and run it after the final fix so it
 reads the code that will land. The number of reviewers is the PR's own
 residual risk score (`risk.md`): one for R2 and R3, two for R4. Each reads
 the diff cold and is asked for findings with a file and line, the claimed
-failure and the input that triggers it. One fix round follows; a finding
-that appears after it is settled by a test or a run, not by another reading.
+failure and the input that triggers it, and, as a named second dimension,
+for added comments that explain what the code does, narrate history or an
+issue, or belong in a README or the PR body (`writing.md`, Code comments).
+The author cannot see their own comment bloat; the cold reader can, and a
+prompt that asks for correctness only tells them not to say so. One fix
+round follows; a finding that appears after it is settled by a test or a
+run, not by another reading.
 Reviewers are not stacked on the same slice because the arc is large or
 because a previous worker did poor work — a bad slice gets a better brief,
 not more readers.
@@ -147,10 +152,27 @@ the body states, is a defect in the change. The same goes for a reviewer's
 finding: the overseer, not the reviewer, decides it is real.
 
 That is the whole of what the overseer reads: the gate's output, the
-reviewer's findings, and the lines of the diff a finding or a PR-body claim
-points at. Reading every diff in full beside the reviewer, or spawning an
-audit to establish what the diffstat already shows, is the overseer doing
-the reviewer's job a second time at the most expensive tier.
+reviewer's findings, the lines of the diff a finding or a PR-body claim
+points at, and the comments the diff adds. Reading every diff in full beside
+the reviewer, or spawning an audit to establish what the diffstat already
+shows, is the overseer doing the reviewer's job a second time at the most
+expensive tier.
+
+The comment pass is the one read every PR gets, because R0 and R1 have no
+reviewer and the integrator is the only fresh context. List what the branch
+added and read each block against `writing.md`, Code comments:
+
+```
+git diff origin/master | grep -n '^+\s*\(//\|#\)'
+```
+
+A block stays when a reader who lacks it would plausibly change the code to
+something wrong, or when it states a contract the code cannot; what the code
+does, why it changed, and which issue changed it go to the README or the PR
+body, and the block shrinks to the trap or a pointer. Length is not the test,
+so a three-line trap survives and a one-line paraphrase of the next statement
+does not. Send the trim to the worker as part of the fix round; the fix round
+is one round whether it carries a defect, a comment, or both.
 
 ## Precise limits
 
