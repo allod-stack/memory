@@ -29,6 +29,8 @@ skills/                portable skills, one directory each, indexed in README.md
   forge-groom/SKILL.md
   list-models/SKILL.md
   list-models/probe-models
+  memory-backpass/SKILL.md
+  pick-next-issue/SKILL.md
 ```
 
 ## Skills
@@ -51,6 +53,7 @@ Available skills:
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
 - `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
+- `pick-next-issue` — sweeps every open issue on the forge, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
 
 ## Adapters
 
