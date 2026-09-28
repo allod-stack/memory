@@ -6,7 +6,7 @@ Allod is a self-sovereign NixOS VM stack for agentic coding and privacy tasks.
 Read the topic files relevant to the current task.
 - `allod.md` - Allod overview, repository inventory, and Forge CLI notes
 - `architecture.md` - core architecture principles; read before any architecture or design decision of consequence
-- `cli-design.md` - CLI ergonomics rules for flags and usage text
+- `cli-design.md` - CLI ergonomics rules for command names, flags, and usage text
 - `git-workflow.md` - branching strategy, Forge CLI usage, issue and PR body formatting
 - `issue-writing.md` - issue scope and structure
 - `dev-plans.md` - development plan requirements and review process

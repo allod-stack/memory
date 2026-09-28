@@ -4,6 +4,10 @@ A CLI is a human-facing interface. Apply ordinary UX judgment to it, and settle 
 
 Copy `gh` wherever it has an established shape for the case at hand — flag names, short aliases, and value-list handling follow it rather than a local invention.
 
+## Command names
+
+Name a command with the verb for what it does on the machine it runs on, not for what the owner gets out of it, and take the domain's own verb where its tools agree on one: `allod site serve`, as in `zola serve` and `hugo serve`, not `site preview`. Two commands in one namespace must not both read as "show me the thing". A noun keeps its place where it names the thing itself: the flake app, the registry field and the unit served by `serve` are still `preview`.
+
 ## Multi-value flags
 
 - Value lists take comma-separated values, and repeating the flag accumulates: `forge --label a,b` and `forge --label a --label b` name the same set. This is `gh`'s shape, and `forge` already follows it — `-l|--label`, `--add-label`, `--remove-label`, `--set`. Space-separated values after such a flag are an error, not a second spelling.

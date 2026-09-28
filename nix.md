@@ -80,6 +80,14 @@ Quote the whole URL — an unquoted `&` backgrounds the command. The override do
 
 In a git repository a flake's `self` is filtered to tracked files, so a newly created script or test that has not been `git add`ed is invisible to `nix build` and `nix flake check`: `patchShebangs` skips it, a `test -x` on it fails, and a test listed in `flake.nix` reads as missing. Stage new files — staging is enough, a commit is not required — before building, and read a "no such file" or missing-executable failure on a brand-new file as this before debugging the file itself.
 
+## `nixpkgs#<package>` answers for the machine, not for the repository
+
+`nix eval nixpkgs#zola.version` resolves `nixpkgs` through the flake registry, which on these machines is the system's own nixpkgs, so it can name a different version than the repository being worked on pins (0.22.1 against 0.23.6, measured). Ask the pin: `nix eval --raw --inputs-from <checkout> nixpkgs#<package>.version`.
+
+## `nix run` writes a lock file into a checkout that has none
+
+`nix run <dir>#<app>` on a flake without `flake.lock` writes one into the directory and adds it to the git index. `builtins.getFlake "<dir>"` under `nix eval --impure --expr` does not; it warns `not writing modified lock file`. `nix eval --expr` also does not call a function with `--arg` or `--argstr` (`cannot coerce a function to a string`), so a value reaches such an expression only through its text: refuse or escape what the value may contain.
+
 ## Out-path pinning: `path:` overrides are not equivalent to git pins
 
 A `path:` override yields a different toplevel out-path than the same content pinned via git, because the input's own store path enters the closure through file references such as `age.secrets`. Only committed-lock evaluations are authoritative for baseline out-path matching.

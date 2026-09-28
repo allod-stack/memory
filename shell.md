@@ -43,6 +43,14 @@ A prune that fails to remove an admin entry — an unwritable `.git/worktrees/<n
 
 Both matter most in isolation fixtures, where "the command failed" is the evidence: a probe that succeeds against nothing reads as a successful attack, and one that succeeds vacuously reads as a closed boundary.
 
+## `systemctl` exit codes that read as absence
+
+`systemctl --user stop <unit>` exits 5 with `Unit ... not loaded` for a unit that never ran or was already collected, so a stop cannot double as the test for "was it running". `is-active --quiet <unit>` exits 0 for active, 3 for failed or activating, 4 for inactive or no such unit, and 1 when the user manager cannot be reached; reading every non-zero as "not running" reports a machine whose manager is unreachable as clean. `list-units <pattern>` exits 0 with no output for no match and 1 for an unreachable manager, so `|| true` on it turns a failed probe into an empty list. Measured on systemd 260.
+
+## `websocat` in line mode hides an empty frame
+
+A WebSocket text frame of length zero prints nothing in `websocat`'s line mode, and live-server's reload signal is exactly that frame, so a reload probe built on `websocat` alone reports that reload is broken. Read the bytes after the handshake instead: `od -c` shows `0x81 0x00`.
+
 ## `ssh-keyscan` writes its banner to stdout
 
 The `# <host>:<port> SSH-2.0-<version>` line lands on stdout beside the keys, so `2>/dev/null` does not remove it. A field-extracting comparison then holds two lines and never matches the registry, and a "the host offered exactly one key" count reads the banner as a key, so a host offering a second one passes. Drop comments first: `ssh-keyscan ... | grep -v '^#'`.
