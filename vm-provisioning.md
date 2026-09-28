@@ -50,7 +50,9 @@ The public example carrying the new runtime must therefore be an example and not
 
 `protected-refs-policy` and `allod change` look a repo up by its `$HOME`-relative checkout path first, then by the `owner/repo` its `origin` names. A protected repo checked out anywhere other than its listed path is refused, not unprotected: `allod change begin` and `record` exit 8 on any branch, the hook blocks the protected branch, and both name the expected and the actual path. Keep checkouts at the exact registry path. A repo whose origin matches no entry, or that has no origin, is unprotected silently. A machine whose hook predates this (`git-workflow.md`, Worktrees and Concurrent Agents) still falls open on a misplaced checkout; the push is refused forge-side either way.
 
-`flake-update-cascade` reads the same list by the literal line `work/<repo> <branch>` and never looks at the checkout, so it follows neither rule: `allod/tools` issue #237.
+`flake-update-cascade` follows the same rule through the shared `internal/protection` package, and stops before touching anything on a misplaced checkout or on a list it cannot read. It also still honours the key `work/<repo>` wherever `WORK_DIR` puts the workspace. It gives a verdict only for repositories the run would touch.
+
+The installed `allod` and `flake-update-cascade` are wrappers that put the real `git` first on `PATH`, so a test suite with a stand-in `git` fails against them from its first case. Point `ALLOD_UNDER_TEST` and `CASCADE_UNDER_TEST` at the `.…-wrapped` binary beside the wrapper, and search that file, not the wrapper, when checking what a build contains.
 
 ## Privacy VMs
 
