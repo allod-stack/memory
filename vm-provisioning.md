@@ -16,6 +16,7 @@ Real-but-public component names — the forge host, the agent account — are co
 
 - Machine platform, type, and hardware: `inventory/flake.nix`
 - VM IPs, repos, and Forge keys: `inventory/scripts/vm-specs.json`, derived from the Nix attrset
+- Which registry `allod` reads on a dev VM: the machine's `profile.inventoryCheckout` in `inventory/flake.nix`, rendered as `INVENTORY`; unset, `allod` there reads the public `allod/inventory` checkout. It is never set in `vm-specs.json`, which is generated
 - Nexus hardware module: `inventory/hosts/nexus/hardware.nix`
 - VM profile definitions (per-machine modules): `profiles/hosts/<archetype>/<name>/`; composed by the `archetypes` framework
 - Provisioning scripts: `nexus/scripts/`; deploy through the normal flake update and rebuild path
