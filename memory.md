@@ -27,6 +27,9 @@ Discover skills from `skills/` relative to this file; when a task matches a skil
 
 One skill is read before implementation starts, not when a tool is reached for: `delegate-implementation`. Before the first edit on any issue that spans more than one repo or scores R3 or higher, read `skills/delegate-implementation/SKILL.md` and work as its overseer: workers in their own worktrees do the editing, and a reviewer from another model family reads each diff cold before the PR body claims validation, with the number of reviewers set by `risk.md`. A session that implements such an issue single-handed and skips the cross-family pass has skipped the review the PR workflow budgets for it; this has happened, and the owner checks for it.
 
+## Before the First Edit
+- Before building an issue as written, state the need in one sentence and the smallest change that meets it, and name what each feature saves the owner. An issue is its author's proposal, not a decision: when a smaller change meets the need, say so before the first edit, not after the pull request (`agent-behavior.md`, Scope Discipline).
+
 ## Memory File Hygiene
 - `memory.md` is the only root memory file.
 - Add durable memory to the listed topic file that owns it, or update this index when adding a new topic file.
@@ -53,6 +56,7 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 
 ## PR Workflow
 - Every PR body opens with an owner summary: at most 10 plain-English lines stating what changes for a running machine, what stays identical, what proves it, and what to do if it is wrong. The merge gate is the human restating those four in their own words; a summary the owner cannot restate means the change is too big or mis-summarized, and it does not merge. Everything below the summary is for reviewers.
+- Before a PR opens, cut every comment its diff adds down to a contract, a trap or a pointer, in one to three lines, and delete the rest (`writing.md`, Code comments). The integrator does this itself after the last fix round: a worker's or a reviewer's trim stops at shorter.
 - When the user suggests a change to an open PR, comment on the PR recording the request before implementing it.
 - Link every implementation PR to the tracking issue. For multi-repo work, use `Refs` on earlier PRs and `Closes` only on the final integration PR.
 - When manually closing a PR, delete its remote branch with `forge pr close ... -d`.

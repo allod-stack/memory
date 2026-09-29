@@ -32,6 +32,7 @@ Lead plainly; never blur a technical fact into a wrong one. Where exactness is l
 
 A comment in code is for one of three things: a contract a caller relies on that the code cannot express, the trap the obvious alternative falls into, or a pointer to where the long version lives. Everything else moves out or goes. What the code does is the job of the code and its names; how it used to be and which issue changed it are git's and the forge's; a paragraph of reasoning belongs in the README, in a memory topic file, or in the issue it cites, and the comment becomes the pointer.
 
+- The usual count is none and the usual size is one line. Most functions and tests need no comment, because their names say what they do; a comment that restates a name is deleted, not shortened.
 - Name the thing, never its position. "Above", "below", "the caller", "in flake.nix" go false the moment code moves and nothing warns; the name of the function, argument, file or check survives the move.
 - One paragraph per binding. Reasoning that needs more is a README section, a topic file entry or an issue, and the comment names it.
 - A "don't" a check can enforce becomes the check (`architecture.md` principle 14), and the comment shrinks to one line naming the check.
