@@ -17,10 +17,6 @@ memory.md              root index — agents read this first, then the topic fil
 ledger.md              sightings waiting for corroboration; not read at session start
 <topic>.md             topic files — indexed with one-line descriptions in memory.md
 .hooks/                tracked repository hooks, including the memory byte-budget gate
-adapters/              tool-specific entry points that redirect to memory.md
-  claude/CLAUDE.md
-  codex/AGENTS.md
-  pi/AGENTS.md
 templates/             the dev-plan scaffold referenced by dev-plans.md (R4 plans only)
   dev-plan.md
 skills/                portable skills, one directory each, indexed in README.md
@@ -55,25 +51,22 @@ Available skills:
 - `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
 - `pick-next-issue` — sweeps every open issue in the repos the agent can push to, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
 
-## Adapters
+## Harness bootstraps
 
-Each coding agent tool has its own native memory filename. A tool's native
-memory config points at `adapters/<tool>/<file>` here — a small entry point in
-that tool's format (`CLAUDE.md` for Claude, `AGENTS.md` for Codex and Pi). Each
-entry point carries the conversation-start instruction itself and names
-`memory.md` directly, so reaching the index costs one file read. That sentence is
-repeated in all three deliberately: routing them through a shared include trades
-one repeated sentence for an extra file read at the start of every session, and
-adds a relative hop an agent can misresolve into skipping memory entirely.
-Tool-specific policy that cannot live in memory stays in the adapter (e.g. the
-Claude adapter's attribution ban).
+Sessions reach `memory.md` in one hop: each VM's harness bootstrap file
+(`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.pi/agent/AGENTS.md`) is
+generated at VM build time by the allod/archetypes home-manager module, from
+the inventory registry's memory-marked repositories, and names the absolute
+`memory.md` path of every memory checkout the machine clones. This repo keeps
+no per-tool entry points; tool-specific policy that cannot live in memory
+(such as Claude's attribution ban) lives in the generator's Claude template.
 
 ## Memory hygiene
 
 Rules that keep this repo a statement of current state rather than a log
 (stated in `memory.md`):
 
-- `memory.md` is the only root memory file; everything else is a topic file, adapter, or template.
+- `memory.md` is the only root memory file; everything else is a topic file or template.
 - Add durable memory to the topic file that owns it; update the index only when adding a new topic file.
 - Record state, not a changelog. Memory is the current state of the world plus the decisions and gotchas that constrain future work — git and the forge already log every merge and close.
 - Retire landed work. When the work an entry tracks goes terminal, the edit compresses it to its one durable fact or deletes it.
