@@ -62,3 +62,9 @@ Single quotes do no backslash processing, so `'\\+'` — meant as a literal `+` 
 ## `| head` kills the producer after its lines are taken
 
 A script piped into `head -N` gets `SIGPIPE` on its next write after `head` exits and dies there, so a multi-step script whose progress lines are trimmed with `head` runs only its first steps, and every output file a later step would have written is missing without any error. Write to a file and `head` the file, or trim after the script has finished.
+
+## `ssh` re-parses its command in a remote shell, so one argument can arrive as several
+
+`ssh host cmd arg1 arg2` does not forward an argv. It joins the arguments with spaces into one string and the remote login shell parses that string, so any argument containing whitespace or shell metacharacters is re-split on the far side. A Go template argument is the usual way to meet this: `--format '{{json .Config.Env}}'` reaches the remote `docker` as `{{json` and `.Config.Env}}`, which fails with `template parsing error: template: :1: unclosed action`, while a space-free `--format '{{.Id}}'` survives and hides the problem until someone writes a template with a space in it. Quoting at the call site does not help, because the local quotes are consumed locally.
+
+Pass each argument through `printf '%q '` and hand `ssh` the single resulting string; the remote shell then reconstructs exactly the argv the caller passed. `%q` also escapes commas and other harmless characters, which round-trip correctly — worth checking once against the real remote for the argument shapes a wrapper actually sends, because this is a property of the boundary and no amount of reading the local source reveals it.
