@@ -1,6 +1,6 @@
 ---
 name: forge-groom
-description: Triage every open issue and pull request in one or more allod repos against what has actually landed on master, close only what a merged Closes line proves settled, label the rest, and produce one short plain-text report for the owner. Use for the weekly timer run, or by hand when a tracker has drifted from reality.
+description: Triage every open issue and pull request in the allod repos against what has actually landed. Closes only what a merged Closes line proves settled on master, labels the rest, and produces one short plain-text report for the owner, one or more repos at a time. Use for the weekly timer run, or by hand when a tracker has drifted from reality.
 ---
 
 # forge-groom

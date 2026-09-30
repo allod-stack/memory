@@ -1,6 +1,6 @@
 ---
 name: pick-next-issue
-description: Sweep every open issue in the repos this agent can push to, verify the candidates against master, pick the one worth implementing next, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
+description: Sweep every open issue in the repos this agent can push to and pick the next one to implement. Verify the candidates against master, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
 ---
 
 # pick-next-issue

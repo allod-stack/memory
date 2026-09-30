@@ -42,6 +42,12 @@ A skill earns a place here when its subject is a tool the workflows in this repo
 invoke and getting it wrong is expensive or silent. Anything narrower than that
 belongs with the tool, and anything broader is a topic file.
 
+Every description opens with a one-line lead: a first sentence of at most 100
+characters that says what the skill is. The lead is all a skill list shows —
+`allod skill` truncates there — so it must stand alone as the skill's identity.
+Trigger material ("Use when …") and any further detail follow the lead in the
+same description; the text is reordered, never dropped.
+
 Available skills:
 
 - `delegate-implementation` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
