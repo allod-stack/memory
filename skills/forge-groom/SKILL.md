@@ -72,7 +72,7 @@ list it under "Likely landed, confirm".
 ## Report
 
 One plain-text document per run, under about 80 lines, headed by a one-line
-summary: `<date>: <n> closed, <m> ready to merge, <k> decisions, <s> stale`.
+`summary:` — `<date>: <n> closed, <m> ready to merge, <k> decisions, <s> stale`.
 Then one section per heading below, repos as subheadings, one line per item
 with its URL. Omit empty sections. No Markdown tables; the reader is a mail
 client.
