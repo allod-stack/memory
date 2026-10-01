@@ -1,5 +1,6 @@
 ---
 name: memory-backpass
+summary: Turn session traces into one PR of evidence-backed memory edits
 description: Read recent session traces against the memory indexes and open one PR of evidence-backed edits. Run weekly on a timer or by hand.
 ---
 

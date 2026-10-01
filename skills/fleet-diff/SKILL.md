@@ -1,5 +1,6 @@
 ---
 name: fleet-diff
+summary: Gate a merge against which machines it actually rebuilds
 description: Gate a merge against which machines it actually rebuilds. Evaluates every machine in a composition-root flake twice (committed lock vs. proposed revisions) and asserts the expected blast radius. Use before merging work that could reach a real machine, when a change is claimed land-inert, or when an override needs squaring that it actually took effect.
 ---
 

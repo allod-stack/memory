@@ -1,5 +1,6 @@
 ---
 name: list-models
+summary: List which models each agent CLI really serves, probed live
 description: Find out which models each installed agent CLI declares and whether a named one answers. Covers where each CLI (pi, codex, claude) keeps its list, why a catalog entry is not evidence that a model is served, the one-prompt probe that settles it, and the refusal shapes that exit 0. Ships probe-models, which lists what is present and probes only the models you name — run it before scripting anything around a model name. Use when choosing a model for a subagent or reviewer, when a model is refused, or when a note about which models exist is more than a day old.
 ---
 

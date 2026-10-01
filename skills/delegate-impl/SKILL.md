@@ -1,9 +1,10 @@
 ---
-name: delegate-implementation
+name: delegate-impl
+summary: Split implementation across an overseer, workers and cold reviewers
 description: Split an implementation arc across agents: one overseer, workers in worktrees, cold reviewers. The overseer is the most capable model available, briefs, waits on callbacks instead of polling, verifies and reports; cheaper workers do the scoped work in their own worktrees and reviewers from another model family read the result cold. Covers what the overseer does and never does, how to wait without spending tokens, how to keep the overseer's context small, how to scope a worker so its output is usable, and what the overseer must run itself before a PR body claims it. Names no harness, CLI or provider. Use when one session is about to implement more than one issue, or when a change needs a second opinion from a model that did not write it.
 ---
 
-# delegate-implementation
+# delegate-impl
 
 One session implementing five issues on the most capable model available is
 the expensive way to get five mediocre PRs. The shape that works is one

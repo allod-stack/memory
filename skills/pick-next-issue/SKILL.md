@@ -1,5 +1,6 @@
 ---
 name: pick-next-issue
+summary: Sweep open issues, verify against master, pick the next, ask first
 description: Sweep every open issue in the repos this agent can push to and pick the next one to implement. Verify the candidates against master, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
 ---
 
@@ -87,7 +88,7 @@ not draft a plan. A "no" or "what else" restarts at the shortlist with the
 rejected pick and its reason recorded; the reason is a ranking signal ("I
 never use that tool" demotes everything in that tool). A "yes" is issue work
 like any other, and `memory.md` says when that goes through
-`delegate-implementation`.
+`delegate-impl`.
 
 ## What this skill is not
 

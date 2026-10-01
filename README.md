@@ -20,7 +20,7 @@ ledger.md              sightings waiting for corroboration; not read at session 
 templates/             the dev-plan scaffold referenced by dev-plans.md (R4 plans only)
   dev-plan.md
 skills/                portable skills, one directory each, indexed in README.md
-  delegate-implementation/SKILL.md
+  delegate-impl/SKILL.md
   fleet-diff/SKILL.md
   forge-groom/SKILL.md
   list-models/SKILL.md
@@ -34,23 +34,28 @@ skills/                portable skills, one directory each, indexed in README.md
 Memory tells an agent what the conventions are; a skill tells it how to drive
 one specific tool well, at the moment it reaches for that tool. Skills follow
 the [Agent Skills](https://agentskills.io/) directory format: each lives at
-`skills/<name>/SKILL.md` with a frontmatter `name` and `description`. Point a
-compatible harness at this repository's `skills/` directory, or link individual
-skill directories into the harness's own skill location.
+`skills/<name>/SKILL.md` with a frontmatter `name`, `summary` and
+`description`. Point a compatible harness at this repository's `skills/`
+directory, or link individual skill directories into the harness's own skill
+location.
 
 A skill earns a place here when its subject is a tool the workflows in this repo
 invoke and getting it wrong is expensive or silent. Anything narrower than that
 belongs with the tool, and anything broader is a topic file.
 
-Every description opens with a one-line lead: a first sentence of at most 100
-characters that says what the skill is. The lead is all a skill list shows —
-`allod skill` truncates there — so it must stand alone as the skill's identity.
+Every skill carries a `summary`: one line of at most 70 characters saying what
+the skill is for. It is all a skill list shows — `allod skill` prints the name
+and the summary, nothing else — so it must stand alone as the skill's
+identity, and the name beside it is at most 16 characters.
+
+The `description` is the agent's trigger text. It opens with a one-line lead:
+a first sentence of at most 100 characters that says what the skill is.
 Trigger material ("Use when …") and any further detail follow the lead in the
 same description; the text is reordered, never dropped.
 
 Available skills:
 
-- `delegate-implementation` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
+- `delegate-impl` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
