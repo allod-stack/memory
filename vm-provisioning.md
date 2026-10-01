@@ -39,8 +39,6 @@ The public example carrying the new runtime must therefore be an example and not
 - **Host-side only** - provisioning is Nexus-only; dev VMs should not expose provisioning commands.
 - **disko replaces hardware-configuration.nix** - disk layout is in `hosts/<vm>/disk.nix`; avoid per-machine UUIDs.
 - **agenix secrets in flake.nix inline modules, not configuration.nix** - `nixos-install` runs without `--flake` context.
-- **netrc is not git credentials** - see `nix.md` for the three-file netrc layout; `archetypes/modules/netrc.nix` handles conversion.
-- **NIX_CONFIG for bootstrap** - `nix.conf` is a read-only store symlink; use `systemctl set-environment NIX_CONFIG="netrc-file = /etc/nix/netrc"` during bootstrap.
 - **SSH host key** - age-encrypted, injected by `nixos-anywhere`; pipe directly, never use command substitution because it strips the trailing newline.
 - **Activation scripts must tolerate provisioning** - during `nixos-anywhere`, `TMPDIR` can point to a non-existent path and agenix secrets or optional credentials can be unavailable. In NixOS activation snippets, use a conditional no-op for missing optional resources; do not `exit 0`, because snippets are concatenated into one activation script and that exits the whole activation before `/run/current-system` is linked.
 - **Host-key rotation does not re-key the installer image** - `provision-vm` passes the host key to `nixos-anywhere` as both the age identity and the SSH identity for `root@<target>`, so the installer image must already trust that key. Until the image is rebuilt with the rotated key, provisioning fails with `Permission denied (publickey)`. Tracked as `allod/nexus` issues #8 and #9.
