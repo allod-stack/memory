@@ -12,6 +12,7 @@
   - Find reclaimable worktrees with `allod change list [<repo-path>]`.
   - Remove merged worktrees with `allod change cleanup <worktree-path>`.
 - `-d` is the isolation switch: it creates a worktree under `~/changes` and an `agent/<description>` branch for every repo, protected or not. Without `-d`, `begin` prints the shared checkout path and creates nothing — the in-place flow for a repo's default branch, which protected repos refuse.
+- `allod patch receive <vm>:<repo-id> <repo-id>` resolves a registry-id source to the repo's shared checkout (`~/work/<checkout>`) on the source machine, never to an `allod change` worktree under `~/changes` — a change made in a worktree must name the source by path (`<vm>:~/changes/<worktree>`), or the relay resolves to the shared checkout, finds no unpushed commits there, and fails with an empty export range (exit 11).
 - `protected-branches` governs only which branch is protected, never whether a change is isolated.
 - Branch work always happens in a worktree, never by switching branches in a shared checkout — see Worktrees and Concurrent Agents.
 - No external remote pushes unless the remote is explicitly allowed locally.
