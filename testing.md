@@ -10,6 +10,8 @@ A check pins a property to a witness. Before writing or keeping a check, name th
 
 **Creation rule:** when a claim can be settled by booting or measuring on a reachable witness, schedule the experiment instead of specifying the outcome and proving the specification by inspection. Specification written ahead of execution is provisional; measurement wins and rewrites it.
 
+**A change that claims to change nothing is witnessed by derivation equality, not by an unchanged lock.** Evaluate `nixosConfigurations.<machine>.config.system.build.toplevel.drvPath` in both trees — the shared checkout and the worktree — for every machine, and compare: equal paths mean every machine rebuilds to the same bytes. An unmodified `flake.lock` is the weaker signal, saying only that the pins did not move, not that the composition evaluated the same way. This is the witness that settles an R0 flake-metadata change without a review pass.
+
 **A check that only reads a generated artifact witnesses its text, not its behavior.** Grepping a generated unit, script, or config proves the string was written; it cannot prove the command runs. Resolve what the artifact names and execute it in the check. The standing example: a module interpolated a `bin/` path inside a flake input holding source rather than the built package, so the path did not exist. Every assertion over the generated unit passed, and the service failed on every timer run on the machine, where nothing was watching.
 
 Never delete: public-boundary leak scans, module eval assertions, and checks whose property a healthy running system cannot witness because its failure is silent - cross-VM isolation is the standing example.

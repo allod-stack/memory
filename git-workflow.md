@@ -7,7 +7,7 @@
   read the file from `origin/HEAD` or state the freshness problem.
 - Use `allod change` for change work instead of manual git and Forge mutation steps:
   - Start branch work with `path=$(allod change begin -d <short-description> <repo-path>)`, then work in `$path`.
-  - Commit and push with `allod change record -m <message> [-f <file>...]`.
+  - Commit and push with `allod change record -m <message> [-f <file>...]`. A multi-line message comes from a file with `-M <file>`, or from stdin with `-M -`; `record` has no `-F`, which is `submit`'s flag for the PR body.
   - Open PRs with `allod change submit -t <title> -F <body-file>`.
   - Find reclaimable worktrees with `allod change list [<repo-path>]`.
   - Remove merged worktrees with `allod change cleanup <worktree-path>`.
