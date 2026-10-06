@@ -66,7 +66,7 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 - PR bodies should expose residual risk and validation signal when useful for human triage. Do not block PR creation solely over missing headings. Do not post no-findings update-check comments.
 
 ## Git Workflow
-- Before starting work, run `work-diff` and then `pull-all`.
+- Before starting work, run `work-diff` and then `pull-all`. Both are bare commands on PATH, not `allod` subcommands (`allod work-diff` fails with `unknown command namespace`). A cold review or a worker brief that forbids touching shared checkouts forbids the pull, not the check: run `work-diff` and say that `pull-all` was skipped and why.
 - Use `allod change` for change work: `begin`, edit, `record`, `submit`.
 - Any branch change, in any repo: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change record`; run `allod change submit`.
 - Committing in place on a repo's default branch: `allod change begin <repo>` with no `-d` prints the shared checkout path and creates nothing. Protected repos refuse it.
