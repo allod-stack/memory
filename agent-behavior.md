@@ -28,6 +28,7 @@ Several agents may run in one VM — supported, not accidental. A dirty tree or 
 Anything a human copies out of a terminal can be mangled in transit, and the mangling is silent.
 
 - Every relayed line is one complete command. A backslash continuation becomes two commands when the copy drops or relocates the backslash; the signature is a flag reported as a command (`bash: -R: command not found`) or an argument that simply vanished.
+- Every step carries its own complete command with the real values filled in. The human runs what is written: an angle-bracket placeholder is pasted literally (`Error: <SSID> - no such connection profile`), and "repeat step N with flag X" asks them to compose a command, which is where a relayed procedure breaks down.
 - Never inline a long opaque token. A wrapping copy inserts whitespace mid-token and the resulting error names the value rather than the wrap. Derive it from a file or a registry so the relayed line stays short.
 - Never assume the working directory. Bake the `cd` into the command instead of describing it in prose above the block; the reader is not standing where you left them.
 - Interactive input is its own command on an idle terminal, never a line inside a pasted block (`shell.md`).
