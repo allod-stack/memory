@@ -10,8 +10,10 @@
 #   memory-budget             check the files staged for commit (the pre-commit hook)
 #   memory-budget --worktree  check the files on disk (by hand, or from a timer)
 #
-# Exempt: README.md, LICENSE, ledger.md, and everything under a directory
-# (adapters/, skills/, templates/), none of which is read at session start.
+# Exempt: README.md, LICENSE, ledger.md, retired.md, and everything under a
+# directory (adapters/, skills/, templates/), none of which is read at session
+# start. The two append-only logs have no cap: capping a file that only grows
+# would fail the pass that writes it, with nothing it could move elsewhere.
 set -euo pipefail
 
 INDEX_MAX_BYTES=16384
@@ -60,7 +62,7 @@ while IFS= read -r f; do
   [ -n "$f" ] || continue
   case "$f" in
     */*) continue ;;
-    README.md|LICENSE|ledger.md) continue ;;
+    README.md|LICENSE|ledger.md|retired.md) continue ;;
   esac
   bytes="$(size_of "$f")"
   if [ "$f" = memory.md ]; then
