@@ -39,7 +39,8 @@ One skill is read before implementation starts, not when a tool is reached for: 
 - The always-loaded surface has a byte budget, enforced by the tracked pre-commit hook in `.hooks/`: `memory.md` at most 16KB, a topic file at most 24KB, no ISO date in `YYYY-MM-DD` form in `memory.md`. `.hooks/memory-budget --worktree` runs the same check by hand. A commit over the cap moves a section to a topic file and leaves a one-line pointer; it never raises the cap.
 - One session's lesson goes to the topic file that owns it, or to `ledger.md` when no topic file fits yet; never straight into `memory.md`.
 - A line enters `memory.md` only with sightings from two distinct sessions in `ledger.md`, or with a stated reason it is safety-critical. The index is what every session pays for; a topic file is read when its one-line description matches the task.
-- Remove a line from `memory.md` only on evidence that following it caused harm. A line that was ignored is reinforced, moved nearer the top, or given a sharper trigger, never deleted for being ignored.
+- Remove a line from `memory.md` on evidence that following it caused harm, or when the `memory-prune` skill measures no sighting of any kind against it across a full window of sessions. A line that was ignored is reinforced, moved nearer the top, or given a sharper trigger; only a second window in which it is still merely ignored retires it.
+- Every removal is appended verbatim to `retired.md` before the line leaves the index. That file is the restore source, is not read at session start, and carries its format at its head; a line listed there is not re-added without new evidence.
 - `ledger.md` is not read at session start; its format is at its head, and the `memory-backpass` skill promotes and prunes it.
 
 ## Public vs Private Memory

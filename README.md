@@ -15,6 +15,7 @@ material (dev plans, review prompts, brainstorms) lives in `strategy`.
 ```
 memory.md              root index — agents read this first, then the topic files it lists
 ledger.md              sightings waiting for corroboration; not read at session start
+retired.md             index lines `memory-prune` removed, with the score behind each; the restore source
 <topic>.md             topic files — indexed with one-line descriptions in memory.md
 .hooks/                tracked repository hooks, including the memory byte-budget gate
 templates/             the dev-plan scaffold referenced by dev-plans.md (R4 plans only)
@@ -26,6 +27,7 @@ skills/                portable skills, one directory each, indexed in README.md
   list-models/SKILL.md
   list-models/probe-models
   memory-backpass/SKILL.md
+  memory-prune/SKILL.md
   pick-next-issue/SKILL.md
 ```
 
@@ -60,6 +62,7 @@ Available skills:
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
 - `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
+- `memory-prune` — the subtractive half of the same loop: scores every index line against a window of recent sessions, retires the ones that never changed an outcome, and records each removal in `retired.md` so it can be put back.
 - `pick-next-issue` — sweeps every open issue in the repos the agent can push to, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
 
 ## Harness bootstraps
@@ -84,8 +87,9 @@ Rules that keep this repo a statement of current state rather than a log
 - Keep the always-loaded surface within the tracked hook's byte caps: 16KB for `memory.md`, 24KB per topic file, and no ISO date such as `2026-09-08` in `memory.md`; move detail rather than raising a cap.
 - Put one session's lesson in its topic file, or in `ledger.md` when no topic owns it; never put it straight into `memory.md`.
 - Add an index line only after two distinct-session sightings in `ledger.md`, unless the reason it is safety-critical is stated.
-- Remove an index line only when following it caused harm; reinforce or sharpen an ignored line instead.
-- Keep `ledger.md` out of session-start reads; `memory-backpass` promotes and prunes it.
+- Remove an index line when following it caused harm, or when `memory-prune` measures a full window of sessions in which it drew no sighting at all; reinforce or sharpen a line that is merely being ignored, and retire it only if a second window finds it still ignored.
+- Append every removal to `retired.md` verbatim before the line leaves the index; that file is how a line is restored and is not read at session start.
+- Keep `ledger.md` and `retired.md` out of session-start reads; `memory-backpass` promotes and prunes the ledger, `memory-prune` writes the retirement log.
 
 ## Memory vs strategy
 
