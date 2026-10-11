@@ -21,7 +21,9 @@ retired.md             index lines `memory-prune` removed, with the score behind
 templates/             the dev-plan scaffold referenced by dev-plans.md (R4 plans only)
   dev-plan.md
 skills/                portable skills, one directory each, indexed in README.md
+  add-site/SKILL.md
   delegate-impl/SKILL.md
+  explain-diff/SKILL.md
   fleet-diff/SKILL.md
   forge-groom/SKILL.md
   list-models/SKILL.md
@@ -29,6 +31,9 @@ skills/                portable skills, one directory each, indexed in README.md
   memory-backpass/SKILL.md
   memory-prune/SKILL.md
   pick-next-issue/SKILL.md
+  show-me/LICENSE
+  show-me/SKILL.md
+  show-me/UPSTREAM.md
 ```
 
 ## Skills
@@ -57,13 +62,16 @@ same description; the text is reordered, never dropped.
 
 Available skills:
 
+- `add-site` — stands up a site or deck as its own repository and registers it so `allod site view` finds it on one dev VM; the preview app, `site.toml`, the registry entry and port, the clone path.
 - `delegate-impl` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
+- `explain-diff` — creates a self-contained interactive HTML explanation of a diff, branch, commit range, or pull request.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
 - `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
 - `memory-prune` — the subtractive half of the same loop: scores every index line against a window of recent sessions, retires the ones that never changed an outcome, and records each removal in `retired.md` so it can be put back.
 - `pick-next-issue` — sweeps every open issue in the repos the agent can push to, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
+- `show-me` — explains the current topic visually with diagrams, code sketches, or HTML artifacts; vendored from upstream with recorded frontmatter patches.
 
 ## Harness bootstraps
 
