@@ -59,6 +59,10 @@ The `# <host>:<port> SSH-2.0-<version>` line lands on stdout beside the keys, so
 
 Single quotes do no backslash processing, so `'\\+'` — meant as a literal `+` — reaches the engine as an escaped backslash plus the `+` quantifier: one or more literal backslashes. Escape once: `'\+'`. Applies to `rg` and `grep -E`; in BRE a bare `+` is already literal.
 
+## `pkill -f` matches the shell that runs it
+
+`pkill -f <pattern>` kills the shell running it whenever the pattern text appears anywhere in that shell's own command line, including a relaunch command later in the same call. The signature is the whole call dying with exit 143 or 144 and nothing printed, which reads as the tool failing rather than the shell being shot. Kill a background process by its captured PID. If a pattern is unavoidable, put the relaunch in a script file or a separate call; bracketing the first character (`'[t]or'`) only hides the literal pattern from `grep`-style matching, not from a later command line that spells it out.
+
 ## `| head` kills the producer after its lines are taken
 
 A script piped into `head -N` gets `SIGPIPE` on its next write after `head` exits and dies there, so a multi-step script whose progress lines are trimmed with `head` runs only its first steps, and every output file a later step would have written is missing without any error. Write to a file and `head` the file, or trim after the script has finished.
