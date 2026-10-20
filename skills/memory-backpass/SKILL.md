@@ -1,63 +1,58 @@
 ---
 name: memory-backpass
 summary: Turn session traces into one PR of evidence-backed memory edits
-description: Read recent session traces against the memory indexes and open one PR of evidence-backed edits. Run weekly on a timer or by hand.
+description: Run `allod memory backpass` to read recent session traces against the memory indexes and open one PR of evidence-backed edits, then review what it opened. Nightly on a timer or by hand.
 ---
 
 # Memory Backpass
 
-Read recent distilled session traces against the public and private memory indexes, preserve quote-checked sightings in their ledgers, and propose one small human-reviewed update to private memory. The first two runs are report-only by the owner's decision and must be compared by hand before any timer is created.
+The backpass reads distilled session traces against the public and private memory indexes, keeps the sightings that survive a quote check, preserves them in the private ledger, and proposes one small human-reviewed update to private memory as a pull request. It is a program, `allod memory backpass` in `allod/tools`; this skill says how to run it and what to do with its output. The command's full contract, the resolution of its inputs, the seat contract, the state file, the exit codes and the report shape, is `docs/allod-memory.md` in that repository.
 
-This procedure names no provider or model. Read the deployment's `agent-roster` skill to choose its current bulk-analysis model and strongest synthesis model; never substitute another model silently.
+The two prompt files beside this skill, `analysis-prompt.md` and `synthesis-prompt.md`, are what the command sends to the models; it reads them from this checkout at run time, so an edit here changes the next run without a rebuild. Both must keep `<!-- memory-backpass:self -->` as their first line (Self-exclusion, below), and the command refuses a template whose placeholders it does not know.
 
-## Inputs
+## Running it
 
-Read these inputs in order:
+On a machine whose checkouts follow the registry convention, the bare command finds everything:
 
-1. One or more traces checkouts, each a git repository of distilled session traces produced by `allod trace distill`, with one Markdown file per session at `<machine>/<harness>/<date>-<session-id>.md`.
-2. The public memory checkout.
-3. The private memory checkout, `agent-memory`.
-4. `<traces>/.memory-backpass/analyzed.txt` in each checkout: one line per analyzed trace in `sha256sum` format, `<sha256 of the file>  <path>`, so that `sha256sum -c --quiet analyzed.txt` run in the checkout names every trace that changed after it was read. Create it if absent. Commit it to its traces repository at the end of a successful run.
+    allod memory backpass --report-only
+    allod memory backpass
 
-Accept `--report-only`. Keep an owner-controlled count of completed report-only runs and do not schedule this skill until the owner has compared the first two reports.
+Report-only prints the fold and every ledger line and prune it would write, and writes nothing to either memory repository; it still records which traces it read. Without the flag it opens the PR. The report's first section names each input it resolved and where it came from; the `## Seats` section names the model that analyzed each trace; the funnel is the alarm: a quote-drop rate far above a few percent means corrupted input, not a bad model. Exit 3 means at least one trace failed every attempt and stays pending for the next run.
 
-## Procedure
+Model choice is the deployment's `agent-roster` skill's. With no seat given the command runs pi with its own configured default and says so in the report; `--bulk-seat`, `--fallback-seat` and `--synthesis-seat` take a wrapper script per model. It never substitutes a seat silently.
 
-1. Pull every traces checkout and both memory repositories. Number every bullet in each `memory.md` by current position: `PUB-001`, `PUB-002`, ... for public memory and `PRV-001`, `PRV-002`, ... for private memory. Render each as `[id] text`; the ids are run-local references, not text written back to memory. Render every open line from both `ledger.md` files with the stable id `L-<first 8 hex characters of the line's SHA-256>`. List merged private PRs titled `memory-backpass:` whose `To relay` checklist still has an unchecked line and put them at the top of this run's report, because an unchecked line after merge means the public half has not landed.
+## After a run
 
-2. For each traces checkout, for each pending trace, make one call to the deployment's bulk-analysis model with [analysis-prompt.md](analysis-prompt.md), filling every `{{NAME}}` placeholder with the instruction index, open ledger entries, trace path, and trace. Gate success on the returned content, never the process exit status. The answer must parse as one JSON object containing `positive`, `negative`, and `gaps` arrays in the prompt's schema. Retry an empty or unparseable answer once with the same model. After a second failure, make one attempt with the fallback model the deployment's `agent-roster` names for this skill, and record which model analyzed each trace in the run report. A trace that fails the fallback attempt too is recorded as failed and not marked analyzed; no other model is tried. A trace is pending when its path has no line in `analyzed.txt`, or when its line fails the hash check because the session kept going after the last read; a re-read trace is analyzed whole, and step 4 keeps its earlier sightings from doubling.
+- Review the PR titled `memory-backpass: <date>` on the private memory repository. Each edit section carries its rationale, its quotes with `<harness> <session id>` sources, and an evidence count; `one-session exception` marks an edit that rests on one session and must state its safety reason.
+- `To relay` lists any public branch the run prepared, with its `allod patch receive` line; it is left unpushed for a human. A merged run whose relay line is still unchecked is listed at the top of the next report until the public half lands.
+- Merge or close; the command never merges and never pushes a default branch.
 
-3. Mechanically whitespace-fold each returned `quote` and the trace, then discard every item whose folded quote is not a substring of the folded trace. This check is mandatory even when the model reports high confidence. Count discarded items for the funnel.
+## Step map
 
-4. For each surviving gap or negative item, choose the owning repository by `memory.md`'s "Public vs Private Memory" rule; when unclear, choose private. Prepare one ledger line per item and session: `gap` for a gap, `ignored` for `non-compliance`, and `harm` for `harm`. Do not ledger `irrelevant` items. For `ignored`, name the existing rule by its opening words. Never add a second line for the same rule and session, and never append a sighting from a session the line already cites. Every ledger line is written to the private `ledger.md` in the private change worktree created below; a line whose owning repository is public ends with `Public <topic>.md candidate`, naming the topic file it belongs in, so a second session can corroborate it before it is relayed. The public `ledger.md` is never written by this skill. Add each successfully analyzed trace to the state-file update as its current hash and path, replacing any earlier line for that path, and drop every line whose file no longer exists.
+The command's code cites these step numbers; the mechanism behind each is in `docs/allod-memory.md`.
 
-5. Fold the surviving evidence. For each instruction id, count positive, non-compliance, and harm sightings and the distinct sessions behind each. Its relevance is the share of all successfully analyzed sessions in which it drew at least one item. For each ledger rule, count distinct source sessions, treating entries judged to express the same rule as one corroboration group.
-
-6. Prepare both ledger prunes. Only entries that existed before this run began are eligible for pruning; never prune a sighting added in this run. From those pre-run entries, remove a sighting when the date encoded in its trace filename is more than ninety days old, or when its proposed rule now appears in a topic file or either index. Use literal substring coverage when sufficient and the bulk-analysis model's judgment on the fold when meaning, rather than exact wording, establishes coverage. Apply prunes only in the private change worktree; a public entry that now has coverage is a relay item (step 7).
-
-7. Unless `--report-only` is active, create a private-memory worktree with `allod change begin -d memory-backpass-<date> agent-memory`. Apply the prepared private ledger changes there. Make one call to the deployment's strongest model with [synthesis-prompt.md](synthesis-prompt.md), filling in the fold; both numbered indexes and their byte counts against the caps read from `.hooks/memory-budget`; topic filenames with their index descriptions; and titles of closed private-memory PRs beginning `memory-backpass:` that are not marked merged in the `forge pr list -s closed` listing. The listing carries a merged marker; a landed edit is never treated as a rejection. Give the model the private worktree and require it to edit there. It may propose public edits only under `To relay` and it never edits the public checkout. This procedure applies each proposed public edit itself: create one public worktree with `allod change begin -d memory-backpass-<date> allod/memory`, apply every public edit there as plain commits with the quotes in the commit messages, run `.hooks/memory-budget --worktree` there too, and leave the branch unpushed; a public branch is handed to the human as the one line `allod patch receive <this machine>:<worktree path> allod/memory`, never as prose to re-author.
-
-8. Run `.hooks/memory-budget --worktree` in the private worktree. Give a failure back to the same synthesis model to fix within this run. If the corrected edit still fails, drop that edit. Do not raise a cap.
-
-9. Run `allod change record` and `allod change submit` from the private worktree. Use title `memory-backpass: <date>`. The body starts with one plain paragraph giving sessions read, findings kept and quote-dropped, and edits proposed. Follow it with one section per edit containing its title, diff, rationale, and verbatim quotes with `<harness> <session id>` sources; then `To relay`, one unchecked checklist line per public branch carrying its receive command and the titles of the edits on it, or the words `nothing to relay`; then a funnel counting traces analyzed, items returned, items dropped for a missing quote, ledger entries corroborated, and edits proposed. Every memory write remains behind this pull-request review; never push a memory repository's default branch and never merge. Label the PR `relay` when the checklist is non-empty; the private memory repository carries that label.
-
-10. With `--report-only`, do everything except steps 7 through 9. Print the fold and every would-be ledger addition or prune, and write nothing to either memory repository. Still commit the state-file update to `analyzed.txt` in each checkout it touched. Print each would-be public edit under `To relay` instead of creating its worktree.
+1. Number the index bullets `PUB-nnn`/`PRV-nnn`, id open ledger lines `L-<hash>`, list merged runs with an unrelayed public edit.
+2. Analyze each pending trace with the bulk seat: one retry, then the fallback seat; gated on parsed content, never exit status.
+3. Whitespace-fold every quote against its trace; keep substrings only.
+4. One private ledger line per surviving rule and session; corroborate an existing line instead of duplicating it; never ledger an `irrelevant` item.
+5. Fold the evidence: per-instruction counts and relevance, per-rule session counts, every surviving quote.
+6. Prune pre-run ledger lines over ninety days old or now covered by a topic file; a public line is only proposed for relay.
+7. Private worktree, ledger commit, synthesis call; public proposals as commits in a second unpushed worktree.
+8. Byte budget: one fix call, then every proposed edit is dropped; caps are never raised.
+9. `allod change record` and `submit`; label `relay` when the checklist is non-empty.
+10. Report-only: everything but 7 to 9.
 
 ## Synthesis gates
 
-Enforce these rules in the synthesis prompt and when reviewing its result:
+These are the synthesis prompt's hard rules; the command reports them per edit for the human and does not revert a model's edit itself:
 
-- Propose at most five edits.
-- An add, rewrite, or removal of an index line needs supporting quotes from two distinct sessions. As the only exception, a one-session add is allowed when the edit states the safety reason in its rationale and the PR body flags it as a one-session safety exception for the human.
-- A removal needs `harm` sightings from two distinct sessions. Several `non-compliance` sightings call for reinforcement, earlier placement, or a sharper trigger, never removal.
-- Every edit includes at least one verbatim quote and its source.
+- At most five edits.
+- An add, rewrite, or removal of an index line needs quotes from two distinct sessions; the only exception is a one-session add that states its safety reason and is flagged in the PR body.
+- A removal needs `harm` sightings from two distinct sessions; `non-compliance` calls for reinforcement, earlier placement, or a sharper trigger, never removal.
+- Every edit includes at least one verbatim quote and its source, drawn from the fold.
 - The post-edit index fits the cap in `.hooks/memory-budget`.
-- A rule relevant to fewer than one fifth of analyzed sessions belongs in a topic file rather than the index.
+- A rule relevant to fewer than one fifth of analyzed sessions belongs in a topic file, not the index.
 
 ## Self-exclusion
 
-Every prompt sent by this skill must begin with `<!-- memory-backpass:self -->`, as both prompt files do. `allod trace distill` drops a session whose first user message starts with that line, so this procedure never analyzes its own model calls. Preserve the marker when retrying or adding diagnostic text to a prompt.
-
-## Failures
-
-Stop with a one-line report when a traces checkout is missing, a required model is unreachable, or a credential is refused. Never fall back to a model the roster does not name for this skill, and never leave a model switch out of the run report. A run never pushes to a memory repository's default branch and never merges.
+Every prompt the command sends begins with `<!-- memory-backpass:self -->`, as both prompt files do. `allod trace distill` drops a session whose first user message starts with that line, so the pass never analyzes its own model calls. Keep the marker when editing either prompt.

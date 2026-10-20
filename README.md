@@ -68,7 +68,7 @@ Available skills:
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
-- `memory-backpass` — reads recent distilled session traces against both memory indexes and opens one evidence-backed private-memory PR, weekly or by hand.
+- `memory-backpass` — how to run `allod memory backpass`, which reads recent session traces against both memory indexes and opens one evidence-backed private-memory PR, and what to do with the PR it opens; the two prompt files it sends live beside the skill.
 - `memory-prune` — the subtractive half of the same loop: scores every index line against a window of recent sessions, retires the ones that never changed an outcome, and records each removal in `retired.md` so it can be put back.
 - `pick-next-issue` — sweeps every open issue in the repos the agent can push to, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
 - `show-me` — explains the current topic visually with diagrams, code sketches, or HTML artifacts; vendored from upstream with recorded frontmatter patches.
