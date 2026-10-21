@@ -1,7 +1,7 @@
 ---
 name: pick-next-issue
-summary: Sweep open issues, verify against master, pick the next, ask first
-description: Sweep every open issue in the repos this agent can push to and pick the next one to implement. Verify the candidates against master, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
+summary: Sweep this machine's pushable repos, verify against master, pick the next, ask first
+description: Sweep the open issues in the repos this machine has and this agent can push to, then pick the next. Verify the candidates against master, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
 ---
 
 # pick-next-issue
@@ -14,10 +14,20 @@ implemented until the owner answers.
 
 ## Sweep
 
-- List every open issue in every registry repo this agent can push to:
-  `forge -R <owner>/<repo> issue list` for each such checkout under the
-  workspace root. A repo it can only read is another agent's to pick from.
-  Skip nothing on the first pass; a repo with one issue may hold the pick.
+- Pick only work this machine can do. Read this host's repo list from the
+  registry's `scripts/vm-specs.json` entry keyed by `hostname`, and check the
+  toolchains it carries (`command -v cargo rustc go node`). Sweep only those
+  repos, and shortlist only
+  work this machine can build or test: a repo whose build needs a toolchain
+  the machine lacks, or that the registry does not list for it, belongs to
+  the machine that has it. A Nix machine does Nix work; a Rust workspace
+  belongs to the machine with `cargo`.
+- List every open issue in those repos this agent can push to:
+  `forge -R <owner>/<repo> issue list`. Pushability belongs to the agent
+  identity, not the machine: a `vnprc/*` agent lands work only in `vnprc/*`
+  repos, an `allod/*` agent only in `allod/*`. A repo it can only read is
+  another agent's to pick from. Skip nothing among these on the first pass;
+  a repo with one issue may hold the pick.
 - List open PRs the same way. An issue with an open PR is implemented and
   waiting on review, not available; the tracker cannot show that link
   (`allod/memory` issue #60), so read PR bodies for `Closes`/`Refs` lines.
