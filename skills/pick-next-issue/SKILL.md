@@ -50,6 +50,13 @@ lies in three ways:
   verbatim into Go is the standing example) but the fix goes elsewhere.
 - **Blocker gone.** An issue that waited on another one may be unblocked now.
   Read the dependency's state, not the label.
+- **Wrong repo.** An issue that adds a check or behavior to a public data
+  repo (inventory, profiles, secrets) proposes a fix that runs only against
+  the template: a deployment builds from its private fork, which never takes
+  the template's checks. Ask where the fix runs. If the honest answer is
+  "nowhere that builds a machine", the change belongs in the framework repo
+  that consumes the data (`testing.md`, Test Code Placement), and the pick is
+  the move, said so in the explanation.
 
 Drop anything the check shows is done. Note what you re-located; it goes in
 the explanation.

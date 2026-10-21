@@ -6,7 +6,7 @@ Check for a project tool before falling back to raw git, ssh, or shell: `allod c
 
 Before building an issue as written, state the need in one sentence and the smallest contract that meets it, and name what each feature saves the owner. An issue is its author's proposal: when a smaller change meets the need, raise it before the first edit, not after the pull request. Hand lifetimes to systemd, ssh or exec before writing code that supervises a process.
 
-For issue work, identify the smallest repo-scoped artifact that advances the request, and make that change before exploring broader end-to-end fixes.
+For issue work, identify the smallest repo-scoped artifact that advances the request, and make that change before exploring broader end-to-end fixes. Smallest means smallest in the repo where it will run: a check or behavior added to a public data repo runs against the template alone, because deployments build from private forks of those repos (`testing.md`, Test Code Placement), so the issue's choice of repo is part of what to verify, not a given.
 
 When an issue names multiple possible paths, separate them into immediate change, validation, manual test, and follow-up. Do not choose the most ambitious path by default.
 
