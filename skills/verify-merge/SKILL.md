@@ -90,14 +90,19 @@ owner sees whether it was followed.
    build the merged tree (`git merge-tree --write-tree <base> <head>`), run
    the checks on it, and for R1 and up re-drive the affected feature files;
    a conflict is a stop. Then
-   `forge pr merge <n> --rebase --match-head-commit <head.sha>`. The command
-   refuses a moved head, surfaces the forge's refusal verbatim, and exits
-   non-zero when the base does not contain the merge commit afterwards
-   (allod/tools#246); any of those is reported as is, never retried.
+   `forge pr merge <n> --rebase -d --match-head-commit <head.sha>`. The
+   command refuses a moved head, surfaces the forge's refusal verbatim, and
+   exits non-zero when the base does not contain the merge commit afterwards
+   (allod/tools#246); any of those is reported as is, never retried. `-d`
+   deletes the head branch once the merge has landed, as the owner does by
+   hand; a merged PR whose branch is still on the forge is a verifier that
+   skipped the flag.
 9. **Record the landing.** A second comment:
    `Merged as <merge_commit_sha>. Revert: git revert <base-tip>..<merge_commit_sha>`
    where `<base-tip>` is the tip read in step 8. That line is what the owner
-   runs on master; the verifier never pushes to a default branch.
+   runs on master. The merge in step 8 is the verifier's only write to the
+   default branch, and it goes through the forge; the verifier never runs
+   `git push` against one.
 
 ## The proof comment
 
@@ -110,15 +115,21 @@ Score: R<n> — <the deciding fact>. PR body says R<m>.
 Rung: R<n> on <owner/repo> is <agent merge | human gate> (<ledger issue>, owner comment <date>)
 Checks: <command> — <pass | fail>, output below
 Coverage:
+
 | Feature file | Entry point and path | Expected | Observed | Evidence |
+| --- | --- | --- | --- | --- |
 | ... |
+
 Gaps: none | <path> — <what blocks it>
 Decision: merge | stop — <reason>
 ```
 
 Trimmed command output follows in fenced blocks. Every row names the
 expected result before the observed one, so a reader can tell a pass from a
-"it ran".
+"it ran". The blank lines around the table and the delimiter row are
+load-bearing: without them the forge renders the table as plain text, or
+folds the `Gaps` and `Decision` lines into its first column where no human
+can read them.
 
 ## Stops
 
