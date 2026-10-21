@@ -1,6 +1,6 @@
 ---
 name: pick-next-issue
-summary: Sweep this machine's pushable repos, verify against master, pick the next, ask first
+summary: Sweep this machine's pushable repos, pick the next issue, ask first
 description: Sweep the open issues in the repos this machine has and this agent can push to, then pick the next. Verify the candidates against master, explain it and the choice in plain English, and ask the owner before starting. Use when the owner says "what's next", "pick something", or "what else you got".
 ---
 
