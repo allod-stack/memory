@@ -65,3 +65,17 @@ The tracked `commit-msg` hook (`archetypes/hooks/commit-msg`) rejects:
 - All `forge` content commands accept `-b` or `--body` and `-F` or `--body-file`; use `--body-file -` for stdin.
 - `--body` does not interpret `\n`, and backticks inside a double-quoted `--body` are command-substituted by the shell before `forge` ever sees them, silently deleting the code span's contents. Forge has no comment edit, so a mangled comment is permanent. Always pass Markdown through `--body-file` — a file, or real lines piped to `--body-file -`.
 - Issue and PR bodies should use prose as single long lines; only break at paragraph boundaries, list items, and code blocks.
+
+## Merge Rights
+
+Agents hold merge rights on a repository only where the owner has granted them at the forge, and use them only through the `verify-merge` skill, by residual risk class (`risk.md`). The forge enforces the account split: the author account has no merge right anywhere, the verifier account sits on the merge whitelist of the repositories in the ladder, and `forge pr merge` pins the head commit it verified and reads the base branch back after merging. The class limit, the cold-session rule and the rung are prose; the proof comment on every merge is how the owner sees them kept, and the digest is the review.
+
+The ladder, per repository and class:
+
+- R0 and R1: the verifier merges after posting proof.
+- R2: the cross-family reviewer pass and one fix round (`risk.md`), then proof, then a 24-hour veto window before the merge unless the ledger comment waives it.
+- R3 and up, and any multi-repo change: human gate, as before. The verifier still posts the proof.
+
+A rung is `agent merge` or `human gate`, per class per repository, set by the owner's latest comment on that repository's ledger issue; private memory names the issue. A repository with no feature map (`testing.md`, Feature Map) is proved by its checks plus the PR body's own Validation commands, rerun by the verifier in its clone; the map is what lets a verifier drive beyond what the author ran. Promotion: a class earns the next rung after one week on its current rung with no revert and no coverage gap in the digest. Demotion: any revert of an agent merge puts that class back on human gate at once, by the owner's comment. Probation starts at R0 and R1 on one repository; nothing is granted wholesale, and the human gate is always one comment away.
+
+The owner's window is `skills/verify-merge/merge-digest`, run on demand and at the week review. The revert is the line the landing comment carries, run by the owner on master; agents never push a default branch. Everything above the ladder keeps the merge gate in `memory.md` (PR Workflow): the owner restating the owner summary.

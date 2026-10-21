@@ -34,6 +34,9 @@ skills/                portable skills, one directory each, indexed in README.md
   show-me/LICENSE
   show-me/SKILL.md
   show-me/UPSTREAM.md
+  verify-merge/SKILL.md
+  verify-merge/features-README.md
+  verify-merge/merge-digest
 ```
 
 ## Skills
@@ -72,6 +75,7 @@ Available skills:
 - `memory-prune` — the subtractive half of the same loop: scores every index line against a window of recent sessions, retires the ones that never changed an outcome, and records each removal in `retired.md` so it can be put back.
 - `pick-next-issue` — sweeps every open issue in the repos the agent can push to, verifies the shortlist against master, picks the one worth implementing next, explains it and the choice in plain English, and asks the owner before starting.
 - `show-me` — explains the current topic visually with diagrams, code sketches, or HTML artifacts; vendored from upstream with recorded frontmatter patches.
+- `verify-merge` — proves a pull request behaves by driving the repository's feature map from a cold session, posts the evidence, and merges it under the risk ladder in `git-workflow.md`; carries the feature-map README template and `merge-digest`, the owner's window on agent merges.
 
 ## Harness bootstraps
 

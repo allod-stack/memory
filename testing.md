@@ -37,3 +37,9 @@ Widening a builder's parameters to make that possible opens a second hole. In ar
 The standing witness is `archetypes/checks/fork-fixture/`, a second synthetic data trio sharing no name with the template's, run by `./fork-safety.sh` with `--override-input` on all three, one `nix` process per check. It runs on the lock-bump path rather than per commit. Keep the fixture a plausible fork — tuning fixture data until a check passes is how the witness stops witnessing.
 
 **Two checks with the same derivation name shadow each other.** Merged check sets keep the last one, so a fork's local check silently replaces the framework's if both use the same `runCommand` name. Nothing warns, and the replaced check never runs again. Assert names are unique after merging.
+
+## Feature Map
+
+A repository whose PRs agents merge carries `verification/features/`: one Markdown file per behavior area, and a README with the driver commands (launch, health check, drive, inspect, clean up), the baseline preconditions, the proof standard and the sweep order. Each feature file answers the same four questions under the same four headings: what exists, how a user reaches it, how to drive it with the expected observable result per path, and what usually lies. The template is `skills/verify-merge/features-README.md`; the `verify-merge` skill reads the map and never edits it. Map drift is fixed in the same PR as the behavior change, and a PR that removes or narrows a map entry, or a check, is never merged below R2. A repository without a map is proved by its checks plus the PR's own Validation commands, rerun by the verifier; the map is what lets a verifier drive beyond what the author ran.
+
+The map is the behavior-level witness for a pull request beside the three witnesses above. It does not replace a check; it says which checks and which drives prove a change, so the proof is captured observable state and not a reading of the diff.

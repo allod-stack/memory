@@ -36,7 +36,7 @@ overseer never invents policy mid-arc:
   worker is stuck;
 - **ask the human:** anything that changes scope, touches a shared interface
   the issue did not name, or would merge, publish or discard work;
-- **never:** merge, push past a rail, delete unlanded work, or report a
+- **never:** merge (that is the `verify-merge` skill's act, in another session), push past a rail, delete unlanded work, or report a
   validation it did not see run.
 
 ## Waiting without spending

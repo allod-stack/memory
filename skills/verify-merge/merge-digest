@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# merge-digest [-d <days>] <owner/repo>...
+#
+# Every PR merged in the window, per repository: date, number, whether an
+# agent merged it (a "## Verification" comment exists), title, and the revert
+# line from the landing comment. Read-only; needs only forge on PATH.
+set -euo pipefail
+
+usage() { echo "usage: merge-digest [-d <days>] <owner/repo>..." >&2; }
+
+days=7
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -d) [ $# -ge 2 ] || { usage; exit 2; }; days=$2; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    -*) usage; exit 2 ;;
+    *) break ;;
+  esac
+done
+[ $# -gt 0 ] || { usage; exit 2; }
+case "$days" in ''|*[!0-9]*) usage; exit 2 ;; esac
+
+cutoff=$(date -u -d "$days days ago" +%F)
+
+for repo in "$@"; do
+  echo "== $repo, merged since $cutoff"
+  forge -R "$repo" pr list -s closed -L 100 | while IFS= read -r line; do
+    merged=$(printf '%s\n' "$line" | sed -n 's/.*merged \([0-9-]\{10\}\)$/\1/p')
+    [ -n "$merged" ] || continue
+    if [[ "$merged" < "$cutoff" ]]; then continue; fi
+    number=${line%%[[:space:]]*}
+    view=$(forge -R "$repo" pr view "$number")
+    title=$(printf '%s\n' "$view" | sed -n '1s/^PR #[0-9]*: //p')
+    kind=human
+    if printf '%s\n' "$view" | grep -q '^## Verification'; then kind=agent; fi
+    revert=$(printf '%s\n' "$view" | sed -n 's/^Merged as [0-9a-f]*\. Revert: //p' | tail -n 1)
+    printf '%s  #%-5s %-5s  %s\n' "$merged" "$number" "$kind" "$title"
+    if [ -n "$revert" ]; then printf '                    %s\n' "$revert"; fi
+  done
+done
