@@ -25,9 +25,12 @@ The overseer is the session the human talks to, and it runs on the smartest
 model available, because everything it does is judgment: reading the whole
 arc, deciding the order, writing each worker's brief, verifying what comes
 back, and writing the PR body the human will merge on. It does not implement.
-It never edits a project file; a worker does that, in a worktree the overseer
-created for it. When the overseer catches itself opening an editor on the
-work, it stops and writes a brief instead.
+It never edits a project file; a worker does that, in a clone the overseer
+made for it with `allod change begin -d` and dispatches through `allod
+change run <clone> -- <runner invocation>`. The worker commits on its branch
+and never pushes; once the overseer has verified the result, it pushes with
+`allod change record` itself. When the overseer catches itself opening an
+editor on the work, it stops and writes a brief instead.
 
 Three kinds of decision, written down before the first dispatch, so the
 overseer never invents policy mid-arc:
@@ -36,8 +39,9 @@ overseer never invents policy mid-arc:
   worker is stuck;
 - **ask the human:** anything that changes scope, touches a shared interface
   the issue did not name, or would merge, publish or discard work;
-- **never:** merge (that is the `verify-merge` skill's act, in another session), push past a rail, delete unlanded work, or report a
-  validation it did not see run.
+- **never:** merge (that is the `verify-merge` skill's act, in another
+  session), push past a rail, author a commit itself, delete unlanded work,
+  or report a validation it did not see run.
 
 ## Waiting without spending
 
@@ -88,17 +92,26 @@ the fastest way to fill it.
 A worker only does what its brief lets it do, and it runs on the cheaper tier
 your harness offers for delegated work; the search tier, cheaper again, is for
 lookups, because finding where a symbol lives is not the same job as changing
-it. Every brief carries:
+it. The swarm one VM can hold is its memory divided by the per-worker cap
+`allod change run` enforces; the overseer raises that cap for a worker whose
+job needs more, which shrinks the swarm by that worker's share. A swarm also
+needs the fleet's guests to have landed `allod/vm#12`; `run` says so if they
+have not. Every brief carries:
 
 - the issue reference and its full body, not a paraphrase;
-- the worktree path, created by the overseer with `allod change begin -d`, so
-  two workers never share a checkout;
+- the clone path, created by the overseer with `allod change begin -d` and
+  run through `allod change run`, so two workers never share a checkout;
 - what done means, as commands: the tests, the checks and the evaluation that
   must be green, with the instruction to report their actual output;
 - the boundaries: commit locally but never push, no attribution trailers,
   nothing private in a public repo, and the memory tree to read first;
 - what is out of scope, named, so the worker does not wander into the next
   issue.
+
+Inside the sandbox nothing under `~/changes` exists but the worker's own
+clone, so a brief handed over as a path there is invisible to it: the brief
+reaches the worker on stdin or inline in its prompt, and its report comes
+back the same way, never as a file outside the clone.
 
 Delegation does not pay for one small issue, or for a change whose design is
 the work. If the brief would take longer to write than the change, make the
@@ -147,10 +160,13 @@ a script that checks only that the command returned.
 ## What the overseer runs itself
 
 A worker's report says what it ran. Before the PR body claims it, the overseer
-runs it again, or reads the worker's captured output line by line. A
-validation claim in a PR body that was not run, or was run more narrowly than
-the body states, is a defect in the change. The same goes for a reviewer's
-finding: the overseer, not the reviewer, decides it is real.
+runs it again, or reads the worker's captured output line by line. It runs that
+rerun through `allod change run` too, never unsandboxed in the clone: the
+worker's own tests and checks are code it wrote, and that code runs with
+whatever credentials the invoker holds. A validation claim in a PR body that was
+not run, or was run more narrowly than the body states, is a defect in the
+change. The same goes for a reviewer's finding: the overseer, not the
+reviewer, decides it is real.
 
 That is the whole of what the overseer reads: the gate's output, the
 reviewer's findings, and the lines of the diff a finding or a PR-body claim
