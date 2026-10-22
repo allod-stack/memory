@@ -25,7 +25,7 @@ Read the topic files relevant to the current task.
 ## Skills
 Skills live in `skills/` relative to this file, one directory each; this index does not enumerate them. Before starting any task, or asking the owner a clarifying question, run `allod skill` — it lists every available skill by name with its summary — and match the task against that list; proceeding without checking is a defect, not a shortcut. The check is that literal command, run before the first task tool call and read in full: an `ls skills/`, a `find` for `SKILL.md`, a skill name remembered from a prior session, or reading one skill file is not the check, and each of those has missed a skill that fit. `allod skill <name>` prints a skill in full. When a task matches, read the skill with `allod skill <name>` and follow it. The user can also invoke one by name, for example `fleet-diff`. A skill is how to drive one tool well and is read at the moment that tool is reached for; a topic file is a convention and is read up front. Add a skill only for a tool these workflows invoke where getting it wrong is expensive or silent, and index it in `README.md`.
 
-One skill is read before implementation starts, not when a tool is reached for: `delegate-impl`. Before the first edit on any issue that spans more than one repo or scores R3 or higher, read `skills/delegate-impl/SKILL.md` and work as its overseer: workers in their own worktrees do the editing, and a reviewer from another model family reads each diff cold before the PR body claims validation, with the number of reviewers set by `risk.md`. A session that implements such an issue single-handed and skips the cross-family pass has skipped the review the PR workflow budgets for it; this has happened, and the owner checks for it.
+One skill is read before implementation starts, not when a tool is reached for: `delegate-impl`. Before the first edit on any issue that spans more than one repo or scores R3 or higher, read `skills/delegate-impl/SKILL.md` and work as its overseer: workers edit in their own clones under `allod change run`, and a reviewer from another model family reads each diff cold before the PR body claims validation, with the number of reviewers set by `risk.md`. A session that implements such an issue single-handed and skips the cross-family pass has skipped the review the PR workflow budgets for it; this has happened, and the owner checks for it.
 
 ## Before the First Edit
 - Before building an issue as written, state the need in one sentence and the smallest change that meets it, and name what each feature saves the owner. An issue is its author's proposal, not a decision: when a smaller change meets the need, say so before the first edit, not after the pull request (`agent-behavior.md`, Scope Discipline).
@@ -69,10 +69,11 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 
 ## Git Workflow
 - Before starting work, run `work-diff` and then `pull-all`. Both are bare commands on PATH, not `allod` subcommands (`allod work-diff` fails with `unknown command namespace`). A cold review or a worker brief that forbids touching shared checkouts forbids the pull, not the check: run `work-diff` and say that `pull-all` was skipped and why.
-- Use `allod change` for change work: `begin`, edit, `record`, `submit`.
-- Any branch change, in any repo: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change record`; run `allod change submit`.
+- Use `allod change` for change work: `begin`, edit (or `run` a worker), `record`, `submit`, `cleanup` once merged.
+- Any branch change, in any repo: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change record`; run `allod change submit`. A branch the forge already has — a PR's fix round in a new session, or a clone already cleaned up — is `allod change begin --resume <desc> <repo>`, never a `git switch` in the shared checkout.
+- A delegated worker, and any rerun of its tests, is `allod change run <clone> -- <runner invocation>`: a bubblewrap sandbox holding the clone writable, the toolchain and the memory tree read-only, and no forge token, SSH key, shared checkout or sibling clone. A runner started in a clone without `run` holds every credential the session does.
 - Committing in place on a repo's default branch: `allod change begin <repo>` with no `-d` prints the shared checkout path and creates nothing. Protected repos refuse it.
-- `allod change list` finds worktrees to reclaim; `allod change cleanup <path>` removes one.
+- `allod change list` finds clones to reclaim and shows `running` while a worker holds one; `allod change cleanup <path>` removes a clean, pushed one.
 - PRs and issues use the `forge` CLI for Forgejo.
 
 ## Execution Architecture

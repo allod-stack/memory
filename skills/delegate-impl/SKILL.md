@@ -1,7 +1,7 @@
 ---
 name: delegate-impl
 summary: Split implementation across an overseer, workers and cold reviewers
-description: Split an implementation arc across agents: one overseer, workers in worktrees, cold reviewers. The overseer is the most capable model available, briefs, waits on callbacks instead of polling, verifies and reports; cheaper workers do the scoped work in their own worktrees and reviewers from another model family read the result cold. Covers what the overseer does and never does, how to wait without spending tokens, how to keep the overseer's context small, how to scope a worker so its output is usable, and what the overseer must run itself before a PR body claims it. Names no harness, CLI or provider. Use when one session is about to implement more than one issue, or when a change needs a second opinion from a model that did not write it.
+description: Split an implementation arc across agents: one overseer, workers in sandboxed clones, cold reviewers. The overseer is the most capable model available, briefs, waits on callbacks instead of polling, verifies and reports; cheaper workers do the scoped work in their own clones under allod change run and reviewers from another model family read the result cold. Covers what the overseer does and never does, how to wait without spending tokens, how to keep the overseer's context small, how to scope a worker so its output is usable, and what the overseer must run itself before a PR body claims it. Names no harness, CLI or provider. Use when one session is about to implement more than one issue, or when a change needs a second opinion from a model that did not write it.
 ---
 
 # delegate-impl
@@ -64,6 +64,12 @@ polls. A turn spent asking "done yet?" is tokens spent on no information.
   per runner, and the per-runner signals live beside the invocation notes in
   `dev-plans.md`. Gate on the output's content once it lands, never on the
   exit status.
+- **A running clone is hands-off.** While a worker runs, `allod change list`
+  shows its clone as `running` and `record`, `submit` and `cleanup` refuse it
+  (exit 13) rather than wait; the lock releases when the worker's process
+  exits, which is the callback. The one liveness check reads the run's own
+  scope, `systemctl --user show <allod-run-unit> -p CPUUsageNSec`, the same
+  for every runner: CPU time that stopped growing is a stall.
 - **Never end a turn blind.** With work under way, a wait is armed before the
   turn ends; a turn that ends with workers running and nothing to wake the
   overseer strands them. A scheduled wake-up is the fallback for external
@@ -100,18 +106,26 @@ have not. Every brief carries:
 
 - the issue reference and its full body, not a paraphrase;
 - the clone path, created by the overseer with `allod change begin -d` and
-  run through `allod change run`, so two workers never share a checkout;
+  run through `allod change run`, so two workers never share a checkout. A
+  slice that spans repos is one worker with every clone named on one `run`,
+  or two workers in sequence; the overseer decides per slice;
 - what done means, as commands: the tests, the checks and the evaluation that
   must be green, with the instruction to report their actual output;
 - the boundaries: commit locally but never push, no attribution trailers,
   nothing private in a public repo, and the memory tree to read first;
 - what is out of scope, named, so the worker does not wander into the next
-  issue.
+  issue. A tracked hook (`.hooks/`, or what `.hookspath` names) is always out:
+  `record` refuses a clone whose copy differs from `origin/<default>` by a
+  byte, a mode or an extra file, from a worker's clone or the overseer's own.
 
 Inside the sandbox nothing under `~/changes` exists but the worker's own
 clone, so a brief handed over as a path there is invisible to it: the brief
 reaches the worker on stdin or inline in its prompt, and its report comes
 back the same way, never as a file outside the clone.
+
+A fix round goes back to the same clone. When it has already been cleaned up,
+`allod change begin --resume <description>` rebuilds it from the pushed branch
+and `record` continues it.
 
 Delegation does not pay for one small issue, or for a change whose design is
 the work. If the brief would take longer to write than the change, make the
@@ -153,7 +167,8 @@ a script that checks only that the command returned.
 - A worker whose report claims a validation it did not show ran is sent back
   for the output, not trusted.
 - A stuck worker is inspected, then given a narrower brief or stopped; its
-  worktree is never discarded while it holds unlanded commits.
+  clone is never discarded while it holds unlanded commits, and `cleanup`
+  refuses one anyway.
 - Failures are reported plainly, first, with the evidence. A red check is a
   red check in the report, not a footnote.
 

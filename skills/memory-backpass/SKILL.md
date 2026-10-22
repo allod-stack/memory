@@ -37,7 +37,7 @@ The command's code cites these step numbers; the mechanism behind each is in `do
 4. One private ledger line per surviving rule and session; corroborate an existing line instead of duplicating it; never ledger an `irrelevant` item.
 5. Fold the evidence: per-instruction counts and relevance, per-rule session counts, every surviving quote.
 6. Prune pre-run ledger lines over ninety days old or now covered by a topic file; a public line is only proposed for relay.
-7. Private worktree, ledger commit, synthesis call; public proposals as commits in a second unpushed worktree.
+7. Private clone, ledger commit, synthesis call; public proposals as commits in a second unpushed clone.
 8. Byte budget: one fix call, then every proposed edit is dropped; caps are never raised.
 9. `allod change record` and `submit`; label `relay` when the checklist is non-empty.
 10. Report-only: everything but 7 to 9.

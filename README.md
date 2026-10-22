@@ -66,7 +66,7 @@ same description; the text is reordered, never dropped.
 Available skills:
 
 - `add-site` — stands up a site or deck as its own repository and registers it so `allod site view` finds it on one dev VM; the preview app, `site.toml`, the registry entry and port, the clone path.
-- `delegate-impl` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own worktrees and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
+- `delegate-impl` — one overseer on the most capable model, waiting on callbacks instead of polling, with cheaper workers in their own sandboxed clones and reviewers from another model family; how to scope a worker, keep the overseer's context small, and what the overseer runs itself before a PR body claims it.
 - `explain-diff` — creates a self-contained interactive HTML explanation of a diff, branch, commit range, or pull request.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.

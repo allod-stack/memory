@@ -43,7 +43,7 @@ owner sees whether it was followed.
 ## Steps
 
 1. **Confirm the seat.** `forge auth status` names the verifier account.
-   `allod change list` shows no worktree of this session on the PR's branch.
+   `allod change list` shows no clone of this session on the PR's branch.
    Read the PR body's `## Validation` section: it must name commands that
    were run and show their output. Missing, or claims with no output, is a
    stop: comment that the PR needs its author's validation, and hand it back.

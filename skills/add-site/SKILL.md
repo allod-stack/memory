@@ -40,7 +40,7 @@ unit (`allod-preview-work-<path>`) that `view` never finds.
 
 ## 3. Register it (the inventory repository, a PR)
 
-In a worktree from `allod change begin -d <desc> <inventory checkout>`:
+In a clone from `allod change begin -d <desc> <inventory checkout>`:
 
 - `scripts/repositories.json` is hand-edited: add
   `"<id>": {source:"forge", remote:"<id>", checkout:"<id>", preview_port:<n>}`.
