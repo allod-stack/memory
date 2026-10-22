@@ -84,8 +84,9 @@ owner sees whether it was followed.
    the owner. A map that no longer matches the product is a finding for the
    author, not something the verifier edits.
 7. **Post the proof.** One comment, `forge pr comment <n> -F <file>`, in
-   the shape under "The proof comment". Findings go in the same comment and
-   back to the author; a new head means a new verification from step 4.
+   the shape under "The proof comment": the plain-English lead first, then
+   the `## Verification` block. Findings go in the same comment and back to
+   the author; a new head means a new verification from step 4.
 8. **Re-read the base, then merge.** If the base tip moved since step 4,
    build the merged tree (`git merge-tree --write-tree <base> <head>`), run
    the checks on it, and for R1 and up re-drive the affected feature files;
@@ -97,7 +98,8 @@ owner sees whether it was followed.
    deletes the head branch once the merge has landed, as the owner does by
    hand; a merged PR whose branch is still on the forge is a verifier that
    skipped the flag.
-9. **Record the landing.** A second comment:
+9. **Record the landing.** A second comment, one plain line and one exact one:
+   `Merged. To undo it, run the revert line below on master.` and then
    `Merged as <merge_commit_sha>. Revert: git revert <base-tip>..<merge_commit_sha>`
    where `<base-tip>` is the tip read in step 8. That line is what the owner
    runs on master. The merge in step 8 is the verifier's only write to the
@@ -106,7 +108,25 @@ owner sees whether it was followed.
 
 ## The proof comment
 
+The comment opens with a lead the owner can read once, cold, and act on
+without reading further (`writing.md`, "The opening paragraph is a routing
+decision"). Three to five short sentences, ordinary words, no project
+vocabulary: what the change does for a running machine, whether it works
+and what showed that, and what the reader has to do, if anything. Bad news
+first: a stop opens with what is missing. A score, a rung, a hash, a path or
+a command never appears in the lead; those live in the `## Verification`
+block below it, which is for the skeptic. The bold word is one of `Merged`,
+`Ready to merge`, `Not merged` or `Your call`.
+
 ```
+**Not merged.** This change makes the daily pull report say when a checkout
+has commits that were never pushed, instead of calling it up to date. The
+code works: every test passes and I reproduced the new report on real
+repositories. It is not merged because the written description of this
+behaviour, which the next verifier relies on, still describes the old one.
+The author needs to update that one file in this PR; nothing is needed from
+you.
+
 ## Verification
 
 Verifier: <account> on <hostname>, scratch clone <path>
