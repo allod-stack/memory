@@ -39,6 +39,10 @@ A comment in code is for one of three things: a contract a caller relies on that
 - The test for a block is not its length. Without it, would a good reader plausibly change the code to something wrong? Then it stays, as the trap plus a pointer. If it explains what, or history, or something a name could say, it goes.
 - Cutting comments never loses a trap. Every block that was preventing a plausible wrong edit is kept in compressed form or replaced by something that prevents the edit.
 
+## Handing off to another agent
+
+A handoff prompt names the problem and where to look, in about ten lines, and stops. Cite the issue or PR as `owner/repo#N` and let the receiving agent read it; restating its body, listing the files to touch, or writing the commands it will run is the wall of text the owner has rejected every time. The receiving agent reads memory and the forge itself and decides what to do; a brief that decides for it is longer, staler and wrong more often. Say what to report back in one line.
+
 ## Where this applies
 
 Everything a human reads: chat replies, reports, docs, review comments, PR and issue bodies, plan sections, commit messages. Artifact shapes stay with their owners — `issue-writing.md` for issue bodies (its plain opening sentence is this rule applied), `dev-plans.md` for plan sections, `git-workflow.md` for PR bodies and commit messages, `memory.md` hygiene for memory files. This file adds no headings, sections, or steps anywhere; it governs the order and the words of what is already being written.
