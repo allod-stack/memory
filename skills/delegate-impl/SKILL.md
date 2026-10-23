@@ -27,10 +27,12 @@ arc, deciding the order, writing each worker's brief, verifying what comes
 back, and writing the PR body the human will merge on. It does not implement.
 It never edits a project file; a worker does that, in a clone the overseer
 made for it with `allod change begin -d` and dispatches through `allod
-change run <clone> -- <runner invocation>`. The worker commits on its branch
-and never pushes; once the overseer has verified the result, it pushes with
-`allod change record` itself. When the overseer catches itself opening an
-editor on the work, it stops and writes a brief instead.
+change run <clone> -- <runner invocation>`. The worker records and submits
+itself, from inside its own sandbox, where the forge SSH key and the agent
+token are bound; the overseer verifies the result on the forge, never
+authors a commit, and runs `allod change cleanup` on the clone once the PR
+merges. When the overseer catches itself opening an editor on the work, it
+stops and writes a brief instead.
 
 Three kinds of decision, written down before the first dispatch, so the
 overseer never invents policy mid-arc:
@@ -40,7 +42,7 @@ overseer never invents policy mid-arc:
 - **ask the human:** anything that changes scope, touches a shared interface
   the issue did not name, or would merge, publish or discard work;
 - **never:** merge (that is the `verify-merge` skill's act, in another
-  session), push past a rail, author a commit itself, delete unlanded work,
+  session), push, author a commit itself, delete unlanded work,
   or report a validation it did not see run.
 
 ## Waiting without spending
@@ -65,9 +67,10 @@ polls. A turn spent asking "done yet?" is tokens spent on no information.
   `dev-plans.md`. Gate on the output's content once it lands, never on the
   exit status.
 - **A running clone is hands-off.** While a worker runs, `allod change list`
-  shows its clone as `running` and `record`, `submit` and `cleanup` refuse it
-  (exit 13) rather than wait; the lock releases when the worker's process
-  exits, which is the callback. The one liveness check reads the run's own
+  shows its clone as `running`, and `cleanup` refuses it (exit 13) rather
+  than wait; the lock releases when the worker's process exits, which is the
+  callback. The worker calls `record` and `submit` itself from inside, where
+  the lock is already held. The one liveness check reads the run's own
   scope, `systemctl --user show <allod-run-unit> -p CPUUsageNSec`, the same
   for every runner: CPU time that stopped growing is a stall.
 - **Never end a turn blind.** With work under way, a wait is armed before the
@@ -111,12 +114,11 @@ have not. Every brief carries:
   or two workers in sequence; the overseer decides per slice;
 - what done means, as commands: the tests, the checks and the evaluation that
   must be green, with the instruction to report their actual output;
-- the boundaries: commit locally but never push, no attribution trailers,
-  nothing private in a public repo, and the memory tree to read first;
+- the boundaries: record and submit itself from inside the sandbox, no
+  attribution trailers, nothing private in a public repo, and the memory
+  tree to read first;
 - what is out of scope, named, so the worker does not wander into the next
-  issue. A tracked hook (`.hooks/`, or what `.hookspath` names) is always out:
-  `record` refuses a clone whose copy differs from `origin/<default>` by a
-  byte, a mode or an extra file, from a worker's clone or the overseer's own.
+  issue.
 
 Inside the sandbox nothing under `~/changes` exists but the worker's own
 clone, so a brief handed over as a path there is invisible to it: the brief
