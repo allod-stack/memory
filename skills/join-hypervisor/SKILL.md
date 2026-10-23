@@ -50,18 +50,21 @@ to the branch is used.
 
 - `lib.hypervisorIdentities.<name>` in `flake.nix`: `sshPublicKeys` built
   from `machine-host-keys.json["<name>"]` (its `active` key, plus `staged`
-  when set); every other field — `username`, `forgeHost`, `forgePort`,
-  `userForgejoTokenFile` (a path to the new per-machine token ciphertext,
-  not yet created), `siteHostingConfigFile`, `operatorPublicKeys` — copied
-  from the primary's own `hypervisorIdentities` entry.
+  when set); `username`, `forgeHost`, `forgePort`, `siteHostingConfigFile`,
+  `operatorPublicKeys` copied from the primary's own `hypervisorIdentities`
+  entry; `userForgejoTokenFile` follows that entry's own path with `<name>`
+  substituted for `<primary>` — a new per-machine ciphertext path, not yet
+  created.
 - Any check that pins `hypervisorIdentities` to exactly one entry (for
   example, an assertion that `attrNames hypervisorIdentities` equals a
   one-element list) relaxes to: the primary is present, every identity
   exports `sshPublicKeys`, and no hypervisor name collides with a guest's.
-- `allod secret declare user-forgejo-token-<name> --kind user --owner <name>
-  --to <name> --deployed-path <path> --verify <command> --service forgejo`
-  — appends the credential `pending`, with a `nixos-host` target naming
-  `<name>`. Never run `allod secret create` on it.
+- `allod secret declare user-forgejo-token-<name>` — mirror the primary's own
+  `user-forgejo-token-<primary>` group in `rotation-registry.json` and
+  `credentials.nix` for `--kind`, `--owner`, `--service`, `--account`,
+  `--deployed-path`, and `--verify`; only `--to <name>` differs. Appends the
+  credential `pending`, with a `nixos-host` target naming `<name>`. Never run
+  `allod secret create` on it.
 - Add `<name>` as a target of every host credential the deployment shares
   across hypervisors: edit each one's rotation-registry group to add a
   `nixos-host` target naming `<name>`. Leave the rekey itself to
