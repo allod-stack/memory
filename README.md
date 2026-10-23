@@ -70,6 +70,7 @@ Available skills:
 - `explain-diff` — creates a self-contained interactive HTML explanation of a diff, branch, commit range, or pull request.
 - `fleet-diff` — gates a merge against which machines it actually rebuilds, via `fleet-diff`, the per-machine flake drvPath comparison tool in `tools`.
 - `forge-groom` — triages every open issue and PR in the allod repos against master, closes only what a merged `Closes` proves settled, labels the rest, and writes one short report; the weekly timer and the by-hand run share it.
+- `join-hypervisor` — completes a second hypervisor's inventory, secrets, and profiles declaration from the `join/<name>` branches `join-deployment.sh` pushed, one pull request per repository, so `admit-hypervisor` can run next.
 - `list-models` — where each installed agent CLI (pi, codex, claude) keeps its model list, why a listed model is not a served one, and `probe-models`, which lists what is present and verifies only the models you name.
 - `memory-backpass` — how to run `allod memory backpass`, which reads recent session traces against both memory indexes and opens one evidence-backed private-memory PR, and what to do with the PR it opens; the two prompt files it sends live beside the skill.
 - `memory-prune` — the subtractive half of the same loop: scores every index line against a window of recent sessions, retires the ones that never changed an outcome, and records each removal in `retired.md` so it can be put back.
