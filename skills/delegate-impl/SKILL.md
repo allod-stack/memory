@@ -29,9 +29,11 @@ It never edits a project file; a worker does that, in a clone the overseer
 made for it with `allod change begin -d` and dispatches through `allod
 change run <clone> -- <runner invocation>`. The worker records and submits
 itself, from inside its own sandbox, where the forge SSH key and the agent
-token are bound; the overseer verifies the result on the forge, never
-authors a commit, and runs `allod change cleanup` on the clone once the PR
-merges. When the overseer catches itself opening an editor on the work, it
+token are bound; for a codex worker, whose sandbox blocks the network, the
+overseer instead runs `allod change run <clone> -- allod change record ...`
+and `... -- allod change submit ...` after it exits. The overseer verifies
+the result on the forge, never authors a commit, and runs `allod change
+cleanup` on the clone once the PR merges. When the overseer catches itself opening an editor on the work, it
 stops and writes a brief instead.
 
 Three kinds of decision, written down before the first dispatch, so the
@@ -42,7 +44,7 @@ overseer never invents policy mid-arc:
 - **ask the human:** anything that changes scope, touches a shared interface
   the issue did not name, or would merge, publish or discard work;
 - **never:** merge (that is the `verify-merge` skill's act, in another
-  session), push, author a commit itself, delete unlanded work,
+  session), push past a rail, author a commit itself, delete unlanded work,
   or report a validation it did not see run.
 
 ## Waiting without spending
@@ -114,9 +116,11 @@ have not. Every brief carries:
   or two workers in sequence; the overseer decides per slice;
 - what done means, as commands: the tests, the checks and the evaluation that
   must be green, with the instruction to report their actual output;
-- the boundaries: record and submit itself from inside the sandbox, no
-  attribution trailers, nothing private in a public repo, and the memory
-  tree to read first;
+- the boundaries: record and submit itself from inside the sandbox, or, for
+  a codex worker, the overseer runs `allod change run <clone> -- allod
+  change record ...` and `... submit ...` after it exits; no attribution
+  trailers, nothing private in a public repo, and the memory tree to read
+  first;
 - what is out of scope, named, so the worker does not wander into the next
   issue.
 

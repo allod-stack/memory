@@ -73,7 +73,7 @@ A mixed fact splits — publish the mechanism, keep the specifics private, and h
 - Any branch change, in any repo: `path=$(allod change begin -d <desc> <repo>)`; edit in `$path`; run `allod change run $path -- allod change record -m <message>`; run `allod change run $path -- allod change submit -t <title> -F <body-file>` — a ledgered clone refuses `record` and `submit` run directly, outside `run` (exit 11). A branch the forge already has — a PR's fix round in a new session, or a clone already cleaned up — is `allod change begin --resume <desc> <repo>`, never a `git switch` in the shared checkout.
 - A delegated worker, and any rerun of its tests, is `allod change run <clone> -- <runner invocation>`: a bubblewrap sandbox holding the clone writable, the toolchain and the memory tree read-only, and the forge SSH key and the agent token bound read-only by name — no shared checkout or sibling clone. A runner started in a clone without `run` holds every credential the session does.
 - Committing in place on a repo's default branch: `allod change begin <repo>` with no `-d` prints the shared checkout path and creates nothing. Protected repos refuse it.
-- `allod change list` finds clones to reclaim and shows `running` while a worker holds one; `allod change cleanup <path>` removes a clean, pushed one.
+- `allod change list` finds clones to reclaim and shows `running` while a worker holds one; `allod change cleanup <path>` removes a clone whose pull request is merged or closed.
 - PRs and issues use the `forge` CLI for Forgejo.
 
 ## Execution Architecture
