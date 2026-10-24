@@ -65,9 +65,17 @@ owner sees whether it was followed.
    (`GET /repos/{repo}/branches/{base}`). The PR must be open, unmerged,
    `mergeable`, based on the default branch, and not stacked on another open
    PR. Check out the head hash in the scratch clone.
-5. **Run the checks.** The checks the feature-map README names as baseline,
-   or the repository README's own when there is no map, at the head commit,
-   with output captured. A failed check is a finding, never rerun to green.
+5. **Run the checks.** When the fleet composes this repository, gate the
+   blast radius first (`fleet-diff`): in the topmost composition root that
+   pins it, override this repository's input to the head revision and
+   assert the expectation the PR's own claim sets — `--expect-none` when
+   it claims to be land-inert, `--expect <machines>` when it names the
+   machines it converts. A mismatch in either direction is a stop. A
+   land-inert PR whose gate is clean needs no machine build: the drvPath
+   comparison is the witness (`testing.md`). Then the checks the
+   feature-map README names as baseline, or the repository README's own
+   when there is no map, at the head commit, with output captured. A
+   failed check is a finding, never rerun to green.
 6. **Drive the map.** R0 has nothing to drive; the proof is the checks plus
    the diff read, and for a memory repository the byte-budget hook. With no
    map, rerun the PR body's Validation commands at the head and capture
